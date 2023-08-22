@@ -1,0 +1,81 @@
+{
+    "importBase": "import",
+    "nativeBase": "native",
+    "name": "main",
+    "deps": [],
+    "uuids": [
+        "15720d57-baed-4602-b07b-84dfb71761b0",
+        "15720d57-baed-4602-b07b-84dfb71761b0@6c48a",
+        "15720d57-baed-4602-b07b-84dfb71761b0@f9941",
+        "20835ba4-6145-4fbc-a58a-051ce700aa3e",
+        "20835ba4-6145-4fbc-a58a-051ce700aa3e@6c48a",
+        "20835ba4-6145-4fbc-a58a-051ce700aa3e@f9941",
+        "393c0e9f-c660-46a6-bd3b-cc2f5c62ac05",
+        "544e49d6-3f05-4fa8-9a9e-091f98fc2ce8",
+        "544e49d6-3f05-4fa8-9a9e-091f98fc2ce8@6c48a",
+        "544e49d6-3f05-4fa8-9a9e-091f98fc2ce8@f9941",
+        "951249e0-9f16-456d-8b85-a6ca954da16b",
+        "951249e0-9f16-456d-8b85-a6ca954da16b@6c48a",
+        "951249e0-9f16-456d-8b85-a6ca954da16b@f9941",
+        "ba21476f-2866-4f81-9c4d-6e359316e448",
+        "fd8ec536-a354-4a17-9c74-4f3883c378c8"
+    ],
+    "paths": {
+        "393c0e9f-c660-46a6-bd3b-cc2f5c62ac05": [
+            "db:/assets/game",
+            "cc.SceneAsset"
+        ],
+        "fd8ec536-a354-4a17-9c74-4f3883c378c8": [
+            "db:/internal/default_renderpipeline/builtin-forward",
+            "cc.RenderPipeline"
+        ],
+        "ba21476f-2866-4f81-9c4d-6e359316e448": [
+            "db:/internal/physics/default-physics-material",
+            "cc.PhysicsMaterial"
+        ]
+    },
+    "scenes": {
+        "db://assets/game.scene": "393c0e9f-c660-46a6-bd3b-cc2f5c62ac05"
+    },
+    "packs": {},
+    "versions": {
+        "import": [],
+        "native": []
+    },
+    "redirect": [],
+    "debug": true,
+    "extensionMap": {},
+    "hasPreloadScript": true,
+    "dependencyRelationships": {
+        "15720d57-baed-4602-b07b-84dfb71761b0@6c48a": [
+            "15720d57-baed-4602-b07b-84dfb71761b0"
+        ],
+        "15720d57-baed-4602-b07b-84dfb71761b0@f9941": [
+            "15720d57-baed-4602-b07b-84dfb71761b0@6c48a"
+        ],
+        "20835ba4-6145-4fbc-a58a-051ce700aa3e@6c48a": [
+            "20835ba4-6145-4fbc-a58a-051ce700aa3e"
+        ],
+        "20835ba4-6145-4fbc-a58a-051ce700aa3e@f9941": [
+            "20835ba4-6145-4fbc-a58a-051ce700aa3e@6c48a"
+        ],
+        "393c0e9f-c660-46a6-bd3b-cc2f5c62ac05": [
+            "15720d57-baed-4602-b07b-84dfb71761b0@f9941",
+            "20835ba4-6145-4fbc-a58a-051ce700aa3e@f9941",
+            "544e49d6-3f05-4fa8-9a9e-091f98fc2ce8@f9941",
+            "951249e0-9f16-456d-8b85-a6ca954da16b@f9941"
+        ],
+        "544e49d6-3f05-4fa8-9a9e-091f98fc2ce8@6c48a": [
+            "544e49d6-3f05-4fa8-9a9e-091f98fc2ce8"
+        ],
+        "544e49d6-3f05-4fa8-9a9e-091f98fc2ce8@f9941": [
+            "544e49d6-3f05-4fa8-9a9e-091f98fc2ce8@6c48a"
+        ],
+        "951249e0-9f16-456d-8b85-a6ca954da16b@6c48a": [
+            "951249e0-9f16-456d-8b85-a6ca954da16b"
+        ],
+        "951249e0-9f16-456d-8b85-a6ca954da16b@f9941": [
+            "951249e0-9f16-456d-8b85-a6ca954da16b@6c48a"
+        ]
+    }
+}

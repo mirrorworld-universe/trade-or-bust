@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+
+    <title>Cocos Creator | MUDClient</title>
+
+    <meta name="viewport" content="width=device-width,user-scalable=no,initial-scale=1,minimum-scale=1,maximum-scale=1,minimal-ui=true"/>
+    <meta name="apple-mobile-web-app-capable" content="yes"/>
+    <meta name="full-screen" content="yes"/>
+    <meta name="screen-orientation" content="portrait"/>
+    <meta name="x5-fullscreen" content="true"/>
+    <meta name="360-fullscreen" content="true"/>
+    
+    <meta name="renderer" content="webkit"/>
+    <meta name="force-rendering" content="webkit"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+    
+    <link rel="stylesheet" type="text/css" href="style.css"/>
+    <link rel="icon" href="favicon.ico"/>
+  </head>
+  <body>
+    <script type="module" src="/src/index.ts"></script>
+
+    <div id="GameDiv" cc_exact_fit_screen="true" position:relative overflow:hidden>
+      <div id="Cocos3dGameContainer">
+        <canvas id="GameCanvas" width=100% height=100% tabindex="99" position:absolute left:0 top:0></canvas>
+      </div>
+    </div>
+    <p class="footer">
+      Created with <a href="https://www.cocos.com/products" title="Cocos Creator">Cocos Creator</a>
+    </p>
+    <!-- Polyfills bundle. -->
+<script src="src/polyfills.bundle.js" charset="utf-8"> </script>
+<script ></script>
+<!-- SystemJS support. -->
+<script src="src/system.bundle.js" charset="utf-8"> </script>
+
+<!-- Import map -->
+<script src="src/import-map.json" type="systemjs-importmap" charset="utf-8"> </script>
+
+<script>
+    System.import('./index.js').catch(function(err) { console.error(err); })
+
+    function showWindowSize() {
+      var w = window.innerWidth;
+      var h = window.innerHeight;
+      document.getElementById("GameDiv").style.width = w + "px";
+      document.getElementById("GameDiv").style.height = h + "px";
+      // view.setDesignResolutionSize( w,h,ResolutionPolicy.FIXED_WIDTH);
+    }
+
+    // 给window.onresize事件绑定上面定义的函数
+    window.onresize = showWindowSize;
+
+    // 调用一次函数，显示初始的窗口大小
+    showWindowSize();
+</script>
+  </body>
+</html>
