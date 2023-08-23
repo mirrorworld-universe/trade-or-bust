@@ -1,5 +1,5 @@
-System.register("chunks:///_virtual/counter-label.ts", ['./rollupPluginModLoBabelHelpers.js', 'cc'], function (exports) {
-  var _inheritsLoose, cclegacy, _decorator, find, Label, Component;
+System.register("chunks:///_virtual/counter-label.ts", ['./rollupPluginModLoBabelHelpers.js', 'cc', './ponzi-controller.ts'], function (exports) {
+  var _inheritsLoose, cclegacy, _decorator, Label, log, Component, ponzi_controller;
 
   return {
     setters: [function (module) {
@@ -7,9 +7,11 @@ System.register("chunks:///_virtual/counter-label.ts", ['./rollupPluginModLoBabe
     }, function (module) {
       cclegacy = module.cclegacy;
       _decorator = module._decorator;
-      find = module.find;
       Label = module.Label;
+      log = module.log;
       Component = module.Component;
+    }, function (module) {
+      ponzi_controller = module.ponzi_controller;
     }],
     execute: function () {
       var _dec, _class;
@@ -29,21 +31,34 @@ System.register("chunks:///_virtual/counter-label.ts", ['./rollupPluginModLoBabe
           }
 
           _this = _Component.call.apply(_Component, [this].concat(args)) || this;
-          _this.ponziControllerNode = void 0;
+          _this.inited = false;
           return _this;
         }
 
         var _proto = counter_label.prototype;
 
-        _proto.start = function start() {
-          this.ponziControllerNode = find("ponzi-controller");
-          this.ponziControllerNode.on("counterValue", function (msg) {
+        _proto.start = function start() {};
+
+        _proto.init = function init() {
+          var _globalThis$ponzi;
+
+          if ((_globalThis$ponzi = globalThis.ponzi) != null && _globalThis$ponzi.counter) {
+            this.inited = true;
             var label = this.node.getComponent(Label);
-            label.string = "New count is:" + msg;
-          }, this);
+            label.string = "New count is:" + globalThis.ponzi.counter.value;
+            var self = this;
+            ponzi_controller.instance.on("ccc_counter_value", function (msg) {
+              var label = self.node.getComponent(Label);
+              label.string = "New count is:" + msg;
+            });
+          } else {
+            log("counter is not prepared!");
+          }
         };
 
-        _proto.update = function update(deltaTime) {};
+        _proto.update = function update(deltaTime) {
+          if (!this.inited) this.init();
+        };
 
         _proto.onBtnAddClicked = function onBtnAddClicked() {
           console.log("onBtnAddClicked clicked!");
@@ -391,15 +406,59 @@ System.register("chunks:///_virtual/debug-view-runtime-control.ts", ['./rollupPl
   };
 });
 
-System.register("chunks:///_virtual/main", ['./debug-view-runtime-control.ts', './Singleton.ts', './counter-label.ts', './ponzi-controller.ts', './ponzi-model.ts'], function () {
+System.register("chunks:///_virtual/JsCaller.ts", ['cc'], function (exports) {
+  var cclegacy, _decorator;
+
   return {
-    setters: [null, null, null, null, null],
+    setters: [function (module) {
+      cclegacy = module.cclegacy;
+      _decorator = module._decorator;
+    }],
+    execute: function () {
+      var _dec, _class, _class2;
+
+      cclegacy._RF.push({}, "da8c9cEXPBCPbvJSCuGyRd8", "JsCaller", undefined);
+
+      var ccclass = _decorator.ccclass,
+          property = _decorator.property;
+      var JsCaller = exports('JsCaller', (_dec = ccclass('JsCaller'), _dec(_class = (_class2 = /*#__PURE__*/function () {
+        function JsCaller() {} // 定义一个静态方法，用来获取该实例
+
+
+        JsCaller.getInstance = function getInstance() {
+          // 如果实例不存在，就创建一个新的实例
+          if (!this.instance) {
+            this.instance = new JsCaller();
+          } // 返回实例
+
+
+          return this.instance;
+        } // 定义其他属性和方法
+        ;
+
+        var _proto = JsCaller.prototype;
+
+        _proto.JsCaller = function JsCaller() {// ...
+        } // public out
+        ;
+
+        return JsCaller;
+      }(), _class2.instance = null, _class2)) || _class));
+
+      cclegacy._RF.pop();
+    }
+  };
+});
+
+System.register("chunks:///_virtual/main", ['./debug-view-runtime-control.ts', './Singleton.ts', './counter-label.ts', './JsCaller.ts', './MUDListener.ts', './ponzi-controller.ts', './ponzi-model.ts', './test.ts'], function () {
+  return {
+    setters: [null, null, null, null, null, null, null, null],
     execute: function () {}
   };
 });
 
-System.register("chunks:///_virtual/ponzi-controller.ts", ['./rollupPluginModLoBabelHelpers.js', 'cc', './ponzi-model.ts'], function (exports) {
-  var _inheritsLoose, cclegacy, _decorator, Component, PonziModel;
+System.register("chunks:///_virtual/MUDListener.ts", ['./rollupPluginModLoBabelHelpers.js', 'cc'], function (exports) {
+  var _inheritsLoose, cclegacy, _decorator, Component;
 
   return {
     setters: [function (module) {
@@ -408,17 +467,59 @@ System.register("chunks:///_virtual/ponzi-controller.ts", ['./rollupPluginModLoB
       cclegacy = module.cclegacy;
       _decorator = module._decorator;
       Component = module.Component;
-    }, function (module) {
-      PonziModel = module.default;
     }],
     execute: function () {
       var _dec, _class;
+
+      cclegacy._RF.push({}, "d39a68r4wVEMKcXMZ0+aGDs", "MUDListener", undefined);
+
+      var ccclass = _decorator.ccclass,
+          property = _decorator.property;
+      var MUDListener = exports('MUDListener', (_dec = ccclass('MUDListener'), _dec(_class = /*#__PURE__*/function (_Component) {
+        _inheritsLoose(MUDListener, _Component);
+
+        function MUDListener() {
+          return _Component.apply(this, arguments) || this;
+        }
+
+        var _proto = MUDListener.prototype;
+
+        _proto.start = function start() {};
+
+        _proto.update = function update(deltaTime) {};
+
+        _proto.startListen = function startListen() {};
+
+        return MUDListener;
+      }(Component)) || _class));
+
+      cclegacy._RF.pop();
+    }
+  };
+});
+
+System.register("chunks:///_virtual/ponzi-controller.ts", ['./rollupPluginModLoBabelHelpers.js', 'cc'], function (exports) {
+  var _inheritsLoose, _createClass, cclegacy, _decorator, log, find, Component;
+
+  return {
+    setters: [function (module) {
+      _inheritsLoose = module.inheritsLoose;
+      _createClass = module.createClass;
+    }, function (module) {
+      cclegacy = module.cclegacy;
+      _decorator = module._decorator;
+      log = module.log;
+      find = module.find;
+      Component = module.Component;
+    }],
+    execute: function () {
+      var _dec, _class, _class2;
 
       cclegacy._RF.push({}, "d27bewDLOVJ3aP597Cc0JT2", "ponzi-controller", undefined);
 
       var ccclass = _decorator.ccclass,
           property = _decorator.property;
-      var ponzi_controller = exports('ponzi_controller', (_dec = ccclass('ponzi_controller'), _dec(_class = /*#__PURE__*/function (_Component) {
+      var ponzi_controller = exports('ponzi_controller', (_dec = ccclass('ponzi_controller'), _dec(_class = (_class2 = /*#__PURE__*/function (_Component) {
         _inheritsLoose(ponzi_controller, _Component);
 
         function ponzi_controller() {
@@ -427,27 +528,105 @@ System.register("chunks:///_virtual/ponzi-controller.ts", ['./rollupPluginModLoB
 
         var _proto = ponzi_controller.prototype;
 
-        _proto.onLoad = function onLoad() {};
-
-        _proto.start = function start() {};
-
-        _proto.update = function update(deltaTime) {
-          var _globalThis$ponzi;
-
-          var ponziModel = PonziModel.instance; //counterValue
-
-          if ((globalThis == null ? void 0 : (_globalThis$ponzi = globalThis.ponzi) == null ? void 0 : _globalThis$ponzi.counterValue) != ponziModel.counterValue) {
-            ponziModel.counterValue = globalThis.ponzi.counterValue;
-            this.sendMsg("counterValue", globalThis.ponzi.counterValue);
-          }
+        _proto.start = function start() {
+          this.init();
         };
 
-        _proto.sendMsg = function sendMsg(msgName, msgData) {
+        _proto.on = function on(msgName, func) {
+          this.node.on(msgName, func);
+        };
+
+        _proto.init = function init() {
+          if (!globalThis.ponzi) {
+            globalThis.ponzi = {};
+          }
+
+          this.registerJsLiseners();
+        };
+
+        _proto.registerJsLiseners = function registerJsLiseners() {
+          log("ccc registerJsLiseners");
+          var self = this;
+
+          globalThis.ponzi.game_update = function (oldValue, newValue) {
+            self.gameUpdate(oldValue, newValue);
+          };
+
+          globalThis.ponzi.counter_update = function (oldValue, newValue) {
+            self.counterUpdate(oldValue, newValue);
+          };
+        };
+
+        _proto.sendCCCMsg = function sendCCCMsg(msgName, msgData) {
           this.node.emit(msgName, msgData);
         };
 
+        _proto.counterInit = function counterInit(value) {};
+
+        _proto.counterUpdate = function counterUpdate(oldObj, newObj) {
+          // 调用函数，传入两个对象，得到结果
+          var result = this.compareObjects(oldObj, newObj);
+          var counterValue = result['value'];
+
+          if (counterValue) {
+            this.sendCCCMsg('ccc_counter_value', counterValue);
+          } // 打印结果
+
+
+          console.log(result); // ["name", "age"]
+        };
+
+        _proto.gameInit = function gameInit(game) {};
+
+        _proto.gameUpdate = function gameUpdate(oldObj, newObj) {
+          // 调用函数，传入两个对象，得到结果
+          var result = this.compareObjects(oldObj, newObj); // 打印结果
+
+          console.log(result); // ["name", "age"]
+        } // 定义一个函数来比较两个对象，并返回一个数组，包含变动的参数名称
+        ;
+
+        _proto.compareObjects = function compareObjects(obj1, obj2) {
+          // 定义一个空数组来存储变动的参数名称
+          var changedParams = {}; // 遍历obj1的所有属性
+
+          for (var key in obj1) {
+            // 如果obj2没有该属性，或者obj2的属性值与obj1不同，则说明该属性发生了变动
+            if (!obj2.hasOwnProperty(key) || obj1[key] !== obj2[key]) {
+              // 将变动的属性名称添加到数组中
+              changedParams[key] = obj2[key];
+            }
+          } // 遍历obj2的所有属性
+
+
+          for (var _key in obj2) {
+            // 如果obj1没有该属性，则说明该属性是新增的，也属于变动
+            if (!obj1.hasOwnProperty(_key)) {
+              // 将变动的属性名称添加到数组中
+              changedParams[_key] = obj2[_key];
+            }
+          } // 返回变动的参数名称数组
+
+
+          return changedParams;
+        };
+
+        _createClass(ponzi_controller, null, [{
+          key: "instance",
+          get: // 定义一个公共的静态方法，用于获取类的唯一实例
+          function get() {
+            // 如果实例不存在，就创建一个新的实例并赋值给静态属性
+            if (!ponzi_controller._instance) {
+              ponzi_controller._instance = find("ponzi-controller").getComponent(ponzi_controller);
+            } // 返回静态属性
+
+
+            return ponzi_controller._instance;
+          }
+        }]);
+
         return ponzi_controller;
-      }(Component)) || _class));
+      }(Component), _class2._instance = void 0, _class2)) || _class));
 
       cclegacy._RF.pop();
     }
@@ -552,6 +731,49 @@ System.register("chunks:///_virtual/Singleton.ts", ['./rollupPluginModLoBabelHel
         SingletonT._inst = null;
         return SingletonT;
       }
+
+      cclegacy._RF.pop();
+    }
+  };
+});
+
+System.register("chunks:///_virtual/test.ts", ['./rollupPluginModLoBabelHelpers.js', 'cc', './ponzi-controller.ts'], function (exports) {
+  var _inheritsLoose, cclegacy, _decorator, Component, ponzi_controller;
+
+  return {
+    setters: [function (module) {
+      _inheritsLoose = module.inheritsLoose;
+    }, function (module) {
+      cclegacy = module.cclegacy;
+      _decorator = module._decorator;
+      Component = module.Component;
+    }, function (module) {
+      ponzi_controller = module.ponzi_controller;
+    }],
+    execute: function () {
+      var _dec, _class;
+
+      cclegacy._RF.push({}, "d14e046qVRM64qyg0X0aGwn", "test", undefined);
+
+      var ccclass = _decorator.ccclass,
+          property = _decorator.property;
+      var test = exports('test', (_dec = ccclass('test'), _dec(_class = /*#__PURE__*/function (_Component) {
+        _inheritsLoose(test, _Component);
+
+        function test() {
+          return _Component.apply(this, arguments) || this;
+        }
+
+        var _proto = test.prototype;
+
+        _proto.start = function start() {
+          ponzi_controller.instance.sendCCCMsg('ccc_counter_value', 1);
+        };
+
+        _proto.update = function update(deltaTime) {};
+
+        return test;
+      }(Component)) || _class));
 
       cclegacy._RF.pop();
     }

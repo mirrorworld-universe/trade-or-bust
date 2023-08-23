@@ -9,15 +9,15 @@ const {
 } = await setup();
 
 globalThis.ponzi = {
-  counterValue:0
+  counter:0
 }
 
 // Components expose a stream that triggers when the component is updated.
 components.Counter.update$.subscribe((update) => {
-  const [nextValue, prevValue] = update.value;
-  console.log("Counter updated", update, { nextValue, prevValue });
-  globalThis.ponzi.counterValue = nextValue?.value;
-  // document.getElementById("counter")!.innerHTML = String(globalThis.ponzi.counterValue ?? "unset");
+    const [nextValue, prevValue] = update.value;
+    console.log("Counter updated", update, { nextValue, prevValue });
+    globalThis.ponzi.counter = nextValue;
+    globalThis.ponzi.counter_update?.(prevValue, nextValue);
 });
 
 // Just for demonstration purposes: we create a global function that can be
