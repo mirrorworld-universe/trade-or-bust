@@ -23,4 +23,4 @@ jobs:
           git config --local user.email "18136225579@163.com"
           git config --local user.name "Wklili"
           git checkout -b website
-          git push -f
+          git push --set-upstream origin website -f
