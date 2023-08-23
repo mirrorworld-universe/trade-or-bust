@@ -1,0 +1,26 @@
+# This workflow will do a clean install of node dependencies, build the source code and run tests across different versions of node
+# For more information see: https://help.github.com/actions/language-and-framework-guides/using-nodejs-with-github-actions
+name: Deploy Website
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  release:
+    name: Publish
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v2
+
+      - name: Setup CI Git User & Push
+        env:
+          GITHUB_TOKEN: ${{ secrets.TOKEN }}
+        run: |
+          git config --local user.email "18136225579@163.com"
+          git config --local user.name "Wklili"
+          git checkout -b website
+          git push -f
