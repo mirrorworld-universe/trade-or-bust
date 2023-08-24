@@ -24,7 +24,7 @@ contract LobbySystem is System {
     function askStart() public{
         bytes32 player = addressToEntityKey(address(_msgSender()));
         (,uint32 state,,,) = Player.get(player);
-        require(state != 1,"Player is already start his game!");
+        require(state != 2,"Player is already start his game!");
 
         GameData memory gameData = Game.get();
         uint32 gameState = GameState.get();

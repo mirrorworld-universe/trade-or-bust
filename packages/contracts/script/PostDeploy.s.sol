@@ -29,10 +29,11 @@ contract PostDeploy is Script {
 
     GameState.set(world, 1);
 
-    uint sec = 48 * 3600;
+    uint gameSec = 48 * 3600;
+    uint startWaitSec = 1 * 60;
     uint256 gameId = block.timestamp;
-    uint256 startTime = block.timestamp + 1 * 3600;
-    uint256 endTime = startTime + sec;
+    uint256 startTime = block.timestamp + startWaitSec;
+    uint256 endTime = startTime + gameSec;
 
     Game.set(world, gameId, startTime, endTime);
   }

@@ -10,6 +10,7 @@ System.register("chunks:///_virtual/ccc_msg.ts", ['cc'], function (exports) {
       var ccc_msg = exports('ccc_msg', function ccc_msg() {});
       ccc_msg.on_player_add = "on_player_add";
       ccc_msg.on_player_update = "on_player_update";
+      ccc_msg.on_gamestate_update = "on_gamestate_update";
 
       cclegacy._RF.pop();
     }
@@ -594,8 +595,8 @@ System.register("chunks:///_virtual/JsCaller.ts", ['cc'], function (exports) {
   };
 });
 
-System.register("chunks:///_virtual/lobby-controller.ts", ['./rollupPluginModLoBabelHelpers.js', 'cc', './data_utils.ts', './component_state.ts', './lobby-playerlist.ts'], function (exports) {
-  var _applyDecoratedDescriptor, _inheritsLoose, _initializerDefineProperty, _assertThisInitialized, _asyncToGenerator, _regeneratorRuntime, cclegacy, _decorator, Label, Node, Component, log, sys, data_utils, component_state, lobby_playerlist;
+System.register("chunks:///_virtual/lobby-controller.ts", ['./rollupPluginModLoBabelHelpers.js', 'cc', './data_utils.ts', './component_state.ts', './ponzi-controller.ts', './ccc_msg.ts'], function (exports) {
+  var _applyDecoratedDescriptor, _inheritsLoose, _initializerDefineProperty, _assertThisInitialized, _asyncToGenerator, _regeneratorRuntime, cclegacy, _decorator, Label, Node, Component, log, sys, data_utils, component_state, ponzi_controller, ccc_msg;
 
   return {
     setters: [function (module) {
@@ -618,10 +619,12 @@ System.register("chunks:///_virtual/lobby-controller.ts", ['./rollupPluginModLoB
     }, function (module) {
       component_state = module.component_state;
     }, function (module) {
-      lobby_playerlist = module.lobby_playerlist;
+      ponzi_controller = module.ponzi_controller;
+    }, function (module) {
+      ccc_msg = module.ccc_msg;
     }],
     execute: function () {
-      var _dec, _dec2, _dec3, _dec4, _dec5, _class, _class2, _descriptor, _descriptor2, _descriptor3, _descriptor4;
+      var _dec, _dec2, _dec3, _dec4, _dec5, _dec6, _class, _class2, _descriptor, _descriptor2, _descriptor3, _descriptor4, _descriptor5;
 
       cclegacy._RF.push({}, "9aed4LIkbtB8b7eNgSv/Q/O", "lobby-controller", undefined);
 
@@ -634,7 +637,9 @@ System.register("chunks:///_virtual/lobby-controller.ts", ['./rollupPluginModLoB
       }), _dec4 = property({
         type: Label
       }), _dec5 = property({
-        type: lobby_playerlist
+        type: Node
+      }), _dec6 = property({
+        type: Node
       }), _dec(_class = (_class2 = /*#__PURE__*/function (_Component) {
         _inheritsLoose(lobby_controller, _Component);
 
@@ -653,7 +658,9 @@ System.register("chunks:///_virtual/lobby-controller.ts", ['./rollupPluginModLoB
 
           _initializerDefineProperty(_this, "welcomeLabel", _descriptor3, _assertThisInitialized(_this));
 
-          _initializerDefineProperty(_this, "playerList", _descriptor4, _assertThisInitialized(_this));
+          _initializerDefineProperty(_this, "lobbyNode", _descriptor4, _assertThisInitialized(_this));
+
+          _initializerDefineProperty(_this, "gameNode", _descriptor5, _assertThisInitialized(_this));
 
           _this.welcomeInited = false;
           _this.inited = false;
@@ -711,7 +718,7 @@ System.register("chunks:///_virtual/lobby-controller.ts", ['./rollupPluginModLoB
             return _regeneratorRuntime().wrap(function _callee2$(_context2) {
               while (1) switch (_context2.prev = _context2.next) {
                 case 0:
-                  players = globalThis.ponzi.players;
+                  players = window.getPlayers == null ? void 0 : window.getPlayers();
 
                   if (players) {
                     _context2.next = 3;
@@ -756,33 +763,34 @@ System.register("chunks:///_virtual/lobby-controller.ts", ['./rollupPluginModLoB
                   this.inited = true;
 
                   if (!(gameState == component_state.game_ingame)) {
-                    _context3.next = 13;
+                    _context3.next = 12;
                     break;
                   } //check self player state
 
 
-                  this.playerList.node.active = false;
                   playerEntity = globalThis.ponzi.currentPlayer;
-                  _context3.next = 9;
+                  _context3.next = 8;
                   return window.queryValue == null ? void 0 : window.queryValue(window.env.components.Player, playerEntity);
 
-                case 9:
+                case 8:
                   currentPlayer = _context3.sent;
 
                   if (currentPlayer && currentPlayer.state == component_state.player_ingame) {
                     log("init game ui now.");
+                    this.enterGameScene();
                   } else {
                     log("Game is started,ask to enter game");
+                    this.enterLobby();
                     window.askStart == null ? void 0 : window.askStart();
                   }
 
-                  _context3.next = 14;
+                  _context3.next = 13;
                   break;
 
-                case 13:
+                case 12:
                   if (gameState == component_state.game_waiting) {
                     log("Game is waiting for start,start countdown");
-                    this.playerList.node.active = true;
+                    this.enterLobby();
                     timeStamp = sys.now();
                     timeStamp = Number(timeStamp) / 1000;
                     gameStartTime = Number(gameObj.startTime);
@@ -795,6 +803,9 @@ System.register("chunks:///_virtual/lobby-controller.ts", ['./rollupPluginModLoB
                   } else {
                     log("Unknwon gameObj state:", gameState);
                   }
+
+                case 13:
+                  this.registerListeners();
 
                 case 14:
                 case "end":
@@ -809,6 +820,30 @@ System.register("chunks:///_virtual/lobby-controller.ts", ['./rollupPluginModLoB
 
           return initLobby;
         }();
+
+        _proto.registerListeners = function registerListeners() {
+          var self = this;
+          ponzi_controller.instance.on(ccc_msg.on_gamestate_update, function (obj) {
+            var oldObj = obj.oldObj;
+            var newObj = obj.newObj;
+
+            if (newObj == component_state.game_ingame) {
+              self.enterGameScene();
+            } else {
+              self.enterLobby();
+            }
+          });
+        };
+
+        _proto.enterGameScene = function enterGameScene() {
+          this.lobbyNode.active = false;
+          this.gameNode.active = true;
+        };
+
+        _proto.enterLobby = function enterLobby() {
+          this.lobbyNode.active = true;
+          this.gameNode.active = false;
+        };
 
         _proto.startCountDownAnimation = function startCountDownAnimation(endTime) {
           this.leftTime = endTime;
@@ -883,7 +918,12 @@ System.register("chunks:///_virtual/lobby-controller.ts", ['./rollupPluginModLoB
         enumerable: true,
         writable: true,
         initializer: null
-      }), _descriptor4 = _applyDecoratedDescriptor(_class2.prototype, "playerList", [_dec5], {
+      }), _descriptor4 = _applyDecoratedDescriptor(_class2.prototype, "lobbyNode", [_dec5], {
+        configurable: true,
+        enumerable: true,
+        writable: true,
+        initializer: null
+      }), _descriptor5 = _applyDecoratedDescriptor(_class2.prototype, "gameNode", [_dec6], {
         configurable: true,
         enumerable: true,
         writable: true,
@@ -1312,9 +1352,10 @@ System.register("chunks:///_virtual/ponzi-controller.ts", ['./rollupPluginModLoB
         };
 
         _proto.gameStateUpdate = function gameStateUpdate(oldObj, newObj) {
-          var result = this.compareObjects(oldObj, newObj); // 打印结果
-
-          console.log("game update", result); // ["name", "age"]
+          this.sendCCCMsg(ccc_msg.on_gamestate_update, {
+            oldObj: oldObj,
+            newObj: newObj
+          });
         } // 定义一个函数来比较两个对象，并返回一个数组，包含变动的参数名称
         ;
 
