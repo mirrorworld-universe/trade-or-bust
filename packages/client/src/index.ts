@@ -2,20 +2,35 @@ import { mount as mountDevTools } from "@latticexyz/dev-tools";
 import { setup } from "./mud/setup";
 import mudConfig from "contracts/mud.config";
 
+import { getComponentValue,getComponentValueStrict, Has, Not  } from "@latticexyz/recs";
+
 const {
   components,
-  systemCalls: { increment,joinGame },
+  systemCalls: { increment,joinGame,askStart },
   network,
 } = await setup();
 
 globalThis.ponzi = {
   counter:0,
+  currentPlayer:network.playerEntity,
+  gameState:null,
   game:null,
   gameMap:null,
-  players:null,
+  players:null
+}
+
+globalThis.env = {
+  components:components
 }
 
 // Components expose a stream that triggers when the component is updated.
+components.GameState.update$.subscribe((update) => {
+  const [nextValue, prevValue] = update.value;
+  console.log("GameState updated", update, { nextValue, prevValue });
+  globalThis.ponzi.gameState = nextValue.value;
+  globalThis.ponzi.gamestate_update?.(prevValue, nextValue);
+});
+
 components.Counter.update$.subscribe((update) => {
     const [nextValue, prevValue] = update.value;
     console.log("Counter updated", update, { nextValue, prevValue });
@@ -39,23 +54,14 @@ components.Player.update$.subscribe((update)=>{
 
 
 //get functions
-(window as any).playerEntity = () => {
-  console.log("get player entity:", network.playerEntity);
-  return network.playerEntity;
-};
-(window as any).players = () => {
-  let data = components.Player.values;
-  console.log("get allPlayers:", data);
-  return data;
-};
-(window as any).game = () => {
-  let data = components.Game.values;
-  console.log("get game:", data);
-  return data;
-};
-(window as any).gameMap = () => {
-  let data = components.GameMap.values;
-  console.log("get gameMap:", data);
+(window as any).getPlayers = () => {
+  return components.Player.values;
+}
+
+//Query
+(window as any).queryValue = async (component, entity) => {
+  const data = getComponentValueStrict(component, entity)
+  console.log("getValueByComAndEntity:", data);
   return data;
 };
 
@@ -66,6 +72,9 @@ components.Player.update$.subscribe((update)=>{
 };
 (window as any).joinGame = async () => {
   console.log("joinGame:", await joinGame());
+};
+(window as any).askStart = async () => {
+  console.log("askStart:", await askStart());
 };
 // https://vitejs.dev/guide/env-and-mode.html
 if (import.meta.env.DEV) {

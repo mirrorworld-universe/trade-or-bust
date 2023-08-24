@@ -21,7 +21,6 @@ bytes32 constant _tableId = bytes32(abi.encodePacked(bytes16(""), bytes16("Game"
 bytes32 constant GameTableId = _tableId;
 
 struct GameData {
-  uint32 state;
   uint256 gameId;
   uint256 startTime;
   uint256 endTime;
@@ -37,11 +36,10 @@ library Game {
 
   /** Get the table's value schema */
   function getValueSchema() internal pure returns (Schema) {
-    SchemaType[] memory _schema = new SchemaType[](4);
-    _schema[0] = SchemaType.UINT32;
+    SchemaType[] memory _schema = new SchemaType[](3);
+    _schema[0] = SchemaType.UINT256;
     _schema[1] = SchemaType.UINT256;
     _schema[2] = SchemaType.UINT256;
-    _schema[3] = SchemaType.UINT256;
 
     return SchemaLib.encode(_schema);
   }
@@ -53,11 +51,10 @@ library Game {
 
   /** Get the table's field names */
   function getFieldNames() internal pure returns (string[] memory fieldNames) {
-    fieldNames = new string[](4);
-    fieldNames[0] = "state";
-    fieldNames[1] = "gameId";
-    fieldNames[2] = "startTime";
-    fieldNames[3] = "endTime";
+    fieldNames = new string[](3);
+    fieldNames[0] = "gameId";
+    fieldNames[1] = "startTime";
+    fieldNames[2] = "endTime";
   }
 
   /** Register the table's key schema, value schema, key names and value names */
@@ -70,41 +67,11 @@ library Game {
     _store.registerTable(_tableId, getKeySchema(), getValueSchema(), getKeyNames(), getFieldNames());
   }
 
-  /** Get state */
-  function getState() internal view returns (uint32 state) {
-    bytes32[] memory _keyTuple = new bytes32[](0);
-
-    bytes memory _blob = StoreSwitch.getField(_tableId, _keyTuple, 0, getValueSchema());
-    return (uint32(Bytes.slice4(_blob, 0)));
-  }
-
-  /** Get state (using the specified store) */
-  function getState(IStore _store) internal view returns (uint32 state) {
-    bytes32[] memory _keyTuple = new bytes32[](0);
-
-    bytes memory _blob = _store.getField(_tableId, _keyTuple, 0, getValueSchema());
-    return (uint32(Bytes.slice4(_blob, 0)));
-  }
-
-  /** Set state */
-  function setState(uint32 state) internal {
-    bytes32[] memory _keyTuple = new bytes32[](0);
-
-    StoreSwitch.setField(_tableId, _keyTuple, 0, abi.encodePacked((state)), getValueSchema());
-  }
-
-  /** Set state (using the specified store) */
-  function setState(IStore _store, uint32 state) internal {
-    bytes32[] memory _keyTuple = new bytes32[](0);
-
-    _store.setField(_tableId, _keyTuple, 0, abi.encodePacked((state)), getValueSchema());
-  }
-
   /** Get gameId */
   function getGameId() internal view returns (uint256 gameId) {
     bytes32[] memory _keyTuple = new bytes32[](0);
 
-    bytes memory _blob = StoreSwitch.getField(_tableId, _keyTuple, 1, getValueSchema());
+    bytes memory _blob = StoreSwitch.getField(_tableId, _keyTuple, 0, getValueSchema());
     return (uint256(Bytes.slice32(_blob, 0)));
   }
 
@@ -112,7 +79,7 @@ library Game {
   function getGameId(IStore _store) internal view returns (uint256 gameId) {
     bytes32[] memory _keyTuple = new bytes32[](0);
 
-    bytes memory _blob = _store.getField(_tableId, _keyTuple, 1, getValueSchema());
+    bytes memory _blob = _store.getField(_tableId, _keyTuple, 0, getValueSchema());
     return (uint256(Bytes.slice32(_blob, 0)));
   }
 
@@ -120,21 +87,21 @@ library Game {
   function setGameId(uint256 gameId) internal {
     bytes32[] memory _keyTuple = new bytes32[](0);
 
-    StoreSwitch.setField(_tableId, _keyTuple, 1, abi.encodePacked((gameId)), getValueSchema());
+    StoreSwitch.setField(_tableId, _keyTuple, 0, abi.encodePacked((gameId)), getValueSchema());
   }
 
   /** Set gameId (using the specified store) */
   function setGameId(IStore _store, uint256 gameId) internal {
     bytes32[] memory _keyTuple = new bytes32[](0);
 
-    _store.setField(_tableId, _keyTuple, 1, abi.encodePacked((gameId)), getValueSchema());
+    _store.setField(_tableId, _keyTuple, 0, abi.encodePacked((gameId)), getValueSchema());
   }
 
   /** Get startTime */
   function getStartTime() internal view returns (uint256 startTime) {
     bytes32[] memory _keyTuple = new bytes32[](0);
 
-    bytes memory _blob = StoreSwitch.getField(_tableId, _keyTuple, 2, getValueSchema());
+    bytes memory _blob = StoreSwitch.getField(_tableId, _keyTuple, 1, getValueSchema());
     return (uint256(Bytes.slice32(_blob, 0)));
   }
 
@@ -142,7 +109,7 @@ library Game {
   function getStartTime(IStore _store) internal view returns (uint256 startTime) {
     bytes32[] memory _keyTuple = new bytes32[](0);
 
-    bytes memory _blob = _store.getField(_tableId, _keyTuple, 2, getValueSchema());
+    bytes memory _blob = _store.getField(_tableId, _keyTuple, 1, getValueSchema());
     return (uint256(Bytes.slice32(_blob, 0)));
   }
 
@@ -150,21 +117,21 @@ library Game {
   function setStartTime(uint256 startTime) internal {
     bytes32[] memory _keyTuple = new bytes32[](0);
 
-    StoreSwitch.setField(_tableId, _keyTuple, 2, abi.encodePacked((startTime)), getValueSchema());
+    StoreSwitch.setField(_tableId, _keyTuple, 1, abi.encodePacked((startTime)), getValueSchema());
   }
 
   /** Set startTime (using the specified store) */
   function setStartTime(IStore _store, uint256 startTime) internal {
     bytes32[] memory _keyTuple = new bytes32[](0);
 
-    _store.setField(_tableId, _keyTuple, 2, abi.encodePacked((startTime)), getValueSchema());
+    _store.setField(_tableId, _keyTuple, 1, abi.encodePacked((startTime)), getValueSchema());
   }
 
   /** Get endTime */
   function getEndTime() internal view returns (uint256 endTime) {
     bytes32[] memory _keyTuple = new bytes32[](0);
 
-    bytes memory _blob = StoreSwitch.getField(_tableId, _keyTuple, 3, getValueSchema());
+    bytes memory _blob = StoreSwitch.getField(_tableId, _keyTuple, 2, getValueSchema());
     return (uint256(Bytes.slice32(_blob, 0)));
   }
 
@@ -172,7 +139,7 @@ library Game {
   function getEndTime(IStore _store) internal view returns (uint256 endTime) {
     bytes32[] memory _keyTuple = new bytes32[](0);
 
-    bytes memory _blob = _store.getField(_tableId, _keyTuple, 3, getValueSchema());
+    bytes memory _blob = _store.getField(_tableId, _keyTuple, 2, getValueSchema());
     return (uint256(Bytes.slice32(_blob, 0)));
   }
 
@@ -180,14 +147,14 @@ library Game {
   function setEndTime(uint256 endTime) internal {
     bytes32[] memory _keyTuple = new bytes32[](0);
 
-    StoreSwitch.setField(_tableId, _keyTuple, 3, abi.encodePacked((endTime)), getValueSchema());
+    StoreSwitch.setField(_tableId, _keyTuple, 2, abi.encodePacked((endTime)), getValueSchema());
   }
 
   /** Set endTime (using the specified store) */
   function setEndTime(IStore _store, uint256 endTime) internal {
     bytes32[] memory _keyTuple = new bytes32[](0);
 
-    _store.setField(_tableId, _keyTuple, 3, abi.encodePacked((endTime)), getValueSchema());
+    _store.setField(_tableId, _keyTuple, 2, abi.encodePacked((endTime)), getValueSchema());
   }
 
   /** Get the full data */
@@ -207,8 +174,8 @@ library Game {
   }
 
   /** Set the full data using individual values */
-  function set(uint32 state, uint256 gameId, uint256 startTime, uint256 endTime) internal {
-    bytes memory _data = encode(state, gameId, startTime, endTime);
+  function set(uint256 gameId, uint256 startTime, uint256 endTime) internal {
+    bytes memory _data = encode(gameId, startTime, endTime);
 
     bytes32[] memory _keyTuple = new bytes32[](0);
 
@@ -216,8 +183,8 @@ library Game {
   }
 
   /** Set the full data using individual values (using the specified store) */
-  function set(IStore _store, uint32 state, uint256 gameId, uint256 startTime, uint256 endTime) internal {
-    bytes memory _data = encode(state, gameId, startTime, endTime);
+  function set(IStore _store, uint256 gameId, uint256 startTime, uint256 endTime) internal {
+    bytes memory _data = encode(gameId, startTime, endTime);
 
     bytes32[] memory _keyTuple = new bytes32[](0);
 
@@ -226,33 +193,26 @@ library Game {
 
   /** Set the full data using the data struct */
   function set(GameData memory _table) internal {
-    set(_table.state, _table.gameId, _table.startTime, _table.endTime);
+    set(_table.gameId, _table.startTime, _table.endTime);
   }
 
   /** Set the full data using the data struct (using the specified store) */
   function set(IStore _store, GameData memory _table) internal {
-    set(_store, _table.state, _table.gameId, _table.startTime, _table.endTime);
+    set(_store, _table.gameId, _table.startTime, _table.endTime);
   }
 
   /** Decode the tightly packed blob using this table's schema */
   function decode(bytes memory _blob) internal pure returns (GameData memory _table) {
-    _table.state = (uint32(Bytes.slice4(_blob, 0)));
+    _table.gameId = (uint256(Bytes.slice32(_blob, 0)));
 
-    _table.gameId = (uint256(Bytes.slice32(_blob, 4)));
+    _table.startTime = (uint256(Bytes.slice32(_blob, 32)));
 
-    _table.startTime = (uint256(Bytes.slice32(_blob, 36)));
-
-    _table.endTime = (uint256(Bytes.slice32(_blob, 68)));
+    _table.endTime = (uint256(Bytes.slice32(_blob, 64)));
   }
 
   /** Tightly pack full data using this table's schema */
-  function encode(
-    uint32 state,
-    uint256 gameId,
-    uint256 startTime,
-    uint256 endTime
-  ) internal pure returns (bytes memory) {
-    return abi.encodePacked(state, gameId, startTime, endTime);
+  function encode(uint256 gameId, uint256 startTime, uint256 endTime) internal pure returns (bytes memory) {
+    return abi.encodePacked(gameId, startTime, endTime);
   }
 
   /** Encode keys as a bytes32 array using this table's schema */

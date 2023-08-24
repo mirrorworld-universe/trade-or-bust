@@ -1,4 +1,4 @@
-import { getComponentValue, Has, Not  } from "@latticexyz/recs";
+import { getComponentValue,getComponentValueStrict, Has, Not  } from "@latticexyz/recs";
 import { ClientComponents } from "./createClientComponents";
 import { SetupNetworkResult } from "./setupNetwork";
 import { singletonEntity } from "@latticexyz/store-sync/recs";
@@ -20,9 +20,15 @@ export function createSystemCalls(
     await waitForTransaction(tx);
     return getComponentValue(Counter, singletonEntity);
   };
+  const askStart = async () => {
+    const tx = await worldContract.write.askStart();
+    await waitForTransaction(tx);
+    return getComponentValue(Counter, singletonEntity);
+  };
 
   return {
     increment,
-    joinGame
+    joinGame,
+    askStart
   };
 }
