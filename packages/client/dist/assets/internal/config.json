@@ -1,0 +1,145 @@
+{
+    "importBase": "import",
+    "nativeBase": "native",
+    "name": "internal",
+    "deps": [],
+    "uuids": [
+        "1c02ae6f-4492-4915-b8f8-7492a3b1e4cd",
+        "50f4348b-c883-4e2f-8f11-ce233b859fa1",
+        "60f7195c-ec2a-45eb-ba94-8955f60e81d0",
+        "810e96e4-e456-4468-9b59-f4e8f39732c0",
+        "871c3b6c-7379-419d-bda3-794b239ab90d",
+        "8bbdbcdd-5cd4-4100-b6d5-b7c9625b6107",
+        "970b0598-bcb0-4714-91fb-2e81440dccd8",
+        "a3cd009f-0ab0-420d-9278-b9fdab939bbc",
+        "b5d6115f-0370-4d7c-aad3-c194cc71cf98",
+        "bcd64cc6-2dd9-43f6-abbe-66318d332032",
+        "c27215d8-6835-4b68-bfbb-bdeac6100c04",
+        "d930590d-bb92-4cc8-8bd1-23cd027f9edf",
+        "dd3a144d-ab7f-41f0-82b8-2e43a090d496",
+        "e9aa9a3e-5b2b-4ac7-a2c7-073de2b2b24f",
+        "efe8e2a3-eace-427b-b4f1-cb8a937ec77d",
+        "f0416e68-0200-4b77-a926-4f9d16e494da",
+        "f92806d7-1768-443f-afe8-12bcde84d0f0",
+        "fda095cb-831d-4601-ad94-846013963de8"
+    ],
+    "paths": {
+        "60f7195c-ec2a-45eb-ba94-8955f60e81d0": [
+            "db:/internal/effects/for2d/builtin-sprite",
+            "cc.EffectAsset"
+        ],
+        "1c02ae6f-4492-4915-b8f8-7492a3b1e4cd": [
+            "db:/internal/effects/internal/builtin-graphics",
+            "cc.EffectAsset"
+        ],
+        "810e96e4-e456-4468-9b59-f4e8f39732c0": [
+            "db:/internal/effects/internal/builtin-clear-stencil",
+            "cc.EffectAsset"
+        ],
+        "efe8e2a3-eace-427b-b4f1-cb8a937ec77d": [
+            "db:/internal/default_materials/ui-sprite-gray-material",
+            "cc.Material"
+        ],
+        "e9aa9a3e-5b2b-4ac7-a2c7-073de2b2b24f": [
+            "db:/internal/default_materials/ui-base-material",
+            "cc.Material"
+        ],
+        "8bbdbcdd-5cd4-4100-b6d5-b7c9625b6107": [
+            "db:/internal/default_materials/default-clear-stencil",
+            "cc.Material"
+        ],
+        "50f4348b-c883-4e2f-8f11-ce233b859fa1": [
+            "db:/internal/default_materials/ui-alpha-test-material",
+            "cc.Material"
+        ],
+        "fda095cb-831d-4601-ad94-846013963de8": [
+            "db:/internal/default_materials/ui-sprite-material",
+            "cc.Material"
+        ],
+        "f92806d7-1768-443f-afe8-12bcde84d0f0": [
+            "db:/internal/default_materials/ui-sprite-alpha-sep-material",
+            "cc.Material"
+        ],
+        "dd3a144d-ab7f-41f0-82b8-2e43a090d496": [
+            "db:/internal/default_materials/ui-sprite-gray-alpha-sep-material",
+            "cc.Material"
+        ],
+        "f0416e68-0200-4b77-a926-4f9d16e494da": [
+            "db:/internal/default_materials/ui-graphics-material",
+            "cc.Material"
+        ],
+        "970b0598-bcb0-4714-91fb-2e81440dccd8": [
+            "db:/internal/effects/util/splash-screen",
+            "cc.EffectAsset"
+        ],
+        "bcd64cc6-2dd9-43f6-abbe-66318d332032": [
+            "db:/internal/default_materials/missing-effect-material",
+            "cc.Material"
+        ],
+        "d930590d-bb92-4cc8-8bd1-23cd027f9edf": [
+            "db:/internal/default_materials/missing-material",
+            "cc.Material"
+        ],
+        "a3cd009f-0ab0-420d-9278-b9fdab939bbc": [
+            "db:/internal/effects/builtin-unlit",
+            "cc.EffectAsset"
+        ],
+        "c27215d8-6835-4b68-bfbb-bdeac6100c04": [
+            "db:/internal/effects/for2d/builtin-spine",
+            "cc.EffectAsset"
+        ],
+        "b5d6115f-0370-4d7c-aad3-c194cc71cf98": [
+            "db:/internal/default_materials/default-spine-material",
+            "cc.Material"
+        ],
+        "871c3b6c-7379-419d-bda3-794b239ab90d": [
+            "db:/internal/effects/util/profiler",
+            "cc.EffectAsset"
+        ]
+    },
+    "scenes": {},
+    "packs": {},
+    "versions": {
+        "import": [],
+        "native": []
+    },
+    "redirect": [],
+    "debug": true,
+    "extensionMap": {},
+    "hasPreloadScript": true,
+    "dependencyRelationships": {
+        "50f4348b-c883-4e2f-8f11-ce233b859fa1": [
+            "60f7195c-ec2a-45eb-ba94-8955f60e81d0"
+        ],
+        "8bbdbcdd-5cd4-4100-b6d5-b7c9625b6107": [
+            "810e96e4-e456-4468-9b59-f4e8f39732c0"
+        ],
+        "b5d6115f-0370-4d7c-aad3-c194cc71cf98": [
+            "c27215d8-6835-4b68-bfbb-bdeac6100c04"
+        ],
+        "bcd64cc6-2dd9-43f6-abbe-66318d332032": [
+            "a3cd009f-0ab0-420d-9278-b9fdab939bbc"
+        ],
+        "d930590d-bb92-4cc8-8bd1-23cd027f9edf": [
+            "a3cd009f-0ab0-420d-9278-b9fdab939bbc"
+        ],
+        "dd3a144d-ab7f-41f0-82b8-2e43a090d496": [
+            "60f7195c-ec2a-45eb-ba94-8955f60e81d0"
+        ],
+        "e9aa9a3e-5b2b-4ac7-a2c7-073de2b2b24f": [
+            "60f7195c-ec2a-45eb-ba94-8955f60e81d0"
+        ],
+        "efe8e2a3-eace-427b-b4f1-cb8a937ec77d": [
+            "60f7195c-ec2a-45eb-ba94-8955f60e81d0"
+        ],
+        "f0416e68-0200-4b77-a926-4f9d16e494da": [
+            "1c02ae6f-4492-4915-b8f8-7492a3b1e4cd"
+        ],
+        "f92806d7-1768-443f-afe8-12bcde84d0f0": [
+            "60f7195c-ec2a-45eb-ba94-8955f60e81d0"
+        ],
+        "fda095cb-831d-4601-ad94-846013963de8": [
+            "60f7195c-ec2a-45eb-ba94-8955f60e81d0"
+        ]
+    }
+}
