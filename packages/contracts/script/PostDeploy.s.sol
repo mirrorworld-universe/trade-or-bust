@@ -22,7 +22,7 @@ contract PostDeploy is Script {
 
     initGame(world);
 
-    // initGameMap(world);
+    initGameMap(world);
 
     vm.stopBroadcast();
   }

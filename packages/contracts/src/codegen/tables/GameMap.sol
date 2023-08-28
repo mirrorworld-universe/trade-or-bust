@@ -23,7 +23,7 @@ bytes32 constant GameMapTableId = _tableId;
 struct GameMapData {
   uint256 width;
   uint256 height;
-  bytes map;
+  bytes mapArray;
 }
 
 library GameMap {
@@ -54,7 +54,7 @@ library GameMap {
     fieldNames = new string[](3);
     fieldNames[0] = "width";
     fieldNames[1] = "height";
-    fieldNames[2] = "map";
+    fieldNames[2] = "mapArray";
   }
 
   /** Register the table's key schema, value schema, key names and value names */
@@ -127,38 +127,38 @@ library GameMap {
     _store.setField(_tableId, _keyTuple, 1, abi.encodePacked((height)), getValueSchema());
   }
 
-  /** Get map */
-  function getMap() internal view returns (bytes memory map) {
+  /** Get mapArray */
+  function getMapArray() internal view returns (bytes memory mapArray) {
     bytes32[] memory _keyTuple = new bytes32[](0);
 
     bytes memory _blob = StoreSwitch.getField(_tableId, _keyTuple, 2, getValueSchema());
     return (bytes(_blob));
   }
 
-  /** Get map (using the specified store) */
-  function getMap(IStore _store) internal view returns (bytes memory map) {
+  /** Get mapArray (using the specified store) */
+  function getMapArray(IStore _store) internal view returns (bytes memory mapArray) {
     bytes32[] memory _keyTuple = new bytes32[](0);
 
     bytes memory _blob = _store.getField(_tableId, _keyTuple, 2, getValueSchema());
     return (bytes(_blob));
   }
 
-  /** Set map */
-  function setMap(bytes memory map) internal {
+  /** Set mapArray */
+  function setMapArray(bytes memory mapArray) internal {
     bytes32[] memory _keyTuple = new bytes32[](0);
 
-    StoreSwitch.setField(_tableId, _keyTuple, 2, bytes((map)), getValueSchema());
+    StoreSwitch.setField(_tableId, _keyTuple, 2, bytes((mapArray)), getValueSchema());
   }
 
-  /** Set map (using the specified store) */
-  function setMap(IStore _store, bytes memory map) internal {
+  /** Set mapArray (using the specified store) */
+  function setMapArray(IStore _store, bytes memory mapArray) internal {
     bytes32[] memory _keyTuple = new bytes32[](0);
 
-    _store.setField(_tableId, _keyTuple, 2, bytes((map)), getValueSchema());
+    _store.setField(_tableId, _keyTuple, 2, bytes((mapArray)), getValueSchema());
   }
 
-  /** Get the length of map */
-  function lengthMap() internal view returns (uint256) {
+  /** Get the length of mapArray */
+  function lengthMapArray() internal view returns (uint256) {
     bytes32[] memory _keyTuple = new bytes32[](0);
 
     uint256 _byteLength = StoreSwitch.getFieldLength(_tableId, _keyTuple, 2, getValueSchema());
@@ -167,8 +167,8 @@ library GameMap {
     }
   }
 
-  /** Get the length of map (using the specified store) */
-  function lengthMap(IStore _store) internal view returns (uint256) {
+  /** Get the length of mapArray (using the specified store) */
+  function lengthMapArray(IStore _store) internal view returns (uint256) {
     bytes32[] memory _keyTuple = new bytes32[](0);
 
     uint256 _byteLength = _store.getFieldLength(_tableId, _keyTuple, 2, getValueSchema());
@@ -178,10 +178,10 @@ library GameMap {
   }
 
   /**
-   * Get an item of map
+   * Get an item of mapArray
    * (unchecked, returns invalid data if index overflows)
    */
-  function getItemMap(uint256 _index) internal view returns (bytes memory) {
+  function getItemMapArray(uint256 _index) internal view returns (bytes memory) {
     bytes32[] memory _keyTuple = new bytes32[](0);
 
     unchecked {
@@ -198,10 +198,10 @@ library GameMap {
   }
 
   /**
-   * Get an item of map (using the specified store)
+   * Get an item of mapArray (using the specified store)
    * (unchecked, returns invalid data if index overflows)
    */
-  function getItemMap(IStore _store, uint256 _index) internal view returns (bytes memory) {
+  function getItemMapArray(IStore _store, uint256 _index) internal view returns (bytes memory) {
     bytes32[] memory _keyTuple = new bytes32[](0);
 
     unchecked {
@@ -210,39 +210,39 @@ library GameMap {
     }
   }
 
-  /** Push a slice to map */
-  function pushMap(bytes memory _slice) internal {
+  /** Push a slice to mapArray */
+  function pushMapArray(bytes memory _slice) internal {
     bytes32[] memory _keyTuple = new bytes32[](0);
 
     StoreSwitch.pushToField(_tableId, _keyTuple, 2, bytes((_slice)), getValueSchema());
   }
 
-  /** Push a slice to map (using the specified store) */
-  function pushMap(IStore _store, bytes memory _slice) internal {
+  /** Push a slice to mapArray (using the specified store) */
+  function pushMapArray(IStore _store, bytes memory _slice) internal {
     bytes32[] memory _keyTuple = new bytes32[](0);
 
     _store.pushToField(_tableId, _keyTuple, 2, bytes((_slice)), getValueSchema());
   }
 
-  /** Pop a slice from map */
-  function popMap() internal {
+  /** Pop a slice from mapArray */
+  function popMapArray() internal {
     bytes32[] memory _keyTuple = new bytes32[](0);
 
     StoreSwitch.popFromField(_tableId, _keyTuple, 2, 1, getValueSchema());
   }
 
-  /** Pop a slice from map (using the specified store) */
-  function popMap(IStore _store) internal {
+  /** Pop a slice from mapArray (using the specified store) */
+  function popMapArray(IStore _store) internal {
     bytes32[] memory _keyTuple = new bytes32[](0);
 
     _store.popFromField(_tableId, _keyTuple, 2, 1, getValueSchema());
   }
 
   /**
-   * Update a slice of map at `_index`
+   * Update a slice of mapArray at `_index`
    * (checked only to prevent modifying other tables; can corrupt own data if index overflows)
    */
-  function updateMap(uint256 _index, bytes memory _slice) internal {
+  function updateMapArray(uint256 _index, bytes memory _slice) internal {
     bytes32[] memory _keyTuple = new bytes32[](0);
 
     unchecked {
@@ -251,10 +251,10 @@ library GameMap {
   }
 
   /**
-   * Update a slice of map (using the specified store) at `_index`
+   * Update a slice of mapArray (using the specified store) at `_index`
    * (checked only to prevent modifying other tables; can corrupt own data if index overflows)
    */
-  function updateMap(IStore _store, uint256 _index, bytes memory _slice) internal {
+  function updateMapArray(IStore _store, uint256 _index, bytes memory _slice) internal {
     bytes32[] memory _keyTuple = new bytes32[](0);
 
     unchecked {
@@ -279,8 +279,8 @@ library GameMap {
   }
 
   /** Set the full data using individual values */
-  function set(uint256 width, uint256 height, bytes memory map) internal {
-    bytes memory _data = encode(width, height, map);
+  function set(uint256 width, uint256 height, bytes memory mapArray) internal {
+    bytes memory _data = encode(width, height, mapArray);
 
     bytes32[] memory _keyTuple = new bytes32[](0);
 
@@ -288,8 +288,8 @@ library GameMap {
   }
 
   /** Set the full data using individual values (using the specified store) */
-  function set(IStore _store, uint256 width, uint256 height, bytes memory map) internal {
-    bytes memory _data = encode(width, height, map);
+  function set(IStore _store, uint256 width, uint256 height, bytes memory mapArray) internal {
+    bytes memory _data = encode(width, height, mapArray);
 
     bytes32[] memory _keyTuple = new bytes32[](0);
 
@@ -298,12 +298,12 @@ library GameMap {
 
   /** Set the full data using the data struct */
   function set(GameMapData memory _table) internal {
-    set(_table.width, _table.height, _table.map);
+    set(_table.width, _table.height, _table.mapArray);
   }
 
   /** Set the full data using the data struct (using the specified store) */
   function set(IStore _store, GameMapData memory _table) internal {
-    set(_store, _table.width, _table.height, _table.map);
+    set(_store, _table.width, _table.height, _table.mapArray);
   }
 
   /**
@@ -326,19 +326,19 @@ library GameMap {
       unchecked {
         _end = 96 + _encodedLengths.atIndex(0);
       }
-      _table.map = (bytes(SliceLib.getSubslice(_blob, _start, _end).toBytes()));
+      _table.mapArray = (bytes(SliceLib.getSubslice(_blob, _start, _end).toBytes()));
     }
   }
 
   /** Tightly pack full data using this table's schema */
-  function encode(uint256 width, uint256 height, bytes memory map) internal pure returns (bytes memory) {
+  function encode(uint256 width, uint256 height, bytes memory mapArray) internal pure returns (bytes memory) {
     PackedCounter _encodedLengths;
     // Lengths are effectively checked during copy by 2**40 bytes exceeding gas limits
     unchecked {
-      _encodedLengths = PackedCounterLib.pack(bytes(map).length);
+      _encodedLengths = PackedCounterLib.pack(bytes(mapArray).length);
     }
 
-    return abi.encodePacked(width, height, _encodedLengths.unwrap(), bytes((map)));
+    return abi.encodePacked(width, height, _encodedLengths.unwrap(), bytes((mapArray)));
   }
 
   /** Encode keys as a bytes32 array using this table's schema */

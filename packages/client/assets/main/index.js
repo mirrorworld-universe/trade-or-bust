@@ -11,6 +11,7 @@ System.register("chunks:///_virtual/ccc_msg.ts", ['cc'], function (exports) {
       ccc_msg.on_player_add = "on_player_add";
       ccc_msg.on_player_update = "on_player_update";
       ccc_msg.on_gamestate_update = "on_gamestate_update";
+      ccc_msg.on_gamemap_update = "on_gamemap_update";
       ccc_msg.on_isplayer_update = "on_isplayer_update";
       ccc_msg.network_block_ui = "network_block_ui";
 
@@ -1039,7 +1040,7 @@ System.register("chunks:///_virtual/lobby-controller.ts", ['./rollupPluginModLoB
                       this.btnTriggerGame.active = false;
                     } else {
                       log("ingame+notPlayer");
-                      this.contentLabel.string = "Game is started, just enter game!";
+                      this.contentLabel.string = "Game is started, just waiting for entering game!";
                       this.btnJoinGame.active = true;
                       this.btnTriggerGame.active = false;
                     }
@@ -1502,10 +1503,310 @@ System.register("chunks:///_virtual/lobby-playerlist.ts", ['./rollupPluginModLoB
   };
 });
 
-System.register("chunks:///_virtual/main", ['./debug-view-runtime-control.ts', './Singleton.ts', './lobby-controller.ts', './counter-label.ts', './ccc_msg.ts', './component_state.ts', './GameData.ts', './JsCaller.ts', './MUDListener.ts', './PlayerData.ts', './data_center.ts', './ponzi-controller.ts', './ponzi-model.ts', './FakeMessageCenter.ts', './test.ts', './data_utils.ts', './object_utils.ts', './string_utils.ts', './lobby-playerlist-model.ts', './lobby-playerlist.ts', './popupui_manager.ts'], function () {
+System.register("chunks:///_virtual/main", ['./debug-view-runtime-control.ts', './Singleton.ts', './lobby-controller.ts', './counter-label.ts', './ccc_msg.ts', './component_state.ts', './GameData.ts', './JsCaller.ts', './MUDListener.ts', './PlayerData.ts', './data_center.ts', './ponzi-controller.ts', './ponzi-model.ts', './FakeMessageCenter.ts', './test.ts', './data_utils.ts', './object_utils.ts', './string_utils.ts', './lobby-playerlist-model.ts', './lobby-playerlist.ts', './map-controller.ts', './mapblock.ts', './popupui_manager.ts'], function () {
   return {
-    setters: [null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null],
+    setters: [null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null],
     execute: function () {}
+  };
+});
+
+System.register("chunks:///_virtual/map-controller.ts", ['./rollupPluginModLoBabelHelpers.js', 'cc', './ponzi-controller.ts', './ccc_msg.ts', './mapblock.ts'], function (exports) {
+  var _applyDecoratedDescriptor, _inheritsLoose, _initializerDefineProperty, _assertThisInitialized, _extends, cclegacy, _decorator, Node, log, instantiate, Vec3, Component, ponzi_controller, ccc_msg, mapblock;
+
+  return {
+    setters: [function (module) {
+      _applyDecoratedDescriptor = module.applyDecoratedDescriptor;
+      _inheritsLoose = module.inheritsLoose;
+      _initializerDefineProperty = module.initializerDefineProperty;
+      _assertThisInitialized = module.assertThisInitialized;
+      _extends = module.extends;
+    }, function (module) {
+      cclegacy = module.cclegacy;
+      _decorator = module._decorator;
+      Node = module.Node;
+      log = module.log;
+      instantiate = module.instantiate;
+      Vec3 = module.Vec3;
+      Component = module.Component;
+    }, function (module) {
+      ponzi_controller = module.ponzi_controller;
+    }, function (module) {
+      ccc_msg = module.ccc_msg;
+    }, function (module) {
+      mapblock = module.mapblock;
+    }],
+    execute: function () {
+      var _dec, _dec2, _dec3, _dec4, _class, _class2, _descriptor, _descriptor2, _descriptor3;
+
+      cclegacy._RF.push({}, "f3250iGpAVPmqBmTcrOIPDJ", "map-controller", undefined);
+
+      var ccclass = _decorator.ccclass,
+          property = _decorator.property;
+      var map_controller = exports('map_controller', (_dec = ccclass('map_controller'), _dec2 = property({
+        type: Node
+      }), _dec3 = property({
+        type: Node
+      }), _dec4 = property({
+        type: Node
+      }), _dec(_class = (_class2 = /*#__PURE__*/function (_Component) {
+        _inheritsLoose(map_controller, _Component);
+
+        function map_controller() {
+          var _this;
+
+          for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
+            args[_key] = arguments[_key];
+          }
+
+          _this = _Component.call.apply(_Component, [this].concat(args)) || this;
+
+          _initializerDefineProperty(_this, "mapParent", _descriptor, _assertThisInitialized(_this));
+
+          _initializerDefineProperty(_this, "mapBlockModel", _descriptor2, _assertThisInitialized(_this));
+
+          _initializerDefineProperty(_this, "mapItemModel", _descriptor3, _assertThisInitialized(_this));
+
+          _this.terrainArray = void 0;
+          _this.inited = false;
+          return _this;
+        }
+
+        var _proto = map_controller.prototype;
+
+        _proto.start = function start() {
+          this.mapBlockModel.active = false;
+          this.mapItemModel.active = false;
+        };
+
+        _proto.update = function update(deltaTime) {
+          if (!this.inited) this.init();
+        };
+
+        _proto.init = function init() {
+          var _globalThis$ponzi$gam;
+
+          var map = (_globalThis$ponzi$gam = globalThis.ponzi.gameMap) == null ? void 0 : _globalThis$ponzi$gam.mapArray;
+          if (!map) return;
+          this.inited = true;
+          this.updateMap();
+        };
+
+        _proto.registerListeners = function registerListeners() {
+          var self = this;
+          ponzi_controller.instance.on(ccc_msg.on_gamemap_update, function (changeResult) {
+            var _globalThis$ponzi$gam2, _globalThis$ponzi$gam3;
+
+            if (!changeResult) return;
+            var newMap = changeResult['mapArray'];
+            var width = (_globalThis$ponzi$gam2 = globalThis.ponzi.gameMap) == null ? void 0 : _globalThis$ponzi$gam2.width;
+            var height = (_globalThis$ponzi$gam3 = globalThis.ponzi.gameMap) == null ? void 0 : _globalThis$ponzi$gam3.height;
+            self.drawMap(width, height, newMap);
+          });
+        };
+
+        _proto.updateMap = function updateMap() {
+          var _globalThis$ponzi$gam4, _globalThis$ponzi$gam5, _globalThis$ponzi$gam6;
+
+          var width = Number((_globalThis$ponzi$gam4 = globalThis.ponzi.gameMap) == null ? void 0 : _globalThis$ponzi$gam4.width);
+          var height = Number((_globalThis$ponzi$gam5 = globalThis.ponzi.gameMap) == null ? void 0 : _globalThis$ponzi$gam5.height);
+          var map = (_globalThis$ponzi$gam6 = globalThis.ponzi.gameMap) == null ? void 0 : _globalThis$ponzi$gam6.mapArray;
+
+          if (!map) {
+            log("No map data!!!!!!");
+            return;
+          }
+
+          this.drawMap(width, height, map);
+        } // private 
+        ;
+
+        _proto.drawItem = function drawItem() {};
+
+        _proto.drawMap = function drawMap(width, height, newMap) {
+          var _window$mudutils;
+
+          if (!newMap) {
+            log("No map data to draw!");
+            return;
+          }
+
+          this.terrainArray = (_window$mudutils = window.mudutils) == null ? void 0 : _window$mudutils.hexToArray(width, height, newMap); // 示例使用
+
+          var centerX = width / 2; // 中心点的 X 坐标
+
+          var centerY = height / 2; // 中心点的 Y 坐标
+
+          var hexMap = this.generateHexMap(100, 78);
+          var coordinationArray = this.moveAllTiles(hexMap, centerX, centerY);
+          var coorMap = this.generateHexCoorMap();
+
+          for (var i = 0; i < coordinationArray.length; i++) {
+            for (var j = 0; j < coordinationArray[i].length; j++) {
+              var tile = coordinationArray[i][j];
+              var coor = coorMap[i][j]; // 在这里访问和操作每个地图块（tile）
+
+              console.log("Tile at (" + tile.x + ", " + tile.y + "): " + tile.emoji);
+              var newNode = instantiate(this.mapBlockModel);
+              newNode.setParent(this.mapParent);
+              newNode.active = true;
+              newNode.position = new Vec3(tile.x, tile.y, 0);
+              var script = newNode.getComponent(mapblock);
+              script.showLabel(coor.x + "," + coor.y);
+            }
+          }
+        };
+
+        _proto.generateHexCoorMap = function generateHexCoorMap() {
+          var mapArray = [];
+
+          for (var i = 0; i < 8; i++) {
+            var row = [];
+
+            for (var j = 0; j < 8; j++) {
+              var x = j;
+              var y = i;
+              var emoji = "▲"; // 这里使用 ▲ 作为示例地图块的表现形式，你可以根据需求修改
+
+              row.push({
+                x: x,
+                y: y,
+                emoji: emoji
+              });
+            }
+
+            mapArray.push(row);
+          }
+
+          return mapArray;
+        };
+
+        _proto.generateHexMap = function generateHexMap(size, hSize) {
+          var mapArray = [];
+
+          for (var i = 0; i < 8; i++) {
+            var row = [];
+            var evenRowOffset = i % 2 === 0 ? 0 : size / 2;
+
+            for (var j = 0; j < 8; j++) {
+              var x = size * j + evenRowOffset;
+              var y = hSize * i;
+              var emoji = "▲"; // 这里使用 ▲ 作为示例地图块的表现形式，你可以根据需求修改
+
+              row.push({
+                x: x,
+                y: y,
+                emoji: emoji
+              });
+            }
+
+            mapArray.push(row);
+          }
+
+          return mapArray;
+        };
+
+        _proto.moveAllTiles = function moveAllTiles(mapArray, centerX, centerY) {
+          // 平移整个地图，使中心位于给定的点
+          var centerTile = mapArray[centerY][centerX];
+          var offsetX = centerX - Math.floor(mapArray.length / 2);
+          var offsetY = centerY - Math.floor(mapArray[0].length / 2);
+          var shiftedMapArray = mapArray.map(function (row) {
+            return row.map(function (tile) {
+              return _extends({}, tile, {
+                x: tile.x - centerTile.x + offsetX,
+                y: tile.y - centerTile.y + offsetY
+              });
+            });
+          });
+          return shiftedMapArray;
+        };
+
+        return map_controller;
+      }(Component), (_descriptor = _applyDecoratedDescriptor(_class2.prototype, "mapParent", [_dec2], {
+        configurable: true,
+        enumerable: true,
+        writable: true,
+        initializer: null
+      }), _descriptor2 = _applyDecoratedDescriptor(_class2.prototype, "mapBlockModel", [_dec3], {
+        configurable: true,
+        enumerable: true,
+        writable: true,
+        initializer: null
+      }), _descriptor3 = _applyDecoratedDescriptor(_class2.prototype, "mapItemModel", [_dec4], {
+        configurable: true,
+        enumerable: true,
+        writable: true,
+        initializer: null
+      })), _class2)) || _class));
+
+      cclegacy._RF.pop();
+    }
+  };
+});
+
+System.register("chunks:///_virtual/mapblock.ts", ['./rollupPluginModLoBabelHelpers.js', 'cc'], function (exports) {
+  var _applyDecoratedDescriptor, _inheritsLoose, _initializerDefineProperty, _assertThisInitialized, cclegacy, _decorator, Label, Component;
+
+  return {
+    setters: [function (module) {
+      _applyDecoratedDescriptor = module.applyDecoratedDescriptor;
+      _inheritsLoose = module.inheritsLoose;
+      _initializerDefineProperty = module.initializerDefineProperty;
+      _assertThisInitialized = module.assertThisInitialized;
+    }, function (module) {
+      cclegacy = module.cclegacy;
+      _decorator = module._decorator;
+      Label = module.Label;
+      Component = module.Component;
+    }],
+    execute: function () {
+      var _dec, _dec2, _class, _class2, _descriptor;
+
+      cclegacy._RF.push({}, "f922dKK6jNJnb8lD64YYLm6", "mapblock", undefined);
+
+      var ccclass = _decorator.ccclass,
+          property = _decorator.property;
+      var mapblock = exports('mapblock', (_dec = ccclass('mapblock'), _dec2 = property({
+        type: Label
+      }), _dec(_class = (_class2 = /*#__PURE__*/function (_Component) {
+        _inheritsLoose(mapblock, _Component);
+
+        function mapblock() {
+          var _this;
+
+          for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
+            args[_key] = arguments[_key];
+          }
+
+          _this = _Component.call.apply(_Component, [this].concat(args)) || this;
+
+          _initializerDefineProperty(_this, "label", _descriptor, _assertThisInitialized(_this));
+
+          return _this;
+        }
+
+        var _proto = mapblock.prototype;
+
+        _proto.start = function start() {// this.label.node.active = false;
+        };
+
+        _proto.update = function update(deltaTime) {};
+
+        _proto.showLabel = function showLabel(content) {
+          this.label.string = content;
+          this.label.node.active = true;
+        };
+
+        return mapblock;
+      }(Component), _descriptor = _applyDecoratedDescriptor(_class2.prototype, "label", [_dec2], {
+        configurable: true,
+        enumerable: true,
+        writable: true,
+        initializer: null
+      }), _class2)) || _class));
+
+      cclegacy._RF.pop();
+    }
   };
 });
 
@@ -1728,14 +2029,8 @@ System.register("chunks:///_virtual/ponzi-controller.ts", ['./rollupPluginModLoB
             return;
           }
 
-          var counterValue = result['value'];
-
-          if (counterValue) {
-            this.sendCCCMsg('ccc_counter_value', counterValue);
-          } // 打印结果
-
-
-          console.log(result); // ["name", "age"]
+          log("on game map changed:", result);
+          ponzi_controller.instance.sendCCCMsg(ccc_msg.on_gamemap_update, result);
         };
 
         _proto.onIsPlayerUpdate = function onIsPlayerUpdate(entity, newObj) {

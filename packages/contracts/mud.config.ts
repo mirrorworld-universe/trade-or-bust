@@ -33,7 +33,7 @@ export default mudConfig({
       schema: {
         width: "uint256",
         height: "uint256",
-        map:"bytes"
+        mapArray:"bytes"
       }
     },
     MapItem:{
