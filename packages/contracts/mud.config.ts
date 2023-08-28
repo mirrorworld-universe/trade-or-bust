@@ -2,9 +2,15 @@ import { mudConfig } from "@latticexyz/world/register";
 
 export default mudConfig({
   enums: {
-    // GameState: ["NotInited", "InGame", "Waiting"],
-    // PlayerState: ["NotInited", "InLobby", "InGame"],
+    // GameState: ["NotInited", "InGame", "Waiting"]
   },
+  modules: [
+    {
+      name: "UniqueEntityModule",
+      root: true,
+      args: [],
+    },
+  ],
   tables: {
     Counter: {
       keySchema: {},
@@ -22,14 +28,27 @@ export default mudConfig({
       keySchema: {},
       schema:"uint32",
     },
-    GameMap:{
-      dataStruct:false,
-      schema:{
-        mapArray:'bytes',
+    GameMap: {
+      keySchema: {},
+      schema: {
+        width: "uint256",
+        height: "uint256",
+        map:"bytes"
       }
     },
-    Player:{
+    MapItem:{
+      schema:{
+        x:'uint256',
+        y:'uint256',
+        itemType:'uint32'
+      }
+    },
+    IsPlayer:{
       dataStruct:false,
+      schema:'bool'
+    },
+    Player:{
+      dataStruct:true,
       schema:{
         gameId:'uint256',
         state:'uint32',

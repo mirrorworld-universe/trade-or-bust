@@ -20,33 +20,41 @@ import { PackedCounter, PackedCounterLib } from "@latticexyz/store/src/PackedCou
 bytes32 constant _tableId = bytes32(abi.encodePacked(bytes16(""), bytes16("GameMap")));
 bytes32 constant GameMapTableId = _tableId;
 
+struct GameMapData {
+  uint256 width;
+  uint256 height;
+  bytes map;
+}
+
 library GameMap {
   /** Get the table's key schema */
   function getKeySchema() internal pure returns (Schema) {
-    SchemaType[] memory _schema = new SchemaType[](1);
-    _schema[0] = SchemaType.BYTES32;
+    SchemaType[] memory _schema = new SchemaType[](0);
 
     return SchemaLib.encode(_schema);
   }
 
   /** Get the table's value schema */
   function getValueSchema() internal pure returns (Schema) {
-    SchemaType[] memory _schema = new SchemaType[](1);
-    _schema[0] = SchemaType.BYTES;
+    SchemaType[] memory _schema = new SchemaType[](3);
+    _schema[0] = SchemaType.UINT256;
+    _schema[1] = SchemaType.UINT256;
+    _schema[2] = SchemaType.BYTES;
 
     return SchemaLib.encode(_schema);
   }
 
   /** Get the table's key names */
   function getKeyNames() internal pure returns (string[] memory keyNames) {
-    keyNames = new string[](1);
-    keyNames[0] = "key";
+    keyNames = new string[](0);
   }
 
   /** Get the table's field names */
   function getFieldNames() internal pure returns (string[] memory fieldNames) {
-    fieldNames = new string[](1);
-    fieldNames[0] = "mapArray";
+    fieldNames = new string[](3);
+    fieldNames[0] = "width";
+    fieldNames[1] = "height";
+    fieldNames[2] = "map";
   }
 
   /** Register the table's key schema, value schema, key names and value names */
@@ -59,75 +67,128 @@ library GameMap {
     _store.registerTable(_tableId, getKeySchema(), getValueSchema(), getKeyNames(), getFieldNames());
   }
 
-  /** Get mapArray */
-  function get(bytes32 key) internal view returns (bytes memory mapArray) {
-    bytes32[] memory _keyTuple = new bytes32[](1);
-    _keyTuple[0] = key;
+  /** Get width */
+  function getWidth() internal view returns (uint256 width) {
+    bytes32[] memory _keyTuple = new bytes32[](0);
 
     bytes memory _blob = StoreSwitch.getField(_tableId, _keyTuple, 0, getValueSchema());
-    return (bytes(_blob));
+    return (uint256(Bytes.slice32(_blob, 0)));
   }
 
-  /** Get mapArray (using the specified store) */
-  function get(IStore _store, bytes32 key) internal view returns (bytes memory mapArray) {
-    bytes32[] memory _keyTuple = new bytes32[](1);
-    _keyTuple[0] = key;
+  /** Get width (using the specified store) */
+  function getWidth(IStore _store) internal view returns (uint256 width) {
+    bytes32[] memory _keyTuple = new bytes32[](0);
 
     bytes memory _blob = _store.getField(_tableId, _keyTuple, 0, getValueSchema());
+    return (uint256(Bytes.slice32(_blob, 0)));
+  }
+
+  /** Set width */
+  function setWidth(uint256 width) internal {
+    bytes32[] memory _keyTuple = new bytes32[](0);
+
+    StoreSwitch.setField(_tableId, _keyTuple, 0, abi.encodePacked((width)), getValueSchema());
+  }
+
+  /** Set width (using the specified store) */
+  function setWidth(IStore _store, uint256 width) internal {
+    bytes32[] memory _keyTuple = new bytes32[](0);
+
+    _store.setField(_tableId, _keyTuple, 0, abi.encodePacked((width)), getValueSchema());
+  }
+
+  /** Get height */
+  function getHeight() internal view returns (uint256 height) {
+    bytes32[] memory _keyTuple = new bytes32[](0);
+
+    bytes memory _blob = StoreSwitch.getField(_tableId, _keyTuple, 1, getValueSchema());
+    return (uint256(Bytes.slice32(_blob, 0)));
+  }
+
+  /** Get height (using the specified store) */
+  function getHeight(IStore _store) internal view returns (uint256 height) {
+    bytes32[] memory _keyTuple = new bytes32[](0);
+
+    bytes memory _blob = _store.getField(_tableId, _keyTuple, 1, getValueSchema());
+    return (uint256(Bytes.slice32(_blob, 0)));
+  }
+
+  /** Set height */
+  function setHeight(uint256 height) internal {
+    bytes32[] memory _keyTuple = new bytes32[](0);
+
+    StoreSwitch.setField(_tableId, _keyTuple, 1, abi.encodePacked((height)), getValueSchema());
+  }
+
+  /** Set height (using the specified store) */
+  function setHeight(IStore _store, uint256 height) internal {
+    bytes32[] memory _keyTuple = new bytes32[](0);
+
+    _store.setField(_tableId, _keyTuple, 1, abi.encodePacked((height)), getValueSchema());
+  }
+
+  /** Get map */
+  function getMap() internal view returns (bytes memory map) {
+    bytes32[] memory _keyTuple = new bytes32[](0);
+
+    bytes memory _blob = StoreSwitch.getField(_tableId, _keyTuple, 2, getValueSchema());
     return (bytes(_blob));
   }
 
-  /** Set mapArray */
-  function set(bytes32 key, bytes memory mapArray) internal {
-    bytes32[] memory _keyTuple = new bytes32[](1);
-    _keyTuple[0] = key;
+  /** Get map (using the specified store) */
+  function getMap(IStore _store) internal view returns (bytes memory map) {
+    bytes32[] memory _keyTuple = new bytes32[](0);
 
-    StoreSwitch.setField(_tableId, _keyTuple, 0, bytes((mapArray)), getValueSchema());
+    bytes memory _blob = _store.getField(_tableId, _keyTuple, 2, getValueSchema());
+    return (bytes(_blob));
   }
 
-  /** Set mapArray (using the specified store) */
-  function set(IStore _store, bytes32 key, bytes memory mapArray) internal {
-    bytes32[] memory _keyTuple = new bytes32[](1);
-    _keyTuple[0] = key;
+  /** Set map */
+  function setMap(bytes memory map) internal {
+    bytes32[] memory _keyTuple = new bytes32[](0);
 
-    _store.setField(_tableId, _keyTuple, 0, bytes((mapArray)), getValueSchema());
+    StoreSwitch.setField(_tableId, _keyTuple, 2, bytes((map)), getValueSchema());
   }
 
-  /** Get the length of mapArray */
-  function length(bytes32 key) internal view returns (uint256) {
-    bytes32[] memory _keyTuple = new bytes32[](1);
-    _keyTuple[0] = key;
+  /** Set map (using the specified store) */
+  function setMap(IStore _store, bytes memory map) internal {
+    bytes32[] memory _keyTuple = new bytes32[](0);
 
-    uint256 _byteLength = StoreSwitch.getFieldLength(_tableId, _keyTuple, 0, getValueSchema());
+    _store.setField(_tableId, _keyTuple, 2, bytes((map)), getValueSchema());
+  }
+
+  /** Get the length of map */
+  function lengthMap() internal view returns (uint256) {
+    bytes32[] memory _keyTuple = new bytes32[](0);
+
+    uint256 _byteLength = StoreSwitch.getFieldLength(_tableId, _keyTuple, 2, getValueSchema());
     unchecked {
       return _byteLength / 1;
     }
   }
 
-  /** Get the length of mapArray (using the specified store) */
-  function length(IStore _store, bytes32 key) internal view returns (uint256) {
-    bytes32[] memory _keyTuple = new bytes32[](1);
-    _keyTuple[0] = key;
+  /** Get the length of map (using the specified store) */
+  function lengthMap(IStore _store) internal view returns (uint256) {
+    bytes32[] memory _keyTuple = new bytes32[](0);
 
-    uint256 _byteLength = _store.getFieldLength(_tableId, _keyTuple, 0, getValueSchema());
+    uint256 _byteLength = _store.getFieldLength(_tableId, _keyTuple, 2, getValueSchema());
     unchecked {
       return _byteLength / 1;
     }
   }
 
   /**
-   * Get an item of mapArray
+   * Get an item of map
    * (unchecked, returns invalid data if index overflows)
    */
-  function getItem(bytes32 key, uint256 _index) internal view returns (bytes memory) {
-    bytes32[] memory _keyTuple = new bytes32[](1);
-    _keyTuple[0] = key;
+  function getItemMap(uint256 _index) internal view returns (bytes memory) {
+    bytes32[] memory _keyTuple = new bytes32[](0);
 
     unchecked {
       bytes memory _blob = StoreSwitch.getFieldSlice(
         _tableId,
         _keyTuple,
-        0,
+        2,
         getValueSchema(),
         _index * 1,
         (_index + 1) * 1
@@ -137,108 +198,166 @@ library GameMap {
   }
 
   /**
-   * Get an item of mapArray (using the specified store)
+   * Get an item of map (using the specified store)
    * (unchecked, returns invalid data if index overflows)
    */
-  function getItem(IStore _store, bytes32 key, uint256 _index) internal view returns (bytes memory) {
-    bytes32[] memory _keyTuple = new bytes32[](1);
-    _keyTuple[0] = key;
+  function getItemMap(IStore _store, uint256 _index) internal view returns (bytes memory) {
+    bytes32[] memory _keyTuple = new bytes32[](0);
 
     unchecked {
-      bytes memory _blob = _store.getFieldSlice(_tableId, _keyTuple, 0, getValueSchema(), _index * 1, (_index + 1) * 1);
+      bytes memory _blob = _store.getFieldSlice(_tableId, _keyTuple, 2, getValueSchema(), _index * 1, (_index + 1) * 1);
       return (bytes(_blob));
     }
   }
 
-  /** Push a slice to mapArray */
-  function push(bytes32 key, bytes memory _slice) internal {
-    bytes32[] memory _keyTuple = new bytes32[](1);
-    _keyTuple[0] = key;
+  /** Push a slice to map */
+  function pushMap(bytes memory _slice) internal {
+    bytes32[] memory _keyTuple = new bytes32[](0);
 
-    StoreSwitch.pushToField(_tableId, _keyTuple, 0, bytes((_slice)), getValueSchema());
+    StoreSwitch.pushToField(_tableId, _keyTuple, 2, bytes((_slice)), getValueSchema());
   }
 
-  /** Push a slice to mapArray (using the specified store) */
-  function push(IStore _store, bytes32 key, bytes memory _slice) internal {
-    bytes32[] memory _keyTuple = new bytes32[](1);
-    _keyTuple[0] = key;
+  /** Push a slice to map (using the specified store) */
+  function pushMap(IStore _store, bytes memory _slice) internal {
+    bytes32[] memory _keyTuple = new bytes32[](0);
 
-    _store.pushToField(_tableId, _keyTuple, 0, bytes((_slice)), getValueSchema());
+    _store.pushToField(_tableId, _keyTuple, 2, bytes((_slice)), getValueSchema());
   }
 
-  /** Pop a slice from mapArray */
-  function pop(bytes32 key) internal {
-    bytes32[] memory _keyTuple = new bytes32[](1);
-    _keyTuple[0] = key;
+  /** Pop a slice from map */
+  function popMap() internal {
+    bytes32[] memory _keyTuple = new bytes32[](0);
 
-    StoreSwitch.popFromField(_tableId, _keyTuple, 0, 1, getValueSchema());
+    StoreSwitch.popFromField(_tableId, _keyTuple, 2, 1, getValueSchema());
   }
 
-  /** Pop a slice from mapArray (using the specified store) */
-  function pop(IStore _store, bytes32 key) internal {
-    bytes32[] memory _keyTuple = new bytes32[](1);
-    _keyTuple[0] = key;
+  /** Pop a slice from map (using the specified store) */
+  function popMap(IStore _store) internal {
+    bytes32[] memory _keyTuple = new bytes32[](0);
 
-    _store.popFromField(_tableId, _keyTuple, 0, 1, getValueSchema());
+    _store.popFromField(_tableId, _keyTuple, 2, 1, getValueSchema());
   }
 
   /**
-   * Update a slice of mapArray at `_index`
+   * Update a slice of map at `_index`
    * (checked only to prevent modifying other tables; can corrupt own data if index overflows)
    */
-  function update(bytes32 key, uint256 _index, bytes memory _slice) internal {
-    bytes32[] memory _keyTuple = new bytes32[](1);
-    _keyTuple[0] = key;
+  function updateMap(uint256 _index, bytes memory _slice) internal {
+    bytes32[] memory _keyTuple = new bytes32[](0);
 
     unchecked {
-      StoreSwitch.updateInField(_tableId, _keyTuple, 0, _index * 1, bytes((_slice)), getValueSchema());
+      StoreSwitch.updateInField(_tableId, _keyTuple, 2, _index * 1, bytes((_slice)), getValueSchema());
     }
   }
 
   /**
-   * Update a slice of mapArray (using the specified store) at `_index`
+   * Update a slice of map (using the specified store) at `_index`
    * (checked only to prevent modifying other tables; can corrupt own data if index overflows)
    */
-  function update(IStore _store, bytes32 key, uint256 _index, bytes memory _slice) internal {
-    bytes32[] memory _keyTuple = new bytes32[](1);
-    _keyTuple[0] = key;
+  function updateMap(IStore _store, uint256 _index, bytes memory _slice) internal {
+    bytes32[] memory _keyTuple = new bytes32[](0);
 
     unchecked {
-      _store.updateInField(_tableId, _keyTuple, 0, _index * 1, bytes((_slice)), getValueSchema());
+      _store.updateInField(_tableId, _keyTuple, 2, _index * 1, bytes((_slice)), getValueSchema());
+    }
+  }
+
+  /** Get the full data */
+  function get() internal view returns (GameMapData memory _table) {
+    bytes32[] memory _keyTuple = new bytes32[](0);
+
+    bytes memory _blob = StoreSwitch.getRecord(_tableId, _keyTuple, getValueSchema());
+    return decode(_blob);
+  }
+
+  /** Get the full data (using the specified store) */
+  function get(IStore _store) internal view returns (GameMapData memory _table) {
+    bytes32[] memory _keyTuple = new bytes32[](0);
+
+    bytes memory _blob = _store.getRecord(_tableId, _keyTuple, getValueSchema());
+    return decode(_blob);
+  }
+
+  /** Set the full data using individual values */
+  function set(uint256 width, uint256 height, bytes memory map) internal {
+    bytes memory _data = encode(width, height, map);
+
+    bytes32[] memory _keyTuple = new bytes32[](0);
+
+    StoreSwitch.setRecord(_tableId, _keyTuple, _data, getValueSchema());
+  }
+
+  /** Set the full data using individual values (using the specified store) */
+  function set(IStore _store, uint256 width, uint256 height, bytes memory map) internal {
+    bytes memory _data = encode(width, height, map);
+
+    bytes32[] memory _keyTuple = new bytes32[](0);
+
+    _store.setRecord(_tableId, _keyTuple, _data, getValueSchema());
+  }
+
+  /** Set the full data using the data struct */
+  function set(GameMapData memory _table) internal {
+    set(_table.width, _table.height, _table.map);
+  }
+
+  /** Set the full data using the data struct (using the specified store) */
+  function set(IStore _store, GameMapData memory _table) internal {
+    set(_store, _table.width, _table.height, _table.map);
+  }
+
+  /**
+   * Decode the tightly packed blob using this table's schema.
+   * Undefined behaviour for invalid blobs.
+   */
+  function decode(bytes memory _blob) internal pure returns (GameMapData memory _table) {
+    // 64 is the total byte length of static data
+    PackedCounter _encodedLengths = PackedCounter.wrap(Bytes.slice32(_blob, 64));
+
+    _table.width = (uint256(Bytes.slice32(_blob, 0)));
+
+    _table.height = (uint256(Bytes.slice32(_blob, 32)));
+
+    // Store trims the blob if dynamic fields are all empty
+    if (_blob.length > 64) {
+      // skip static data length + dynamic lengths word
+      uint256 _start = 96;
+      uint256 _end;
+      unchecked {
+        _end = 96 + _encodedLengths.atIndex(0);
+      }
+      _table.map = (bytes(SliceLib.getSubslice(_blob, _start, _end).toBytes()));
     }
   }
 
   /** Tightly pack full data using this table's schema */
-  function encode(bytes memory mapArray) internal pure returns (bytes memory) {
+  function encode(uint256 width, uint256 height, bytes memory map) internal pure returns (bytes memory) {
     PackedCounter _encodedLengths;
     // Lengths are effectively checked during copy by 2**40 bytes exceeding gas limits
     unchecked {
-      _encodedLengths = PackedCounterLib.pack(bytes(mapArray).length);
+      _encodedLengths = PackedCounterLib.pack(bytes(map).length);
     }
 
-    return abi.encodePacked(_encodedLengths.unwrap(), bytes((mapArray)));
+    return abi.encodePacked(width, height, _encodedLengths.unwrap(), bytes((map)));
   }
 
   /** Encode keys as a bytes32 array using this table's schema */
-  function encodeKeyTuple(bytes32 key) internal pure returns (bytes32[] memory) {
-    bytes32[] memory _keyTuple = new bytes32[](1);
-    _keyTuple[0] = key;
+  function encodeKeyTuple() internal pure returns (bytes32[] memory) {
+    bytes32[] memory _keyTuple = new bytes32[](0);
 
     return _keyTuple;
   }
 
   /* Delete all data for given keys */
-  function deleteRecord(bytes32 key) internal {
-    bytes32[] memory _keyTuple = new bytes32[](1);
-    _keyTuple[0] = key;
+  function deleteRecord() internal {
+    bytes32[] memory _keyTuple = new bytes32[](0);
 
     StoreSwitch.deleteRecord(_tableId, _keyTuple, getValueSchema());
   }
 
   /* Delete all data for given keys (using the specified store) */
-  function deleteRecord(IStore _store, bytes32 key) internal {
-    bytes32[] memory _keyTuple = new bytes32[](1);
-    _keyTuple[0] = key;
+  function deleteRecord(IStore _store) internal {
+    bytes32[] memory _keyTuple = new bytes32[](0);
 
     _store.deleteRecord(_tableId, _keyTuple, getValueSchema());
   }

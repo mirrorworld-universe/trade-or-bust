@@ -20,6 +20,14 @@ import { PackedCounter, PackedCounterLib } from "@latticexyz/store/src/PackedCou
 bytes32 constant _tableId = bytes32(abi.encodePacked(bytes16(""), bytes16("Player")));
 bytes32 constant PlayerTableId = _tableId;
 
+struct PlayerData {
+  uint256 gameId;
+  uint32 state;
+  uint32 money;
+  bytes assets;
+  bytes transactions;
+}
+
 library Player {
   /** Get the table's key schema */
   function getKeySchema() internal pure returns (Schema) {
@@ -468,9 +476,7 @@ library Player {
   }
 
   /** Get the full data */
-  function get(
-    bytes32 key
-  ) internal view returns (uint256 gameId, uint32 state, uint32 money, bytes memory assets, bytes memory transactions) {
+  function get(bytes32 key) internal view returns (PlayerData memory _table) {
     bytes32[] memory _keyTuple = new bytes32[](1);
     _keyTuple[0] = key;
 
@@ -479,10 +485,7 @@ library Player {
   }
 
   /** Get the full data (using the specified store) */
-  function get(
-    IStore _store,
-    bytes32 key
-  ) internal view returns (uint256 gameId, uint32 state, uint32 money, bytes memory assets, bytes memory transactions) {
+  function get(IStore _store, bytes32 key) internal view returns (PlayerData memory _table) {
     bytes32[] memory _keyTuple = new bytes32[](1);
     _keyTuple[0] = key;
 
@@ -525,21 +528,29 @@ library Player {
     _store.setRecord(_tableId, _keyTuple, _data, getValueSchema());
   }
 
+  /** Set the full data using the data struct */
+  function set(bytes32 key, PlayerData memory _table) internal {
+    set(key, _table.gameId, _table.state, _table.money, _table.assets, _table.transactions);
+  }
+
+  /** Set the full data using the data struct (using the specified store) */
+  function set(IStore _store, bytes32 key, PlayerData memory _table) internal {
+    set(_store, key, _table.gameId, _table.state, _table.money, _table.assets, _table.transactions);
+  }
+
   /**
    * Decode the tightly packed blob using this table's schema.
    * Undefined behaviour for invalid blobs.
    */
-  function decode(
-    bytes memory _blob
-  ) internal pure returns (uint256 gameId, uint32 state, uint32 money, bytes memory assets, bytes memory transactions) {
+  function decode(bytes memory _blob) internal pure returns (PlayerData memory _table) {
     // 40 is the total byte length of static data
     PackedCounter _encodedLengths = PackedCounter.wrap(Bytes.slice32(_blob, 40));
 
-    gameId = (uint256(Bytes.slice32(_blob, 0)));
+    _table.gameId = (uint256(Bytes.slice32(_blob, 0)));
 
-    state = (uint32(Bytes.slice4(_blob, 32)));
+    _table.state = (uint32(Bytes.slice4(_blob, 32)));
 
-    money = (uint32(Bytes.slice4(_blob, 36)));
+    _table.money = (uint32(Bytes.slice4(_blob, 36)));
 
     // Store trims the blob if dynamic fields are all empty
     if (_blob.length > 40) {
@@ -549,13 +560,13 @@ library Player {
       unchecked {
         _end = 72 + _encodedLengths.atIndex(0);
       }
-      assets = (bytes(SliceLib.getSubslice(_blob, _start, _end).toBytes()));
+      _table.assets = (bytes(SliceLib.getSubslice(_blob, _start, _end).toBytes()));
 
       _start = _end;
       unchecked {
         _end += _encodedLengths.atIndex(1);
       }
-      transactions = (bytes(SliceLib.getSubslice(_blob, _start, _end).toBytes()));
+      _table.transactions = (bytes(SliceLib.getSubslice(_blob, _start, _end).toBytes()));
     }
   }
 

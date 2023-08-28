@@ -1,7 +1,6 @@
 import { mount as mountDevTools } from "@latticexyz/dev-tools";
 import { setup } from "./mud/setup";
 import mudConfig from "contracts/mud.config";
-
 import { getComponentValue,getComponentValueStrict, Has, Not  } from "@latticexyz/recs";
 
 const {
@@ -16,6 +15,7 @@ globalThis.ponzi = {
   gameState:null,
   game:null,
   gameMap:null,
+  mapItems:null,
   players:null
 }
 
@@ -52,6 +52,24 @@ components.Player.update$.subscribe((update)=>{
   globalThis.ponzi.player_update?.(update);
 });
 
+components.GameMap.update$.subscribe((update)=>{
+  const [nextValue, prevValue] = update.value;
+  console.log("GameMap updated", { nextValue, prevValue });
+  globalThis.ponzi.gameMap = nextValue
+  globalThis.ponzi.gamemap_update?.(prevValue, nextValue);
+});
+
+components.MapItem.update$.subscribe((update)=>{
+  const [nextValue, prevValue] = update.value;
+  console.log("MapItems updated", { nextValue, prevValue });
+  globalThis.ponzi.mapitems_update?.(prevValue, nextValue);
+});
+
+components.IsPlayer.update$.subscribe((update)=>{
+  const [nextValue, prevValue] = update.value;
+  console.log("IsPlayer updated", update);
+  globalThis.ponzi.isplayer_update?.(update);
+});
 
 //get functions
 (window as any).getPlayers = () => {
@@ -68,13 +86,19 @@ components.Player.update$.subscribe((update)=>{
 // Just for demonstration purposes: we create a global function that can be
 // called to invoke the Increment system contract via the world. (See IncrementSystem.sol.)
 (window as any).increment = async () => {
-  console.log("new counter value:", await increment());
+  let data = await increment();
+  console.log("new counter value:", data);
+  return data;
 };
 (window as any).joinGame = async () => {
-  console.log("joinGame:", await joinGame());
+  let data = await joinGame();
+  console.log("joinGame:", data);
+  return data;
 };
 (window as any).askStart = async () => {
-  console.log("askStart:", await askStart());
+  let data = await askStart();
+  console.log("askStart:", data);
+  return data;
 };
 // https://vitejs.dev/guide/env-and-mode.html
 if (import.meta.env.DEV) {

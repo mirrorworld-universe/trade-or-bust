@@ -4,7 +4,7 @@ pragma solidity >=0.8.0;
 import { Script } from "forge-std/Script.sol";
 import { console } from "forge-std/console.sol";
 import { IWorld } from "../src/codegen/world/IWorld.sol";
-import { Counter, Game, GameState } from "../src/codegen/Tables.sol";
+import { Counter, Game, GameState, GameMap,GameMapData } from "../src/codegen/Tables.sol";
 
 contract PostDeploy is Script {
   function run(address worldAddress) external {
@@ -22,6 +22,8 @@ contract PostDeploy is Script {
 
     initGame(world);
 
+    // initGameMap(world);
+
     vm.stopBroadcast();
   }
 
@@ -36,5 +38,37 @@ contract PostDeploy is Script {
     uint256 endTime = startTime + gameSec;
 
     Game.set(world, gameId, startTime, endTime);
+  }
+
+  function initGameMap(IWorld world) private{
+    uint O = 0;
+    uint N = 1;
+    uint R = 2;
+
+    uint[8][8] memory map = [
+        [O, N, N, R, N, N, N, O],
+        [O, N, N, R, R, N, N, O],
+        [O, N, R, R, R, N, N, O],
+        [O, N, R, R, R, N, N, O],
+        [O, N, R, R, R, N, N, O],
+        [O, N, N, R, N, N, N, O],
+        [O, N, N, R, N, N, N, O],
+        [O, N, N, R, N, N, N, O]
+    ];
+
+    uint32 height = uint32(map.length);
+    uint32 width = uint32(map[0].length);
+    bytes memory terrain = new bytes(width * height);
+
+    for (uint32 y = 0; y < height; y++) {
+    for (uint32 x = 0; x < width; x++) {
+            uint terrainType = map[y][x];
+            if (terrainType == O) continue;
+    
+            terrain[(y * width) + x] = bytes1(uint8(terrainType));
+        }
+    }
+
+    GameMap.set(world, width, height, terrain);
   }
 }
