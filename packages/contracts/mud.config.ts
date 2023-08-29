@@ -53,6 +53,8 @@ export default mudConfig({
         gameId:'uint256',
         state:'uint32',
         money:'uint32',
+        x:'uint256',
+        y:'uint256',
         assets:'bytes',
         transactions:'bytes'
       }

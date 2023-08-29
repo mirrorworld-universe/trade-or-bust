@@ -23,6 +23,7 @@ contract CounterTest is MudTest {
       codeSize := extcodesize(addr)
     }
     assertTrue(codeSize > 0);
+    assertTrue(isMoveValid(0,5,1,4));
   }
 
   function testCounter() public {
@@ -35,4 +36,25 @@ contract CounterTest is MudTest {
     counter = Counter.get(world);
     assertEq(counter, 2);
   }
+
+  function isMoveValid(uint256 currentX, uint256 currentY, uint256 targetX, uint256 targetY) private pure returns (bool) {
+      // 检查起始位置和目标位置的坐标差值
+      int256 deltaX = int256(targetX) - int256(currentX);
+      int256 deltaY = int256(targetY) - int256(currentY);
+
+      // 六边形战棋地图中，横向和纵向移动距离只能为正负1或0（保持当前位置）
+      if (abs(deltaX) > 1 || abs(deltaY) > 1) {
+          return false;
+      }
+
+      return true;
+  }
+
+  function abs(int256 value) private pure returns (int256) {
+      return value >= 0 ? value : -value;
+  }
+
+  // function abs(int256 x) private pure returns (int256) {
+  //   return x >= 0 ? x : -x;
+// }
 }

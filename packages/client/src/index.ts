@@ -5,7 +5,7 @@ import { getComponentValue,getComponentValueStrict, Has, Not  } from "@latticexy
 
 const {
   components,
-  systemCalls: { increment,joinGame,askStart },
+  systemCalls: { increment,joinGame,askStart,move },
   network,
 } = await setup();
 
@@ -76,6 +76,10 @@ components.IsPlayer.update$.subscribe((update)=>{
   return components.Player.values;
 }
 
+(window as any).getMapItems = ()=>{
+  return components.MapItem.values;
+}
+
 //Query
 (window as any).queryValue = async (component, entity) => {
   const data = getComponentValueStrict(component, entity)
@@ -98,6 +102,11 @@ components.IsPlayer.update$.subscribe((update)=>{
 (window as any).askStart = async () => {
   let data = await askStart();
   console.log("askStart:", data);
+  return data;
+};
+(window as any).move = async (x,y) => {
+  let data = await move(x,y);
+  console.log("move:", data);
   return data;
 };
 // https://vitejs.dev/guide/env-and-mode.html

@@ -12,8 +12,10 @@ System.register("chunks:///_virtual/ccc_msg.ts", ['cc'], function (exports) {
       ccc_msg.on_player_update = "on_player_update";
       ccc_msg.on_gamestate_update = "on_gamestate_update";
       ccc_msg.on_gamemap_update = "on_gamemap_update";
+      ccc_msg.on_mapitem_update = "on_mapitem_update";
       ccc_msg.on_isplayer_update = "on_isplayer_update";
       ccc_msg.network_block_ui = "network_block_ui";
+      ccc_msg.single_button_dialog = "single_button_dialog";
 
       cclegacy._RF.pop();
     }
@@ -627,6 +629,26 @@ System.register("chunks:///_virtual/GameData.ts", ['cc'], function (exports) {
   };
 });
 
+System.register("chunks:///_virtual/HexMapTile.ts", ['cc'], function (exports) {
+  var cclegacy;
+  return {
+    setters: [function (module) {
+      cclegacy = module.cclegacy;
+    }],
+    execute: function () {
+      cclegacy._RF.push({}, "e387c/xNDNOuKwNp+PrfiY+", "HexMapTile", undefined);
+
+      var HexMapTile = exports('HexMapTile', function HexMapTile() {
+        this.x = void 0;
+        this.y = void 0;
+        this.emoji = void 0;
+      });
+
+      cclegacy._RF.pop();
+    }
+  };
+});
+
 System.register("chunks:///_virtual/JsCaller.ts", ['cc'], function (exports) {
   var cclegacy, _decorator;
 
@@ -968,6 +990,7 @@ System.register("chunks:///_virtual/lobby-controller.ts", ['./rollupPluginModLoB
                   self = this;
                   this.startCountDownAnimation(leftSeconds);
                   clearTimeout(this.timer);
+                  log("start timer:", leftSeconds * 1000);
                   this.timer = setTimeout( /*#__PURE__*/_asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee7() {
                     return _regeneratorRuntime().wrap(function _callee7$(_context7) {
                       while (1) switch (_context7.prev = _context7.next) {
@@ -982,7 +1005,7 @@ System.register("chunks:///_virtual/lobby-controller.ts", ['./rollupPluginModLoB
                     }, _callee7);
                   })), leftSeconds * 1000);
 
-                case 4:
+                case 5:
                 case "end":
                   return _context8.stop();
               }
@@ -1035,16 +1058,18 @@ System.register("chunks:///_virtual/lobby-controller.ts", ['./rollupPluginModLoB
                   if (gameState == component_state.game_ingame) {
                     if (isPlayer) {
                       log("ingame+isPlayer");
-                      this.enterGameScene();
+                      this.showGameNode();
                       this.btnJoinGame.active = false;
                       this.btnTriggerGame.active = false;
                     } else {
+                      this.showLobbyNode();
                       log("ingame+notPlayer");
                       this.contentLabel.string = "Game is started, just waiting for entering game!";
                       this.btnJoinGame.active = true;
                       this.btnTriggerGame.active = false;
                     }
                   } else if (gameState == component_state.game_waiting) {
+                    this.showLobbyNode();
                     timeStamp = sys.now();
                     timeStamp = Number(timeStamp) / 1000;
                     gameStartTime = Number(gameObj.startTime);
@@ -1061,6 +1086,7 @@ System.register("chunks:///_virtual/lobby-controller.ts", ['./rollupPluginModLoB
 
                       if (_leftSeconds > 0) {
                         log("gameWaiting+isPlayer+notStart");
+                        this.contentLabel.string = "You have joined the game, waiting for game starting...";
                         this.startCountdownAnimator(_leftSeconds);
                       } else {
                         log("gameWaiting+isPlayer+isStarted");
@@ -1104,7 +1130,7 @@ System.register("chunks:///_virtual/lobby-controller.ts", ['./rollupPluginModLoB
               while (1) switch (_context10.prev = _context10.next) {
                 case 0:
                   this.contentLabel.string = "Game is started, just enter game!";
-                  this.enterLobby();
+                  this.showLobbyNode();
                   playerEntity = globalThis.ponzi.currentPlayer;
                   currentPlayer = null;
                   _context10.prev = 4;
@@ -1182,12 +1208,12 @@ System.register("chunks:///_virtual/lobby-controller.ts", ['./rollupPluginModLoB
           })));
         };
 
-        _proto.enterGameScene = function enterGameScene() {
+        _proto.showGameNode = function showGameNode() {
           this.lobbyNode.active = false;
           this.gameNode.active = true;
         };
 
-        _proto.enterLobby = function enterLobby() {
+        _proto.showLobbyNode = function showLobbyNode() {
           this.lobbyNode.active = true;
           this.gameNode.active = false; // this.btnJoinGame = true;
         };
@@ -1503,15 +1529,15 @@ System.register("chunks:///_virtual/lobby-playerlist.ts", ['./rollupPluginModLoB
   };
 });
 
-System.register("chunks:///_virtual/main", ['./debug-view-runtime-control.ts', './Singleton.ts', './lobby-controller.ts', './counter-label.ts', './ccc_msg.ts', './component_state.ts', './GameData.ts', './JsCaller.ts', './MUDListener.ts', './PlayerData.ts', './data_center.ts', './ponzi-controller.ts', './ponzi-model.ts', './FakeMessageCenter.ts', './test.ts', './data_utils.ts', './object_utils.ts', './string_utils.ts', './lobby-playerlist-model.ts', './lobby-playerlist.ts', './map-controller.ts', './mapblock.ts', './popupui_manager.ts'], function () {
+System.register("chunks:///_virtual/main", ['./debug-view-runtime-control.ts', './Singleton.ts', './lobby-controller.ts', './counter-label.ts', './ccc_msg.ts', './component_state.ts', './GameData.ts', './JsCaller.ts', './MUDListener.ts', './PlayerData.ts', './data_center.ts', './ponzi-controller.ts', './ponzi-model.ts', './FakeMessageCenter.ts', './test.ts', './data_utils.ts', './object_utils.ts', './string_utils.ts', './HexMapTile.ts', './lobby-playerlist-model.ts', './lobby-playerlist.ts', './map-controller.ts', './mapblock.ts', './player-model.ts', './single-button-pop.ts', './popupui_manager.ts'], function () {
   return {
-    setters: [null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null],
+    setters: [null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null],
     execute: function () {}
   };
 });
 
-System.register("chunks:///_virtual/map-controller.ts", ['./rollupPluginModLoBabelHelpers.js', 'cc', './ponzi-controller.ts', './ccc_msg.ts', './mapblock.ts'], function (exports) {
-  var _applyDecoratedDescriptor, _inheritsLoose, _initializerDefineProperty, _assertThisInitialized, _extends, cclegacy, _decorator, Node, log, instantiate, Vec3, Component, ponzi_controller, ccc_msg, mapblock;
+System.register("chunks:///_virtual/map-controller.ts", ['./rollupPluginModLoBabelHelpers.js', 'cc', './ponzi-controller.ts', './ccc_msg.ts', './mapblock.ts', './string_utils.ts', './component_state.ts', './player-model.ts'], function (exports) {
+  var _applyDecoratedDescriptor, _inheritsLoose, _initializerDefineProperty, _assertThisInitialized, _createForOfIteratorHelperLoose, _extends, cclegacy, _decorator, Node, log, instantiate, Vec3, Component, ponzi_controller, ccc_msg, mapblock, string_utils, component_state, player_model;
 
   return {
     setters: [function (module) {
@@ -1519,6 +1545,7 @@ System.register("chunks:///_virtual/map-controller.ts", ['./rollupPluginModLoBab
       _inheritsLoose = module.inheritsLoose;
       _initializerDefineProperty = module.initializerDefineProperty;
       _assertThisInitialized = module.assertThisInitialized;
+      _createForOfIteratorHelperLoose = module.createForOfIteratorHelperLoose;
       _extends = module.extends;
     }, function (module) {
       cclegacy = module.cclegacy;
@@ -1534,9 +1561,15 @@ System.register("chunks:///_virtual/map-controller.ts", ['./rollupPluginModLoBab
       ccc_msg = module.ccc_msg;
     }, function (module) {
       mapblock = module.mapblock;
+    }, function (module) {
+      string_utils = module.string_utils;
+    }, function (module) {
+      component_state = module.component_state;
+    }, function (module) {
+      player_model = module.player_model;
     }],
     execute: function () {
-      var _dec, _dec2, _dec3, _dec4, _class, _class2, _descriptor, _descriptor2, _descriptor3;
+      var _dec, _dec2, _dec3, _dec4, _dec5, _dec6, _dec7, _class, _class2, _descriptor, _descriptor2, _descriptor3, _descriptor4, _descriptor5, _descriptor6;
 
       cclegacy._RF.push({}, "f3250iGpAVPmqBmTcrOIPDJ", "map-controller", undefined);
 
@@ -1547,6 +1580,12 @@ System.register("chunks:///_virtual/map-controller.ts", ['./rollupPluginModLoBab
       }), _dec3 = property({
         type: Node
       }), _dec4 = property({
+        type: Node
+      }), _dec5 = property({
+        type: Node
+      }), _dec6 = property({
+        type: Node
+      }), _dec7 = property({
         type: Node
       }), _dec(_class = (_class2 = /*#__PURE__*/function (_Component) {
         _inheritsLoose(map_controller, _Component);
@@ -1562,12 +1601,19 @@ System.register("chunks:///_virtual/map-controller.ts", ['./rollupPluginModLoBab
 
           _initializerDefineProperty(_this, "mapParent", _descriptor, _assertThisInitialized(_this));
 
-          _initializerDefineProperty(_this, "mapBlockModel", _descriptor2, _assertThisInitialized(_this));
+          _initializerDefineProperty(_this, "itemParent", _descriptor2, _assertThisInitialized(_this));
 
-          _initializerDefineProperty(_this, "mapItemModel", _descriptor3, _assertThisInitialized(_this));
+          _initializerDefineProperty(_this, "playerParent", _descriptor3, _assertThisInitialized(_this));
+
+          _initializerDefineProperty(_this, "mapBlockModel", _descriptor4, _assertThisInitialized(_this));
+
+          _initializerDefineProperty(_this, "mapItemModel", _descriptor5, _assertThisInitialized(_this));
+
+          _initializerDefineProperty(_this, "playerModel", _descriptor6, _assertThisInitialized(_this));
 
           _this.terrainArray = void 0;
           _this.inited = false;
+          _this.tmpCoorArray = void 0;
           return _this;
         }
 
@@ -1576,6 +1622,7 @@ System.register("chunks:///_virtual/map-controller.ts", ['./rollupPluginModLoBab
         _proto.start = function start() {
           this.mapBlockModel.active = false;
           this.mapItemModel.active = false;
+          this.playerModel.active = false;
         };
 
         _proto.update = function update(deltaTime) {
@@ -1585,10 +1632,17 @@ System.register("chunks:///_virtual/map-controller.ts", ['./rollupPluginModLoBab
         _proto.init = function init() {
           var _globalThis$ponzi$gam;
 
+          var gameState = globalThis.ponzi.gameState;
+          if (gameState != component_state.game_ingame) return;
           var map = (_globalThis$ponzi$gam = globalThis.ponzi.gameMap) == null ? void 0 : _globalThis$ponzi$gam.mapArray;
           if (!map) return;
+          var items = window.getMapItems == null ? void 0 : window.getMapItems();
+          if (!items) return;
           this.inited = true;
           this.updateMap();
+          this.drawItem();
+          this.drawPlayers();
+          this.registerListeners();
         };
 
         _proto.registerListeners = function registerListeners() {
@@ -1598,9 +1652,15 @@ System.register("chunks:///_virtual/map-controller.ts", ['./rollupPluginModLoBab
 
             if (!changeResult) return;
             var newMap = changeResult['mapArray'];
-            var width = (_globalThis$ponzi$gam2 = globalThis.ponzi.gameMap) == null ? void 0 : _globalThis$ponzi$gam2.width;
-            var height = (_globalThis$ponzi$gam3 = globalThis.ponzi.gameMap) == null ? void 0 : _globalThis$ponzi$gam3.height;
+            var width = Number((_globalThis$ponzi$gam2 = globalThis.ponzi.gameMap) == null ? void 0 : _globalThis$ponzi$gam2.width);
+            var height = Number((_globalThis$ponzi$gam3 = globalThis.ponzi.gameMap) == null ? void 0 : _globalThis$ponzi$gam3.height);
             self.drawMap(width, height, newMap);
+          });
+          ponzi_controller.instance.on(ccc_msg.on_mapitem_update, function (oldValue, newValue) {
+            self.drawItem();
+          });
+          ponzi_controller.instance.on(ccc_msg.on_player_update, function () {
+            self.drawPlayers();
           });
         };
 
@@ -1620,7 +1680,110 @@ System.register("chunks:///_virtual/map-controller.ts", ['./rollupPluginModLoBab
         } // private 
         ;
 
-        _proto.drawItem = function drawItem() {};
+        _proto.drawPlayers = function drawPlayers() {
+          var players = window.getPlayers == null ? void 0 : window.getPlayers();
+
+          if (!players) {
+            return;
+          }
+
+          var array = {};
+
+          for (var key in players) {
+            var map = players[key];
+
+            for (var _iterator = _createForOfIteratorHelperLoose(map), _step; !(_step = _iterator()).done;) {
+              var _step$value = _step.value,
+                  entity = _step$value[0],
+                  value = _step$value[1]; //   console.log(key, entity, value);
+
+              var hash = string_utils.getHashFromSymbol(entity);
+
+              if (!array[hash]) {
+                array[hash] = new RoleLocalObj();
+              }
+
+              var obj = array[hash];
+              array[hash] = obj;
+
+              if (key == 'x') {
+                var valueNum = Number(value);
+                obj.x = valueNum;
+              } else if (key == 'y') {
+                var _valueNum = Number(value);
+
+                obj.y = _valueNum;
+              } else if (key == 'money') {
+                var _valueNum2 = Number(value);
+
+                obj.money = _valueNum2;
+              }
+            }
+          }
+
+          log("role array:", array);
+          var self = this;
+          self.playerParent.removeAllChildren();
+
+          for (var _key2 in array) {
+            var _value = array[_key2];
+            var newNode = instantiate(self.playerModel);
+            newNode.setParent(self.playerParent);
+            newNode.active = true;
+            var pos = self.tmpCoorArray[_value.y][_value.x];
+            newNode.position = new Vec3(pos.x, pos.y, 0);
+            var script = newNode.getComponent(player_model);
+            script.init(_key2);
+          }
+        };
+
+        _proto.drawItem = function drawItem() {
+          var items = window.getMapItems == null ? void 0 : window.getMapItems();
+
+          if (!items) {
+            return;
+          }
+
+          var array = [];
+
+          for (var key in items) {
+            var map = items[key];
+
+            for (var _iterator2 = _createForOfIteratorHelperLoose(map), _step2; !(_step2 = _iterator2()).done;) {
+              var _step2$value = _step2.value,
+                  entity = _step2$value[0],
+                  value = _step2$value[1]; //   console.log(key, entity, value);
+
+              var index = string_utils.getNumberFromSymbol(entity) - 1;
+              var valueNum = string_utils.getNumberFromSymbol(value);
+
+              if (!array[index]) {
+                array[index] = new MapItemLocalObj();
+              }
+
+              var obj = array[index];
+              array[index] = obj;
+
+              if (key == 'x') {
+                obj.x = valueNum;
+              } else if (key == 'y') {
+                obj.y = valueNum;
+              } else if (key == 'itemType') {
+                obj.itemType = valueNum;
+              }
+            }
+          }
+
+          var self = this;
+          self.itemParent.removeAllChildren();
+          array.forEach(function (ele) {
+            var newNode = instantiate(self.mapItemModel);
+            newNode.setParent(self.itemParent);
+            newNode.active = true;
+            var pos = self.tmpCoorArray[ele.x][ele.y];
+            newNode.position = new Vec3(pos.x, pos.y, 0);
+          });
+        };
 
         _proto.drawMap = function drawMap(width, height, newMap) {
           var _window$mudutils;
@@ -1638,19 +1801,22 @@ System.register("chunks:///_virtual/map-controller.ts", ['./rollupPluginModLoBab
 
           var hexMap = this.generateHexMap(100, 78);
           var coordinationArray = this.moveAllTiles(hexMap, centerX, centerY);
+          this.tmpCoorArray = coordinationArray;
+          log("coordinationArray 111:", coordinationArray);
           var coorMap = this.generateHexCoorMap();
 
           for (var i = 0; i < coordinationArray.length; i++) {
             for (var j = 0; j < coordinationArray[i].length; j++) {
               var tile = coordinationArray[i][j];
               var coor = coorMap[i][j]; // 在这里访问和操作每个地图块（tile）
+              // console.log(`Tile at (${tile.x}, ${tile.y}): ${tile.emoji}`);
 
-              console.log("Tile at (" + tile.x + ", " + tile.y + "): " + tile.emoji);
               var newNode = instantiate(this.mapBlockModel);
               newNode.setParent(this.mapParent);
               newNode.active = true;
               newNode.position = new Vec3(tile.x, tile.y, 0);
               var script = newNode.getComponent(mapblock);
+              script.init(coor);
               script.showLabel(coor.x + "," + coor.y);
             }
           }
@@ -1727,25 +1893,56 @@ System.register("chunks:///_virtual/map-controller.ts", ['./rollupPluginModLoBab
         enumerable: true,
         writable: true,
         initializer: null
-      }), _descriptor2 = _applyDecoratedDescriptor(_class2.prototype, "mapBlockModel", [_dec3], {
+      }), _descriptor2 = _applyDecoratedDescriptor(_class2.prototype, "itemParent", [_dec3], {
         configurable: true,
         enumerable: true,
         writable: true,
         initializer: null
-      }), _descriptor3 = _applyDecoratedDescriptor(_class2.prototype, "mapItemModel", [_dec4], {
+      }), _descriptor3 = _applyDecoratedDescriptor(_class2.prototype, "playerParent", [_dec4], {
+        configurable: true,
+        enumerable: true,
+        writable: true,
+        initializer: null
+      }), _descriptor4 = _applyDecoratedDescriptor(_class2.prototype, "mapBlockModel", [_dec5], {
+        configurable: true,
+        enumerable: true,
+        writable: true,
+        initializer: null
+      }), _descriptor5 = _applyDecoratedDescriptor(_class2.prototype, "mapItemModel", [_dec6], {
+        configurable: true,
+        enumerable: true,
+        writable: true,
+        initializer: null
+      }), _descriptor6 = _applyDecoratedDescriptor(_class2.prototype, "playerModel", [_dec7], {
         configurable: true,
         enumerable: true,
         writable: true,
         initializer: null
       })), _class2)) || _class));
 
+      var MapItemLocalObj = function MapItemLocalObj() {
+        this.x = void 0;
+        this.y = void 0;
+        this.itemType = void 0;
+      };
+
+      var RoleLocalObj = function RoleLocalObj() {
+        this.gameId = void 0;
+        this.state = void 0;
+        this.money = void 0;
+        this.x = void 0;
+        this.y = void 0;
+        this.assets = void 0;
+        this.transactions = void 0;
+      };
+
       cclegacy._RF.pop();
     }
   };
 });
 
-System.register("chunks:///_virtual/mapblock.ts", ['./rollupPluginModLoBabelHelpers.js', 'cc'], function (exports) {
-  var _applyDecoratedDescriptor, _inheritsLoose, _initializerDefineProperty, _assertThisInitialized, cclegacy, _decorator, Label, Component;
+System.register("chunks:///_virtual/mapblock.ts", ['./rollupPluginModLoBabelHelpers.js', 'cc', './ponzi-controller.ts', './ccc_msg.ts'], function (exports) {
+  var _applyDecoratedDescriptor, _inheritsLoose, _initializerDefineProperty, _assertThisInitialized, _asyncToGenerator, _regeneratorRuntime, cclegacy, _decorator, Label, Component, log, ponzi_controller, ccc_msg;
 
   return {
     setters: [function (module) {
@@ -1753,11 +1950,18 @@ System.register("chunks:///_virtual/mapblock.ts", ['./rollupPluginModLoBabelHelp
       _inheritsLoose = module.inheritsLoose;
       _initializerDefineProperty = module.initializerDefineProperty;
       _assertThisInitialized = module.assertThisInitialized;
+      _asyncToGenerator = module.asyncToGenerator;
+      _regeneratorRuntime = module.regeneratorRuntime;
     }, function (module) {
       cclegacy = module.cclegacy;
       _decorator = module._decorator;
       Label = module.Label;
       Component = module.Component;
+      log = module.log;
+    }, function (module) {
+      ponzi_controller = module.ponzi_controller;
+    }, function (module) {
+      ccc_msg = module.ccc_msg;
     }],
     execute: function () {
       var _dec, _dec2, _class, _class2, _descriptor;
@@ -1782,6 +1986,7 @@ System.register("chunks:///_virtual/mapblock.ts", ['./rollupPluginModLoBabelHelp
 
           _initializerDefineProperty(_this, "label", _descriptor, _assertThisInitialized(_this));
 
+          _this.mapTile = void 0;
           return _this;
         }
 
@@ -1792,10 +1997,54 @@ System.register("chunks:///_virtual/mapblock.ts", ['./rollupPluginModLoBabelHelp
 
         _proto.update = function update(deltaTime) {};
 
+        _proto.init = function init(mapTile) {
+          this.mapTile = mapTile;
+        };
+
         _proto.showLabel = function showLabel(content) {
           this.label.string = content;
           this.label.node.active = true;
         };
+
+        _proto.onBlockClicked = /*#__PURE__*/function () {
+          var _onBlockClicked = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee() {
+            return _regeneratorRuntime().wrap(function _callee$(_context) {
+              while (1) switch (_context.prev = _context.next) {
+                case 0:
+                  log("click block:", this.mapTile.x, this.mapTile.y);
+                  ponzi_controller.instance.sendCCCMsg(ccc_msg.network_block_ui, true);
+                  _context.prev = 2;
+                  _context.next = 5;
+                  return window.move == null ? void 0 : window.move(this.mapTile.x, this.mapTile.y);
+
+                case 5:
+                  _context.next = 10;
+                  break;
+
+                case 7:
+                  _context.prev = 7;
+                  _context.t0 = _context["catch"](2);
+                  ponzi_controller.instance.sendCCCMsg(ccc_msg.single_button_dialog, {
+                    content: "You can't go there",
+                    btnText: "OK"
+                  });
+
+                case 10:
+                  ponzi_controller.instance.sendCCCMsg(ccc_msg.network_block_ui, false);
+
+                case 11:
+                case "end":
+                  return _context.stop();
+              }
+            }, _callee, this, [[2, 7]]);
+          }));
+
+          function onBlockClicked() {
+            return _onBlockClicked.apply(this, arguments);
+          }
+
+          return onBlockClicked;
+        }();
 
         return mapblock;
       }(Component), _descriptor = _applyDecoratedDescriptor(_class2.prototype, "label", [_dec2], {
@@ -1873,6 +2122,92 @@ System.register("chunks:///_virtual/object_utils.ts", ['cc'], function (exports)
 
         return object_utils;
       }());
+
+      cclegacy._RF.pop();
+    }
+  };
+});
+
+System.register("chunks:///_virtual/player-model.ts", ['./rollupPluginModLoBabelHelpers.js', 'cc', './string_utils.ts'], function (exports) {
+  var _applyDecoratedDescriptor, _inheritsLoose, _initializerDefineProperty, _assertThisInitialized, cclegacy, _decorator, Node, Component, string_utils;
+
+  return {
+    setters: [function (module) {
+      _applyDecoratedDescriptor = module.applyDecoratedDescriptor;
+      _inheritsLoose = module.inheritsLoose;
+      _initializerDefineProperty = module.initializerDefineProperty;
+      _assertThisInitialized = module.assertThisInitialized;
+    }, function (module) {
+      cclegacy = module.cclegacy;
+      _decorator = module._decorator;
+      Node = module.Node;
+      Component = module.Component;
+    }, function (module) {
+      string_utils = module.string_utils;
+    }],
+    execute: function () {
+      var _dec, _dec2, _dec3, _class, _class2, _descriptor, _descriptor2;
+
+      cclegacy._RF.push({}, "42f64jpdAxK2I6YwOKiWMXX", "player-model", undefined);
+
+      var ccclass = _decorator.ccclass,
+          property = _decorator.property;
+      var player_model = exports('player_model', (_dec = ccclass('player_model'), _dec2 = property({
+        type: Node
+      }), _dec3 = property({
+        type: Node
+      }), _dec(_class = (_class2 = /*#__PURE__*/function (_Component) {
+        _inheritsLoose(player_model, _Component);
+
+        function player_model() {
+          var _this;
+
+          for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
+            args[_key] = arguments[_key];
+          }
+
+          _this = _Component.call.apply(_Component, [this].concat(args)) || this;
+
+          _initializerDefineProperty(_this, "sprite", _descriptor, _assertThisInitialized(_this));
+
+          _initializerDefineProperty(_this, "spriteEnemy", _descriptor2, _assertThisInitialized(_this)); //Hash
+
+
+          _this.playerHash = void 0;
+          return _this;
+        }
+
+        var _proto = player_model.prototype;
+
+        _proto.start = function start() {};
+
+        _proto.update = function update(deltaTime) {};
+
+        _proto.init = function init(hash) {
+          this.playerHash = hash;
+          var curPlayerEntity = globalThis.ponzi.currentPlayer;
+
+          if (hash == string_utils.getHashFromSymbol(curPlayerEntity)) {
+            this.sprite.active = true;
+            this.spriteEnemy.active = false;
+          } else {
+            this.sprite.active = false;
+            this.spriteEnemy.active = true;
+          }
+        };
+
+        return player_model;
+      }(Component), (_descriptor = _applyDecoratedDescriptor(_class2.prototype, "sprite", [_dec2], {
+        configurable: true,
+        enumerable: true,
+        writable: true,
+        initializer: null
+      }), _descriptor2 = _applyDecoratedDescriptor(_class2.prototype, "spriteEnemy", [_dec3], {
+        configurable: true,
+        enumerable: true,
+        writable: true,
+        initializer: null
+      })), _class2)) || _class));
 
       cclegacy._RF.pop();
     }
@@ -2003,21 +2338,10 @@ System.register("chunks:///_virtual/ponzi-controller.ts", ['./rollupPluginModLoB
         };
 
         _proto.onMapItemsChanged = function onMapItemsChanged(oldObj, newObj) {
-          // 调用函数，传入两个对象，得到结果
-          var result = this.compareObjects(oldObj, newObj);
-
-          if (!result) {
-            return;
-          }
-
-          var counterValue = result['value'];
-
-          if (counterValue) {
-            this.sendCCCMsg('ccc_counter_value', counterValue);
-          } // 打印结果
-
-
-          console.log(result); // ["name", "age"]
+          ponzi_controller.instance.sendCCCMsg(ccc_msg.on_mapitem_update, {
+            oldObj: oldObj,
+            newObj: newObj
+          });
         };
 
         _proto.onGameMapChanged = function onGameMapChanged(oldObj, newObj) {
@@ -2046,6 +2370,10 @@ System.register("chunks:///_virtual/ponzi-controller.ts", ['./rollupPluginModLoB
           } else {
             var result = this.compareObjects(oldObj, newObj);
             console.log(result); // ["name", "age"]
+
+            if (result['x'] || result['y']) {
+              ponzi_controller.instance.sendCCCMsg(ccc_msg.on_player_update, null);
+            }
           }
         };
 
@@ -2192,8 +2520,8 @@ System.register("chunks:///_virtual/ponzi-model.ts", ['./rollupPluginModLoBabelH
   };
 });
 
-System.register("chunks:///_virtual/popupui_manager.ts", ['./rollupPluginModLoBabelHelpers.js', 'cc', './ponzi-controller.ts', './ccc_msg.ts'], function (exports) {
-  var _applyDecoratedDescriptor, _inheritsLoose, _initializerDefineProperty, _assertThisInitialized, cclegacy, _decorator, Node, Component, ponzi_controller, ccc_msg;
+System.register("chunks:///_virtual/popupui_manager.ts", ['./rollupPluginModLoBabelHelpers.js', 'cc', './ponzi-controller.ts', './ccc_msg.ts', './single-button-pop.ts'], function (exports) {
+  var _applyDecoratedDescriptor, _inheritsLoose, _initializerDefineProperty, _assertThisInitialized, cclegacy, _decorator, Node, Component, ponzi_controller, ccc_msg, single_button_pop;
 
   return {
     setters: [function (module) {
@@ -2210,9 +2538,11 @@ System.register("chunks:///_virtual/popupui_manager.ts", ['./rollupPluginModLoBa
       ponzi_controller = module.ponzi_controller;
     }, function (module) {
       ccc_msg = module.ccc_msg;
+    }, function (module) {
+      single_button_pop = module.single_button_pop;
     }],
     execute: function () {
-      var _dec, _dec2, _class, _class2, _descriptor;
+      var _dec, _dec2, _dec3, _class, _class2, _descriptor, _descriptor2;
 
       cclegacy._RF.push({}, "454a77xJxBFcYkhgV356qng", "popupui_manager", undefined);
 
@@ -2220,6 +2550,8 @@ System.register("chunks:///_virtual/popupui_manager.ts", ['./rollupPluginModLoBa
           property = _decorator.property;
       var popupui_manager = exports('popupui_manager', (_dec = ccclass('popupui_manager'), _dec2 = property({
         type: Node
+      }), _dec3 = property({
+        type: single_button_pop
       }), _dec(_class = (_class2 = /*#__PURE__*/function (_Component) {
         _inheritsLoose(popupui_manager, _Component);
 
@@ -2234,6 +2566,8 @@ System.register("chunks:///_virtual/popupui_manager.ts", ['./rollupPluginModLoBa
 
           _initializerDefineProperty(_this, "networkBlock", _descriptor, _assertThisInitialized(_this));
 
+          _initializerDefineProperty(_this, "singleDialog", _descriptor2, _assertThisInitialized(_this));
+
           return _this;
         }
 
@@ -2244,17 +2578,106 @@ System.register("chunks:///_virtual/popupui_manager.ts", ['./rollupPluginModLoBa
           ponzi_controller.instance.on(ccc_msg.network_block_ui, function (show) {
             self.networkBlock.active = show;
           });
+          ponzi_controller.instance.on(ccc_msg.single_button_dialog, function (_ref) {
+            var content = _ref.content,
+                btnText = _ref.btnText;
+            self.singleDialog.node.active = true;
+            self.singleDialog.init(content, btnText);
+          });
         };
 
         _proto.update = function update(deltaTime) {};
 
         return popupui_manager;
-      }(Component), _descriptor = _applyDecoratedDescriptor(_class2.prototype, "networkBlock", [_dec2], {
+      }(Component), (_descriptor = _applyDecoratedDescriptor(_class2.prototype, "networkBlock", [_dec2], {
         configurable: true,
         enumerable: true,
         writable: true,
         initializer: null
-      }), _class2)) || _class));
+      }), _descriptor2 = _applyDecoratedDescriptor(_class2.prototype, "singleDialog", [_dec3], {
+        configurable: true,
+        enumerable: true,
+        writable: true,
+        initializer: null
+      })), _class2)) || _class));
+
+      cclegacy._RF.pop();
+    }
+  };
+});
+
+System.register("chunks:///_virtual/single-button-pop.ts", ['./rollupPluginModLoBabelHelpers.js', 'cc'], function (exports) {
+  var _applyDecoratedDescriptor, _inheritsLoose, _initializerDefineProperty, _assertThisInitialized, cclegacy, _decorator, Label, Component;
+
+  return {
+    setters: [function (module) {
+      _applyDecoratedDescriptor = module.applyDecoratedDescriptor;
+      _inheritsLoose = module.inheritsLoose;
+      _initializerDefineProperty = module.initializerDefineProperty;
+      _assertThisInitialized = module.assertThisInitialized;
+    }, function (module) {
+      cclegacy = module.cclegacy;
+      _decorator = module._decorator;
+      Label = module.Label;
+      Component = module.Component;
+    }],
+    execute: function () {
+      var _dec, _dec2, _dec3, _class, _class2, _descriptor, _descriptor2;
+
+      cclegacy._RF.push({}, "c321aMqJepMl7TZuWl0gSUf", "single-button-pop", undefined);
+
+      var ccclass = _decorator.ccclass,
+          property = _decorator.property;
+      var single_button_pop = exports('single_button_pop', (_dec = ccclass('single_button_pop'), _dec2 = property({
+        type: Label
+      }), _dec3 = property({
+        type: Label
+      }), _dec(_class = (_class2 = /*#__PURE__*/function (_Component) {
+        _inheritsLoose(single_button_pop, _Component);
+
+        function single_button_pop() {
+          var _this;
+
+          for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
+            args[_key] = arguments[_key];
+          }
+
+          _this = _Component.call.apply(_Component, [this].concat(args)) || this;
+
+          _initializerDefineProperty(_this, "contentLabel", _descriptor, _assertThisInitialized(_this));
+
+          _initializerDefineProperty(_this, "buttonLabel", _descriptor2, _assertThisInitialized(_this));
+
+          return _this;
+        }
+
+        var _proto = single_button_pop.prototype;
+
+        _proto.start = function start() {};
+
+        _proto.update = function update(deltaTime) {};
+
+        _proto.init = function init(content, btnText) {
+          this.contentLabel.string = content;
+          this.buttonLabel.string = btnText;
+        };
+
+        _proto.onBtnClicked = function onBtnClicked() {
+          this.node.active = false;
+        };
+
+        return single_button_pop;
+      }(Component), (_descriptor = _applyDecoratedDescriptor(_class2.prototype, "contentLabel", [_dec2], {
+        configurable: true,
+        enumerable: true,
+        writable: true,
+        initializer: null
+      }), _descriptor2 = _applyDecoratedDescriptor(_class2.prototype, "buttonLabel", [_dec3], {
+        configurable: true,
+        enumerable: true,
+        writable: true,
+        initializer: null
+      })), _class2)) || _class));
 
       cclegacy._RF.pop();
     }
@@ -2303,11 +2726,10 @@ System.register("chunks:///_virtual/Singleton.ts", ['./rollupPluginModLoBabelHel
 });
 
 System.register("chunks:///_virtual/string_utils.ts", ['cc'], function (exports) {
-  var cclegacy, log;
+  var cclegacy;
   return {
     setters: [function (module) {
       cclegacy = module.cclegacy;
-      log = module.log;
     }],
     execute: function () {
       cclegacy._RF.push({}, "27384iB89NAKKt0tJGnSKbp", "string_utils", undefined);
@@ -2325,12 +2747,19 @@ System.register("chunks:///_virtual/string_utils.ts", ['cc'], function (exports)
             }
         };
 
+        string_utils.getNumberFromSymbol = function getNumberFromSymbol(sym) {
+          var hexValue = this.getHashFromSymbol(sym);
+          var decimalValue = BigInt(hexValue);
+          var numberValue = Number(decimalValue);
+          return numberValue;
+        };
+
         string_utils.getHashFromSymbol = function getHashFromSymbol(sym) {
           var str = sym.toString();
           var index = str.indexOf("Symbol(");
 
           if (index !== 0) {
-            log("This is not a symble string:", sym);
+            // log("This is not a symble string:",sym);
             return sym;
           }
 
