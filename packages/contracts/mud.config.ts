@@ -1,4 +1,5 @@
 import { mudConfig } from "@latticexyz/world/register";
+import { resolveTableId } from "@latticexyz/store/register";
 
 export default mudConfig({
   enums: {
@@ -9,6 +10,26 @@ export default mudConfig({
       name: "UniqueEntityModule",
       root: true,
       args: [],
+    },
+    {
+      name: "KeysInTableModule",
+      root: true,
+      args: [resolveTableId("Player")],
+    },
+    {
+      name: "KeysWithValueModule",
+      root: true,
+      args: [resolveTableId("Player")],
+    },
+    {
+      name: "KeysInTableModule",
+      root: true,
+      args: [resolveTableId("MapItem")],
+    },
+    {
+      name: "KeysWithValueModule",
+      root: true,
+      args: [resolveTableId("MapItem")],
     },
   ],
   tables: {
@@ -39,9 +60,11 @@ export default mudConfig({
     MapItem:{
       schema:{
         x:'uint256',
-        y:'uint256',
-        itemType:'uint32'
+        y:'uint256'
       }
+    },
+    MapItemValue:{
+      schema:'uint32'
     },
     IsPlayer:{
       dataStruct:false,
@@ -58,6 +81,16 @@ export default mudConfig({
         assets:'bytes',
         transactions:'bytes'
       }
-    }
+    },
+    Log:{
+      dataStruct:true,
+      schema:'uint8',
+    },
+    TransactionList:{
+      dataStruct:true,
+      schema:{
+        list:'bytes32[]'
+      }
+    },
   },
 });

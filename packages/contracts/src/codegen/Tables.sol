@@ -8,5 +8,8 @@ import { Game, GameData, GameTableId } from "./tables/Game.sol";
 import { GameState, GameStateTableId } from "./tables/GameState.sol";
 import { GameMap, GameMapData, GameMapTableId } from "./tables/GameMap.sol";
 import { MapItem, MapItemData, MapItemTableId } from "./tables/MapItem.sol";
+import { MapItemValue, MapItemValueTableId } from "./tables/MapItemValue.sol";
 import { IsPlayer, IsPlayerTableId } from "./tables/IsPlayer.sol";
 import { Player, PlayerData, PlayerTableId } from "./tables/Player.sol";
+import { Log, LogData, LogTableId } from "./tables/Log.sol";
+import { TransactionList, TransactionListData, TransactionListTableId } from "./tables/TransactionList.sol";

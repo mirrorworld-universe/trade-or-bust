@@ -24,6 +24,7 @@ contract CounterTest is MudTest {
     }
     assertTrue(codeSize > 0);
     assertTrue(isMoveValid(0,5,1,4));
+    assertTrue(calculateDistance(5,3,7,4,2));
   }
 
   function testCounter() public {
@@ -36,6 +37,21 @@ contract CounterTest is MudTest {
     counter = Counter.get(world);
     assertEq(counter, 2);
   }
+
+
+    function calculateDistance(uint256 x1, uint256 y1, uint256 x2, uint256 y2, int256 limit) public pure returns (bool) {
+        int256 deltaX = int256(x2) - int256(x1);
+        int256 deltaY = int256(y2) - int256(y1);
+        
+        int256 absDeltaX = abs(deltaX);
+        int256 absDeltaY = abs(deltaY);
+
+        if (absDeltaX <= limit && absDeltaY <= limit && (absDeltaX + absDeltaY) < limit * 2) {
+            return true;
+        } else {
+            return false;
+        }
+    }
 
   function isMoveValid(uint256 currentX, uint256 currentY, uint256 targetX, uint256 targetY) private pure returns (bool) {
       // 检查起始位置和目标位置的坐标差值

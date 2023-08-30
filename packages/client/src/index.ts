@@ -71,6 +71,17 @@ components.IsPlayer.update$.subscribe((update)=>{
   globalThis.ponzi.isplayer_update?.(update);
 });
 
+components.TransactionList.update$.subscribe((update)=>{
+  const [nextValue, prevValue] = update.value;
+  console.log("TransactionList updated", update);
+  globalThis.ponzi.transactionlist_update?.(update);
+});
+
+components.Log.update$.subscribe((update)=>{
+  const [nextValue, prevValue] = update.value;
+  console.log("Log updated", update);
+});
+
 //get functions
 (window as any).getPlayers = () => {
   return components.Player.values;

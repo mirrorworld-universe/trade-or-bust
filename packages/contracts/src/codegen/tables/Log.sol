@@ -17,15 +17,14 @@ import { EncodeArray } from "@latticexyz/store/src/tightcoder/EncodeArray.sol";
 import { Schema, SchemaLib } from "@latticexyz/store/src/Schema.sol";
 import { PackedCounter, PackedCounterLib } from "@latticexyz/store/src/PackedCounter.sol";
 
-bytes32 constant _tableId = bytes32(abi.encodePacked(bytes16(""), bytes16("MapItem")));
-bytes32 constant MapItemTableId = _tableId;
+bytes32 constant _tableId = bytes32(abi.encodePacked(bytes16(""), bytes16("Log")));
+bytes32 constant LogTableId = _tableId;
 
-struct MapItemData {
-  uint256 x;
-  uint256 y;
+struct LogData {
+  uint8 value;
 }
 
-library MapItem {
+library Log {
   /** Get the table's key schema */
   function getKeySchema() internal pure returns (Schema) {
     SchemaType[] memory _schema = new SchemaType[](1);
@@ -36,9 +35,8 @@ library MapItem {
 
   /** Get the table's value schema */
   function getValueSchema() internal pure returns (Schema) {
-    SchemaType[] memory _schema = new SchemaType[](2);
-    _schema[0] = SchemaType.UINT256;
-    _schema[1] = SchemaType.UINT256;
+    SchemaType[] memory _schema = new SchemaType[](1);
+    _schema[0] = SchemaType.UINT8;
 
     return SchemaLib.encode(_schema);
   }
@@ -51,9 +49,8 @@ library MapItem {
 
   /** Get the table's field names */
   function getFieldNames() internal pure returns (string[] memory fieldNames) {
-    fieldNames = new string[](2);
-    fieldNames[0] = "x";
-    fieldNames[1] = "y";
+    fieldNames = new string[](1);
+    fieldNames[0] = "value";
   }
 
   /** Register the table's key schema, value schema, key names and value names */
@@ -66,76 +63,42 @@ library MapItem {
     _store.registerTable(_tableId, getKeySchema(), getValueSchema(), getKeyNames(), getFieldNames());
   }
 
-  /** Get x */
-  function getX(bytes32 key) internal view returns (uint256 x) {
+  /** Get value */
+  function getValue(bytes32 key) internal view returns (uint8 value) {
     bytes32[] memory _keyTuple = new bytes32[](1);
     _keyTuple[0] = key;
 
     bytes memory _blob = StoreSwitch.getField(_tableId, _keyTuple, 0, getValueSchema());
-    return (uint256(Bytes.slice32(_blob, 0)));
+    return (uint8(Bytes.slice1(_blob, 0)));
   }
 
-  /** Get x (using the specified store) */
-  function getX(IStore _store, bytes32 key) internal view returns (uint256 x) {
+  /** Get value (using the specified store) */
+  function getValue(IStore _store, bytes32 key) internal view returns (uint8 value) {
     bytes32[] memory _keyTuple = new bytes32[](1);
     _keyTuple[0] = key;
 
     bytes memory _blob = _store.getField(_tableId, _keyTuple, 0, getValueSchema());
-    return (uint256(Bytes.slice32(_blob, 0)));
+    return (uint8(Bytes.slice1(_blob, 0)));
   }
 
-  /** Set x */
-  function setX(bytes32 key, uint256 x) internal {
+  /** Set value */
+  function setValue(bytes32 key, uint8 value) internal {
     bytes32[] memory _keyTuple = new bytes32[](1);
     _keyTuple[0] = key;
 
-    StoreSwitch.setField(_tableId, _keyTuple, 0, abi.encodePacked((x)), getValueSchema());
+    StoreSwitch.setField(_tableId, _keyTuple, 0, abi.encodePacked((value)), getValueSchema());
   }
 
-  /** Set x (using the specified store) */
-  function setX(IStore _store, bytes32 key, uint256 x) internal {
+  /** Set value (using the specified store) */
+  function setValue(IStore _store, bytes32 key, uint8 value) internal {
     bytes32[] memory _keyTuple = new bytes32[](1);
     _keyTuple[0] = key;
 
-    _store.setField(_tableId, _keyTuple, 0, abi.encodePacked((x)), getValueSchema());
-  }
-
-  /** Get y */
-  function getY(bytes32 key) internal view returns (uint256 y) {
-    bytes32[] memory _keyTuple = new bytes32[](1);
-    _keyTuple[0] = key;
-
-    bytes memory _blob = StoreSwitch.getField(_tableId, _keyTuple, 1, getValueSchema());
-    return (uint256(Bytes.slice32(_blob, 0)));
-  }
-
-  /** Get y (using the specified store) */
-  function getY(IStore _store, bytes32 key) internal view returns (uint256 y) {
-    bytes32[] memory _keyTuple = new bytes32[](1);
-    _keyTuple[0] = key;
-
-    bytes memory _blob = _store.getField(_tableId, _keyTuple, 1, getValueSchema());
-    return (uint256(Bytes.slice32(_blob, 0)));
-  }
-
-  /** Set y */
-  function setY(bytes32 key, uint256 y) internal {
-    bytes32[] memory _keyTuple = new bytes32[](1);
-    _keyTuple[0] = key;
-
-    StoreSwitch.setField(_tableId, _keyTuple, 1, abi.encodePacked((y)), getValueSchema());
-  }
-
-  /** Set y (using the specified store) */
-  function setY(IStore _store, bytes32 key, uint256 y) internal {
-    bytes32[] memory _keyTuple = new bytes32[](1);
-    _keyTuple[0] = key;
-
-    _store.setField(_tableId, _keyTuple, 1, abi.encodePacked((y)), getValueSchema());
+    _store.setField(_tableId, _keyTuple, 0, abi.encodePacked((value)), getValueSchema());
   }
 
   /** Get the full data */
-  function get(bytes32 key) internal view returns (MapItemData memory _table) {
+  function get(bytes32 key) internal view returns (LogData memory _table) {
     bytes32[] memory _keyTuple = new bytes32[](1);
     _keyTuple[0] = key;
 
@@ -144,7 +107,7 @@ library MapItem {
   }
 
   /** Get the full data (using the specified store) */
-  function get(IStore _store, bytes32 key) internal view returns (MapItemData memory _table) {
+  function get(IStore _store, bytes32 key) internal view returns (LogData memory _table) {
     bytes32[] memory _keyTuple = new bytes32[](1);
     _keyTuple[0] = key;
 
@@ -153,8 +116,8 @@ library MapItem {
   }
 
   /** Set the full data using individual values */
-  function set(bytes32 key, uint256 x, uint256 y) internal {
-    bytes memory _data = encode(x, y);
+  function set(bytes32 key, uint8 value) internal {
+    bytes memory _data = encode(value);
 
     bytes32[] memory _keyTuple = new bytes32[](1);
     _keyTuple[0] = key;
@@ -163,8 +126,8 @@ library MapItem {
   }
 
   /** Set the full data using individual values (using the specified store) */
-  function set(IStore _store, bytes32 key, uint256 x, uint256 y) internal {
-    bytes memory _data = encode(x, y);
+  function set(IStore _store, bytes32 key, uint8 value) internal {
+    bytes memory _data = encode(value);
 
     bytes32[] memory _keyTuple = new bytes32[](1);
     _keyTuple[0] = key;
@@ -173,25 +136,23 @@ library MapItem {
   }
 
   /** Set the full data using the data struct */
-  function set(bytes32 key, MapItemData memory _table) internal {
-    set(key, _table.x, _table.y);
+  function set(bytes32 key, LogData memory _table) internal {
+    set(key, _table.value);
   }
 
   /** Set the full data using the data struct (using the specified store) */
-  function set(IStore _store, bytes32 key, MapItemData memory _table) internal {
-    set(_store, key, _table.x, _table.y);
+  function set(IStore _store, bytes32 key, LogData memory _table) internal {
+    set(_store, key, _table.value);
   }
 
   /** Decode the tightly packed blob using this table's schema */
-  function decode(bytes memory _blob) internal pure returns (MapItemData memory _table) {
-    _table.x = (uint256(Bytes.slice32(_blob, 0)));
-
-    _table.y = (uint256(Bytes.slice32(_blob, 32)));
+  function decode(bytes memory _blob) internal pure returns (LogData memory _table) {
+    _table.value = (uint8(Bytes.slice1(_blob, 0)));
   }
 
   /** Tightly pack full data using this table's schema */
-  function encode(uint256 x, uint256 y) internal pure returns (bytes memory) {
-    return abi.encodePacked(x, y);
+  function encode(uint8 value) internal pure returns (bytes memory) {
+    return abi.encodePacked(value);
   }
 
   /** Encode keys as a bytes32 array using this table's schema */

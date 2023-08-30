@@ -693,8 +693,47 @@ System.register("chunks:///_virtual/JsCaller.ts", ['cc'], function (exports) {
   };
 });
 
+System.register("chunks:///_virtual/list_utils.ts", ['./rollupPluginModLoBabelHelpers.js', 'cc'], function (exports) {
+  var _createForOfIteratorHelperLoose, cclegacy;
+
+  return {
+    setters: [function (module) {
+      _createForOfIteratorHelperLoose = module.createForOfIteratorHelperLoose;
+    }, function (module) {
+      cclegacy = module.cclegacy;
+    }],
+    execute: function () {
+      cclegacy._RF.push({}, "e3e13ubvmhH06LuQi5BMWln", "list_utils", undefined);
+
+      var list_utils = exports('list_utils', /*#__PURE__*/function () {
+        function list_utils() {}
+
+        list_utils.getExtraStrings = function getExtraStrings(list1, list2) {
+          if (!list1) return list2;
+          var set = new Set(list1);
+          var extras = [];
+
+          for (var _iterator = _createForOfIteratorHelperLoose(list2), _step; !(_step = _iterator()).done;) {
+            var str = _step.value;
+
+            if (!set.has(str)) {
+              extras.push(str);
+            }
+          }
+
+          return extras;
+        };
+
+        return list_utils;
+      }());
+
+      cclegacy._RF.pop();
+    }
+  };
+});
+
 System.register("chunks:///_virtual/lobby-controller.ts", ['./rollupPluginModLoBabelHelpers.js', 'cc', './component_state.ts', './ponzi-controller.ts', './ccc_msg.ts', './string_utils.ts'], function (exports) {
-  var _applyDecoratedDescriptor, _inheritsLoose, _initializerDefineProperty, _assertThisInitialized, _asyncToGenerator, _regeneratorRuntime, cclegacy, _decorator, Label, Node, log, Component, sys, component_state, ponzi_controller, ccc_msg, string_utils;
+  var _applyDecoratedDescriptor, _inheritsLoose, _initializerDefineProperty, _assertThisInitialized, _asyncToGenerator, _regeneratorRuntime, cclegacy, _decorator, Label, Node, Component, log, sys, component_state, ponzi_controller, ccc_msg, string_utils;
 
   return {
     setters: [function (module) {
@@ -709,8 +748,8 @@ System.register("chunks:///_virtual/lobby-controller.ts", ['./rollupPluginModLoB
       _decorator = module._decorator;
       Label = module.Label;
       Node = module.Node;
-      log = module.log;
       Component = module.Component;
+      log = module.log;
       sys = module.sys;
     }, function (module) {
       component_state = module.component_state;
@@ -769,27 +808,7 @@ System.register("chunks:///_virtual/lobby-controller.ts", ['./rollupPluginModLoB
           _initializerDefineProperty(_this, "gameNode", _descriptor7, _assertThisInitialized(_this));
 
           _this.welcomeInited = false;
-          _this.inited = false; //User do not join but game is started
-          //game state is 2
-          // private async showGamingLobby(){
-          //     this.enterLobby();
-          //     this.contentLabel.string = "Game is started. Don't you want to join us?";
-          //     let currentPlayer:PlayerData = null;
-          //     try{
-          //         const playerEntity = globalThis.ponzi.currentPlayer;
-          //         currentPlayer = await window.queryValue?.(window.env.components.Player, playerEntity);
-          //     }catch{
-          //         currentPlayer = null;
-          //     }
-          //     if(currentPlayer){
-          //         this.btnJoinGame.active = false;
-          //         this.btnTriggerGame.active = true;
-          //     }else{
-          //         this.btnJoinGame.active = true;
-          //         this.btnTriggerGame.active = false;
-          //     }
-          // }
-
+          _this.inited = false;
           _this.timer = null;
           _this.leftTime = void 0;
           return _this;
@@ -1176,23 +1195,21 @@ System.register("chunks:///_virtual/lobby-controller.ts", ['./rollupPluginModLoB
             return _regeneratorRuntime().wrap(function _callee11$(_context11) {
               while (1) switch (_context11.prev = _context11.next) {
                 case 0:
-                  log("ccc_msg.on_gamestate_update received!");
                   self.updateLobby();
 
-                case 2:
+                case 1:
                 case "end":
                   return _context11.stop();
               }
             }, _callee11);
           })));
           ponzi_controller.instance.on(ccc_msg.on_isplayer_update, /*#__PURE__*/_asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee12(obj) {
-            var entity, newValue, playerEntity, hash;
+            var entity, playerEntity, hash;
             return _regeneratorRuntime().wrap(function _callee12$(_context12) {
               while (1) switch (_context12.prev = _context12.next) {
                 case 0:
                   entity = obj.entity;
-                  newValue = obj.newValue;
-                  log("ccc_msg.on_gamestate_update received!", entity, newValue);
+                  obj.newValue;
                   playerEntity = globalThis.ponzi.currentPlayer;
                   hash = string_utils.getHashFromSymbol(playerEntity);
 
@@ -1200,7 +1217,7 @@ System.register("chunks:///_virtual/lobby-controller.ts", ['./rollupPluginModLoB
                     self.updateLobby();
                   }
 
-                case 6:
+                case 5:
                 case "end":
                   return _context12.stop();
               }
@@ -1220,15 +1237,17 @@ System.register("chunks:///_virtual/lobby-controller.ts", ['./rollupPluginModLoB
 
         _proto.startCountDownAnimation = function startCountDownAnimation(endTime) {
           this.leftTime = endTime;
-          this.countDownLabel.string = this.leftTime.toString();
-          var self = this; // 计算重复次数，等于结束时间减一
+          this.countDownLabel.string = this.leftTime.toString(); // 计算重复次数，等于结束时间减一
 
           var repeat = endTime - 1; // 调用schedule方法，传入回调函数，间隔时间为1秒，重复次数为repeat，延迟时间为0
 
-          this.schedule(function () {
-            self.leftTime--;
-            self.countDownLabel.string = self.formatSeconds(self.leftTime);
-          }, 1, repeat, 0);
+          this.unschedule(this.minuesTimeLabel);
+          this.schedule(this.minuesTimeLabel, 1, repeat, 0);
+        };
+
+        _proto.minuesTimeLabel = function minuesTimeLabel() {
+          this.leftTime--;
+          this.countDownLabel.string = this.formatSeconds(this.leftTime);
         } // private redundantTime:number;
         // private startCountUpAnimation(endTime){
         //     this.redundantTime = endTime;
@@ -1529,9 +1548,9 @@ System.register("chunks:///_virtual/lobby-playerlist.ts", ['./rollupPluginModLoB
   };
 });
 
-System.register("chunks:///_virtual/main", ['./debug-view-runtime-control.ts', './Singleton.ts', './lobby-controller.ts', './counter-label.ts', './ccc_msg.ts', './component_state.ts', './GameData.ts', './JsCaller.ts', './MUDListener.ts', './PlayerData.ts', './data_center.ts', './ponzi-controller.ts', './ponzi-model.ts', './FakeMessageCenter.ts', './test.ts', './data_utils.ts', './object_utils.ts', './string_utils.ts', './HexMapTile.ts', './lobby-playerlist-model.ts', './lobby-playerlist.ts', './map-controller.ts', './mapblock.ts', './player-model.ts', './single-button-pop.ts', './popupui_manager.ts'], function () {
+System.register("chunks:///_virtual/main", ['./debug-view-runtime-control.ts', './Singleton.ts', './lobby-controller.ts', './counter-label.ts', './ccc_msg.ts', './component_state.ts', './GameData.ts', './JsCaller.ts', './MUDListener.ts', './PlayerData.ts', './data_center.ts', './ponzi-controller.ts', './ponzi-model.ts', './FakeMessageCenter.ts', './test.ts', './data_utils.ts', './list_utils.ts', './object_utils.ts', './string_utils.ts', './HexMapTile.ts', './lobby-playerlist-model.ts', './lobby-playerlist.ts', './map-controller.ts', './mapblock.ts', './player-model.ts', './single-button-pop.ts', './popupui_manager.ts', './mapitem.ts', './title-money.ts'], function () {
   return {
-    setters: [null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null],
+    setters: [null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null],
     execute: function () {}
   };
 });
@@ -1719,9 +1738,9 @@ System.register("chunks:///_virtual/map-controller.ts", ['./rollupPluginModLoBab
                 obj.money = _valueNum2;
               }
             }
-          }
+          } // log("role array:",array);
 
-          log("role array:", array);
+
           var self = this;
           self.playerParent.removeAllChildren();
 
@@ -1768,19 +1787,18 @@ System.register("chunks:///_virtual/map-controller.ts", ['./rollupPluginModLoBab
                 obj.x = valueNum;
               } else if (key == 'y') {
                 obj.y = valueNum;
-              } else if (key == 'itemType') {
-                obj.itemType = valueNum;
               }
             }
           }
 
+          log("item.values:", array);
           var self = this;
           self.itemParent.removeAllChildren();
           array.forEach(function (ele) {
             var newNode = instantiate(self.mapItemModel);
             newNode.setParent(self.itemParent);
             newNode.active = true;
-            var pos = self.tmpCoorArray[ele.x][ele.y];
+            var pos = self.tmpCoorArray[ele.y][ele.x];
             newNode.position = new Vec3(pos.x, pos.y, 0);
           });
         };
@@ -1801,8 +1819,8 @@ System.register("chunks:///_virtual/map-controller.ts", ['./rollupPluginModLoBab
 
           var hexMap = this.generateHexMap(100, 78);
           var coordinationArray = this.moveAllTiles(hexMap, centerX, centerY);
-          this.tmpCoorArray = coordinationArray;
-          log("coordinationArray 111:", coordinationArray);
+          this.tmpCoorArray = coordinationArray; // log("coordinationArray 111:",coordinationArray);
+
           var coorMap = this.generateHexCoorMap();
 
           for (var i = 0; i < coordinationArray.length; i++) {
@@ -1923,7 +1941,6 @@ System.register("chunks:///_virtual/map-controller.ts", ['./rollupPluginModLoBab
       var MapItemLocalObj = function MapItemLocalObj() {
         this.x = void 0;
         this.y = void 0;
-        this.itemType = void 0;
       };
 
       var RoleLocalObj = function RoleLocalObj() {
@@ -2059,6 +2076,74 @@ System.register("chunks:///_virtual/mapblock.ts", ['./rollupPluginModLoBabelHelp
   };
 });
 
+System.register("chunks:///_virtual/mapitem.ts", ['./rollupPluginModLoBabelHelpers.js', 'cc'], function (exports) {
+  var _inheritsLoose, cclegacy, _decorator, tween, v2, Component;
+
+  return {
+    setters: [function (module) {
+      _inheritsLoose = module.inheritsLoose;
+    }, function (module) {
+      cclegacy = module.cclegacy;
+      _decorator = module._decorator;
+      tween = module.tween;
+      v2 = module.v2;
+      Component = module.Component;
+    }],
+    execute: function () {
+      var _dec, _class;
+
+      cclegacy._RF.push({}, "49b4aAjQItOMplhuIvp5DQa", "mapitem", undefined);
+
+      var ccclass = _decorator.ccclass,
+          property = _decorator.property;
+      var mapitem = exports('mapitem', (_dec = ccclass('mapitem'), _dec(_class = /*#__PURE__*/function (_Component) {
+        _inheritsLoose(mapitem, _Component);
+
+        function mapitem() {
+          return _Component.apply(this, arguments) || this;
+        }
+
+        var _proto = mapitem.prototype;
+
+        _proto.start = function start() {};
+
+        _proto.update = function update(deltaTime) {};
+
+        _proto.coinJumpAndFly = function coinJumpAndFly(coin, target, callback) {
+          // 获取金币的初始坐标
+          var origin = coin.position; // 设置金币的动画序列，包括跳起、飞向、缩小、消失四个步骤
+
+          tween(coin).sequence( // 跳起：让金币在0.5秒内向上移动100像素，并旋转180度
+          tween().by(0.5, {
+            position: v2(0, 100),
+            angle: 180
+          }), // 飞向：让金币在1秒内飞向目标坐标，并旋转360度
+          tween().to(1, {
+            position: target,
+            angle: 360
+          }), // 缩小：让金币在0.5秒内缩小到原来的一半
+          tween().to(0.5, {
+            scale: 0.5
+          }), // 消失：让金币在0.5秒内透明度降为0，并恢复初始状态
+          tween().to(0.5, {
+            opacity: 0
+          }).call(function () {
+            // 恢复金币的初始位置、大小、角度和透明度
+            coin.position = origin;
+            coin.scale = 1;
+            coin.angle = 0;
+            coin.opacity = 255;
+          }), tween.call(callback)).start();
+        };
+
+        return mapitem;
+      }(Component)) || _class));
+
+      cclegacy._RF.pop();
+    }
+  };
+});
+
 System.register("chunks:///_virtual/MUDListener.ts", ['./rollupPluginModLoBabelHelpers.js', 'cc'], function (exports) {
   var _inheritsLoose, cclegacy, _decorator, Component;
 
@@ -2118,6 +2203,38 @@ System.register("chunks:///_virtual/object_utils.ts", ['cc'], function (exports)
           }
 
           return false;
+        };
+
+        object_utils.compareObjects = function compareObjects(obj1, obj2) {
+          // 定义一个空数组来存储变动的参数名称
+          var changedParams = {};
+
+          if (!obj1 && obj2) {
+            for (var key in obj2) {
+              changedParams[key] = obj2[key];
+            }
+          } else {
+            // 遍历obj1的所有属性
+            for (var _key in obj1) {
+              // 如果obj2没有该属性，或者obj2的属性值与obj1不同，则说明该属性发生了变动
+              if (!obj2.hasOwnProperty(_key) || obj1[_key] !== obj2[_key]) {
+                // 将变动的属性名称添加到数组中
+                changedParams[_key] = obj2[_key];
+              }
+            } // 遍历obj2的所有属性
+
+
+            for (var _key2 in obj2) {
+              // 如果obj1没有该属性，则说明该属性是新增的，也属于变动
+              if (!obj1.hasOwnProperty(_key2)) {
+                // 将变动的属性名称添加到数组中
+                changedParams[_key2] = obj2[_key2];
+              }
+            } // 返回变动的参数名称数组
+
+
+            return changedParams;
+          }
         };
 
         return object_utils;
@@ -2236,8 +2353,8 @@ System.register("chunks:///_virtual/PlayerData.ts", ['cc'], function (exports) {
   };
 });
 
-System.register("chunks:///_virtual/ponzi-controller.ts", ['./rollupPluginModLoBabelHelpers.js', 'cc', './ccc_msg.ts', './object_utils.ts'], function (exports) {
-  var _inheritsLoose, _createClass, cclegacy, _decorator, log, find, Component, ccc_msg, object_utils;
+System.register("chunks:///_virtual/ponzi-controller.ts", ['./rollupPluginModLoBabelHelpers.js', 'cc', './ccc_msg.ts', './object_utils.ts', './list_utils.ts'], function (exports) {
+  var _inheritsLoose, _createClass, cclegacy, _decorator, log, find, Component, ccc_msg, object_utils, list_utils;
 
   return {
     setters: [function (module) {
@@ -2253,6 +2370,8 @@ System.register("chunks:///_virtual/ponzi-controller.ts", ['./rollupPluginModLoB
       ccc_msg = module.ccc_msg;
     }, function (module) {
       object_utils = module.object_utils;
+    }, function (module) {
+      list_utils = module.list_utils;
     }],
     execute: function () {
       var _dec, _class, _class2;
@@ -2317,6 +2436,10 @@ System.register("chunks:///_virtual/ponzi-controller.ts", ['./rollupPluginModLoB
             self.onIsPlayerUpdate(update.entity, update.value[0]);
           };
 
+          globalThis.ponzi.transactionlist_update = function (update) {
+            self.transactionListUpdate(update);
+          };
+
           globalThis.ponzi.player_update = function (update) {
             var _update$value = update.value,
                 nextValue = _update$value[0],
@@ -2368,11 +2491,35 @@ System.register("chunks:///_virtual/ponzi-controller.ts", ['./rollupPluginModLoB
           if (object_utils.isNull(oldObj) && newObj) {
             ponzi_controller.instance.sendCCCMsg(ccc_msg.on_player_add, entity);
           } else {
-            var result = this.compareObjects(oldObj, newObj);
-            console.log(result); // ["name", "age"]
+            var result = this.compareObjects(oldObj, newObj); // console.log(result); // ["name", "age"]
 
             if (result['x'] || result['y']) {
-              ponzi_controller.instance.sendCCCMsg(ccc_msg.on_player_update, null);
+              ponzi_controller.instance.sendCCCMsg(ccc_msg.on_player_update, {
+                entity: entity,
+                oldObj: oldObj,
+                newObj: newObj
+              });
+            }
+          }
+        };
+
+        _proto.transactionListUpdate = function transactionListUpdate(update) {
+          var entity = update.entity;
+          var _update$value2 = update.value,
+              nextValue = _update$value2[0],
+              prevValue = _update$value2[1];
+          log("transactionListUpdate extraStrings:", update, nextValue, prevValue);
+          var playerEntity = globalThis.ponzi.currentPlayer;
+
+          if (entity == playerEntity) {
+            var extraStrings = list_utils.getExtraStrings(prevValue == null ? void 0 : prevValue.list, nextValue.list);
+
+            if (extraStrings.length > 0) {
+              log("transactionListUpdate extraStrings:", extraStrings);
+              ponzi_controller.instance.sendCCCMsg(ccc_msg.single_button_dialog, {
+                content: "You've got a new trading partner",
+                btnText: "OK"
+              });
             }
           }
         };
@@ -2821,6 +2968,140 @@ System.register("chunks:///_virtual/test.ts", ['./rollupPluginModLoBabelHelpers.
 
         return test;
       }(Component)) || _class));
+
+      cclegacy._RF.pop();
+    }
+  };
+});
+
+System.register("chunks:///_virtual/title-money.ts", ['./rollupPluginModLoBabelHelpers.js', 'cc', './ponzi-controller.ts', './ccc_msg.ts'], function (exports) {
+  var _applyDecoratedDescriptor, _inheritsLoose, _initializerDefineProperty, _assertThisInitialized, _asyncToGenerator, _regeneratorRuntime, cclegacy, _decorator, Label, Component, ponzi_controller, ccc_msg;
+
+  return {
+    setters: [function (module) {
+      _applyDecoratedDescriptor = module.applyDecoratedDescriptor;
+      _inheritsLoose = module.inheritsLoose;
+      _initializerDefineProperty = module.initializerDefineProperty;
+      _assertThisInitialized = module.assertThisInitialized;
+      _asyncToGenerator = module.asyncToGenerator;
+      _regeneratorRuntime = module.regeneratorRuntime;
+    }, function (module) {
+      cclegacy = module.cclegacy;
+      _decorator = module._decorator;
+      Label = module.Label;
+      Component = module.Component;
+    }, function (module) {
+      ponzi_controller = module.ponzi_controller;
+    }, function (module) {
+      ccc_msg = module.ccc_msg;
+    }],
+    execute: function () {
+      var _dec, _dec2, _class, _class2, _descriptor;
+
+      cclegacy._RF.push({}, "1f072PXdu1KhajgTKS+uklP", "title-money", undefined);
+
+      var ccclass = _decorator.ccclass,
+          property = _decorator.property;
+      var title_money = exports('title_money', (_dec = ccclass('title_money'), _dec2 = property({
+        type: Label
+      }), _dec(_class = (_class2 = /*#__PURE__*/function (_Component) {
+        _inheritsLoose(title_money, _Component);
+
+        function title_money() {
+          var _this;
+
+          for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
+            args[_key] = arguments[_key];
+          }
+
+          _this = _Component.call.apply(_Component, [this].concat(args)) || this;
+
+          _initializerDefineProperty(_this, "moneyLabel", _descriptor, _assertThisInitialized(_this));
+
+          _this._inited = false;
+          return _this;
+        }
+
+        var _proto = title_money.prototype;
+
+        _proto.start = function start() {};
+
+        _proto.update = function update(deltaTime) {
+          if (!this._inited) this.init();
+        };
+
+        _proto.init = /*#__PURE__*/function () {
+          var _init = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee() {
+            var playerEntity, currentPlayer;
+            return _regeneratorRuntime().wrap(function _callee$(_context) {
+              while (1) switch (_context.prev = _context.next) {
+                case 0:
+                  playerEntity = globalThis.ponzi.currentPlayer;
+
+                  if (playerEntity) {
+                    _context.next = 3;
+                    break;
+                  }
+
+                  return _context.abrupt("return");
+
+                case 3:
+                  this._inited = true;
+                  currentPlayer = null;
+                  _context.prev = 5;
+                  _context.next = 8;
+                  return window.queryValue == null ? void 0 : window.queryValue(window.env.components.Player, playerEntity);
+
+                case 8:
+                  currentPlayer = _context.sent;
+                  this.moneyLabel.string = currentPlayer.money.toString();
+                  _context.next = 15;
+                  break;
+
+                case 12:
+                  _context.prev = 12;
+                  _context.t0 = _context["catch"](5);
+                  currentPlayer = null;
+
+                case 15:
+                  this.registerListeners();
+
+                case 16:
+                case "end":
+                  return _context.stop();
+              }
+            }, _callee, this, [[5, 12]]);
+          }));
+
+          function init() {
+            return _init.apply(this, arguments);
+          }
+
+          return init;
+        }();
+
+        _proto.registerListeners = function registerListeners() {
+          var _this2 = this;
+
+          var playerEntity = globalThis.ponzi.currentPlayer;
+          ponzi_controller.instance.on(ccc_msg.on_player_update, function (obj) {
+            var entity = obj.entity;
+            var oldObj = obj.oldObj;
+            var newObj = obj.newObj;
+
+            if (playerEntity == entity) {
+              _this2.moneyLabel.string = newObj.money;
+            }
+          });
+        };
+
+        return title_money;
+      }(Component), _descriptor = _applyDecoratedDescriptor(_class2.prototype, "moneyLabel", [_dec2], {
+        configurable: true,
+        enumerable: true,
+        writable: true,
+        initializer: null
+      }), _class2)) || _class));
 
       cclegacy._RF.pop();
     }
