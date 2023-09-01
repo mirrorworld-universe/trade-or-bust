@@ -26,7 +26,6 @@ struct PlayerData {
   uint32 money;
   uint256 x;
   uint256 y;
-  bytes assets;
   bytes transactions;
 }
 
@@ -41,14 +40,13 @@ library Player {
 
   /** Get the table's value schema */
   function getValueSchema() internal pure returns (Schema) {
-    SchemaType[] memory _schema = new SchemaType[](7);
+    SchemaType[] memory _schema = new SchemaType[](6);
     _schema[0] = SchemaType.UINT256;
     _schema[1] = SchemaType.UINT32;
     _schema[2] = SchemaType.UINT32;
     _schema[3] = SchemaType.UINT256;
     _schema[4] = SchemaType.UINT256;
     _schema[5] = SchemaType.BYTES;
-    _schema[6] = SchemaType.BYTES;
 
     return SchemaLib.encode(_schema);
   }
@@ -61,14 +59,13 @@ library Player {
 
   /** Get the table's field names */
   function getFieldNames() internal pure returns (string[] memory fieldNames) {
-    fieldNames = new string[](7);
+    fieldNames = new string[](6);
     fieldNames[0] = "gameId";
     fieldNames[1] = "state";
     fieldNames[2] = "money";
     fieldNames[3] = "x";
     fieldNames[4] = "y";
-    fieldNames[5] = "assets";
-    fieldNames[6] = "transactions";
+    fieldNames[5] = "transactions";
   }
 
   /** Register the table's key schema, value schema, key names and value names */
@@ -251,161 +248,12 @@ library Player {
     _store.setField(_tableId, _keyTuple, 4, abi.encodePacked((y)), getValueSchema());
   }
 
-  /** Get assets */
-  function getAssets(bytes32 key) internal view returns (bytes memory assets) {
-    bytes32[] memory _keyTuple = new bytes32[](1);
-    _keyTuple[0] = key;
-
-    bytes memory _blob = StoreSwitch.getField(_tableId, _keyTuple, 5, getValueSchema());
-    return (bytes(_blob));
-  }
-
-  /** Get assets (using the specified store) */
-  function getAssets(IStore _store, bytes32 key) internal view returns (bytes memory assets) {
-    bytes32[] memory _keyTuple = new bytes32[](1);
-    _keyTuple[0] = key;
-
-    bytes memory _blob = _store.getField(_tableId, _keyTuple, 5, getValueSchema());
-    return (bytes(_blob));
-  }
-
-  /** Set assets */
-  function setAssets(bytes32 key, bytes memory assets) internal {
-    bytes32[] memory _keyTuple = new bytes32[](1);
-    _keyTuple[0] = key;
-
-    StoreSwitch.setField(_tableId, _keyTuple, 5, bytes((assets)), getValueSchema());
-  }
-
-  /** Set assets (using the specified store) */
-  function setAssets(IStore _store, bytes32 key, bytes memory assets) internal {
-    bytes32[] memory _keyTuple = new bytes32[](1);
-    _keyTuple[0] = key;
-
-    _store.setField(_tableId, _keyTuple, 5, bytes((assets)), getValueSchema());
-  }
-
-  /** Get the length of assets */
-  function lengthAssets(bytes32 key) internal view returns (uint256) {
-    bytes32[] memory _keyTuple = new bytes32[](1);
-    _keyTuple[0] = key;
-
-    uint256 _byteLength = StoreSwitch.getFieldLength(_tableId, _keyTuple, 5, getValueSchema());
-    unchecked {
-      return _byteLength / 1;
-    }
-  }
-
-  /** Get the length of assets (using the specified store) */
-  function lengthAssets(IStore _store, bytes32 key) internal view returns (uint256) {
-    bytes32[] memory _keyTuple = new bytes32[](1);
-    _keyTuple[0] = key;
-
-    uint256 _byteLength = _store.getFieldLength(_tableId, _keyTuple, 5, getValueSchema());
-    unchecked {
-      return _byteLength / 1;
-    }
-  }
-
-  /**
-   * Get an item of assets
-   * (unchecked, returns invalid data if index overflows)
-   */
-  function getItemAssets(bytes32 key, uint256 _index) internal view returns (bytes memory) {
-    bytes32[] memory _keyTuple = new bytes32[](1);
-    _keyTuple[0] = key;
-
-    unchecked {
-      bytes memory _blob = StoreSwitch.getFieldSlice(
-        _tableId,
-        _keyTuple,
-        5,
-        getValueSchema(),
-        _index * 1,
-        (_index + 1) * 1
-      );
-      return (bytes(_blob));
-    }
-  }
-
-  /**
-   * Get an item of assets (using the specified store)
-   * (unchecked, returns invalid data if index overflows)
-   */
-  function getItemAssets(IStore _store, bytes32 key, uint256 _index) internal view returns (bytes memory) {
-    bytes32[] memory _keyTuple = new bytes32[](1);
-    _keyTuple[0] = key;
-
-    unchecked {
-      bytes memory _blob = _store.getFieldSlice(_tableId, _keyTuple, 5, getValueSchema(), _index * 1, (_index + 1) * 1);
-      return (bytes(_blob));
-    }
-  }
-
-  /** Push a slice to assets */
-  function pushAssets(bytes32 key, bytes memory _slice) internal {
-    bytes32[] memory _keyTuple = new bytes32[](1);
-    _keyTuple[0] = key;
-
-    StoreSwitch.pushToField(_tableId, _keyTuple, 5, bytes((_slice)), getValueSchema());
-  }
-
-  /** Push a slice to assets (using the specified store) */
-  function pushAssets(IStore _store, bytes32 key, bytes memory _slice) internal {
-    bytes32[] memory _keyTuple = new bytes32[](1);
-    _keyTuple[0] = key;
-
-    _store.pushToField(_tableId, _keyTuple, 5, bytes((_slice)), getValueSchema());
-  }
-
-  /** Pop a slice from assets */
-  function popAssets(bytes32 key) internal {
-    bytes32[] memory _keyTuple = new bytes32[](1);
-    _keyTuple[0] = key;
-
-    StoreSwitch.popFromField(_tableId, _keyTuple, 5, 1, getValueSchema());
-  }
-
-  /** Pop a slice from assets (using the specified store) */
-  function popAssets(IStore _store, bytes32 key) internal {
-    bytes32[] memory _keyTuple = new bytes32[](1);
-    _keyTuple[0] = key;
-
-    _store.popFromField(_tableId, _keyTuple, 5, 1, getValueSchema());
-  }
-
-  /**
-   * Update a slice of assets at `_index`
-   * (checked only to prevent modifying other tables; can corrupt own data if index overflows)
-   */
-  function updateAssets(bytes32 key, uint256 _index, bytes memory _slice) internal {
-    bytes32[] memory _keyTuple = new bytes32[](1);
-    _keyTuple[0] = key;
-
-    unchecked {
-      StoreSwitch.updateInField(_tableId, _keyTuple, 5, _index * 1, bytes((_slice)), getValueSchema());
-    }
-  }
-
-  /**
-   * Update a slice of assets (using the specified store) at `_index`
-   * (checked only to prevent modifying other tables; can corrupt own data if index overflows)
-   */
-  function updateAssets(IStore _store, bytes32 key, uint256 _index, bytes memory _slice) internal {
-    bytes32[] memory _keyTuple = new bytes32[](1);
-    _keyTuple[0] = key;
-
-    unchecked {
-      _store.updateInField(_tableId, _keyTuple, 5, _index * 1, bytes((_slice)), getValueSchema());
-    }
-  }
-
   /** Get transactions */
   function getTransactions(bytes32 key) internal view returns (bytes memory transactions) {
     bytes32[] memory _keyTuple = new bytes32[](1);
     _keyTuple[0] = key;
 
-    bytes memory _blob = StoreSwitch.getField(_tableId, _keyTuple, 6, getValueSchema());
+    bytes memory _blob = StoreSwitch.getField(_tableId, _keyTuple, 5, getValueSchema());
     return (bytes(_blob));
   }
 
@@ -414,7 +262,7 @@ library Player {
     bytes32[] memory _keyTuple = new bytes32[](1);
     _keyTuple[0] = key;
 
-    bytes memory _blob = _store.getField(_tableId, _keyTuple, 6, getValueSchema());
+    bytes memory _blob = _store.getField(_tableId, _keyTuple, 5, getValueSchema());
     return (bytes(_blob));
   }
 
@@ -423,7 +271,7 @@ library Player {
     bytes32[] memory _keyTuple = new bytes32[](1);
     _keyTuple[0] = key;
 
-    StoreSwitch.setField(_tableId, _keyTuple, 6, bytes((transactions)), getValueSchema());
+    StoreSwitch.setField(_tableId, _keyTuple, 5, bytes((transactions)), getValueSchema());
   }
 
   /** Set transactions (using the specified store) */
@@ -431,7 +279,7 @@ library Player {
     bytes32[] memory _keyTuple = new bytes32[](1);
     _keyTuple[0] = key;
 
-    _store.setField(_tableId, _keyTuple, 6, bytes((transactions)), getValueSchema());
+    _store.setField(_tableId, _keyTuple, 5, bytes((transactions)), getValueSchema());
   }
 
   /** Get the length of transactions */
@@ -439,7 +287,7 @@ library Player {
     bytes32[] memory _keyTuple = new bytes32[](1);
     _keyTuple[0] = key;
 
-    uint256 _byteLength = StoreSwitch.getFieldLength(_tableId, _keyTuple, 6, getValueSchema());
+    uint256 _byteLength = StoreSwitch.getFieldLength(_tableId, _keyTuple, 5, getValueSchema());
     unchecked {
       return _byteLength / 1;
     }
@@ -450,7 +298,7 @@ library Player {
     bytes32[] memory _keyTuple = new bytes32[](1);
     _keyTuple[0] = key;
 
-    uint256 _byteLength = _store.getFieldLength(_tableId, _keyTuple, 6, getValueSchema());
+    uint256 _byteLength = _store.getFieldLength(_tableId, _keyTuple, 5, getValueSchema());
     unchecked {
       return _byteLength / 1;
     }
@@ -468,7 +316,7 @@ library Player {
       bytes memory _blob = StoreSwitch.getFieldSlice(
         _tableId,
         _keyTuple,
-        6,
+        5,
         getValueSchema(),
         _index * 1,
         (_index + 1) * 1
@@ -486,7 +334,7 @@ library Player {
     _keyTuple[0] = key;
 
     unchecked {
-      bytes memory _blob = _store.getFieldSlice(_tableId, _keyTuple, 6, getValueSchema(), _index * 1, (_index + 1) * 1);
+      bytes memory _blob = _store.getFieldSlice(_tableId, _keyTuple, 5, getValueSchema(), _index * 1, (_index + 1) * 1);
       return (bytes(_blob));
     }
   }
@@ -496,7 +344,7 @@ library Player {
     bytes32[] memory _keyTuple = new bytes32[](1);
     _keyTuple[0] = key;
 
-    StoreSwitch.pushToField(_tableId, _keyTuple, 6, bytes((_slice)), getValueSchema());
+    StoreSwitch.pushToField(_tableId, _keyTuple, 5, bytes((_slice)), getValueSchema());
   }
 
   /** Push a slice to transactions (using the specified store) */
@@ -504,7 +352,7 @@ library Player {
     bytes32[] memory _keyTuple = new bytes32[](1);
     _keyTuple[0] = key;
 
-    _store.pushToField(_tableId, _keyTuple, 6, bytes((_slice)), getValueSchema());
+    _store.pushToField(_tableId, _keyTuple, 5, bytes((_slice)), getValueSchema());
   }
 
   /** Pop a slice from transactions */
@@ -512,7 +360,7 @@ library Player {
     bytes32[] memory _keyTuple = new bytes32[](1);
     _keyTuple[0] = key;
 
-    StoreSwitch.popFromField(_tableId, _keyTuple, 6, 1, getValueSchema());
+    StoreSwitch.popFromField(_tableId, _keyTuple, 5, 1, getValueSchema());
   }
 
   /** Pop a slice from transactions (using the specified store) */
@@ -520,7 +368,7 @@ library Player {
     bytes32[] memory _keyTuple = new bytes32[](1);
     _keyTuple[0] = key;
 
-    _store.popFromField(_tableId, _keyTuple, 6, 1, getValueSchema());
+    _store.popFromField(_tableId, _keyTuple, 5, 1, getValueSchema());
   }
 
   /**
@@ -532,7 +380,7 @@ library Player {
     _keyTuple[0] = key;
 
     unchecked {
-      StoreSwitch.updateInField(_tableId, _keyTuple, 6, _index * 1, bytes((_slice)), getValueSchema());
+      StoreSwitch.updateInField(_tableId, _keyTuple, 5, _index * 1, bytes((_slice)), getValueSchema());
     }
   }
 
@@ -545,7 +393,7 @@ library Player {
     _keyTuple[0] = key;
 
     unchecked {
-      _store.updateInField(_tableId, _keyTuple, 6, _index * 1, bytes((_slice)), getValueSchema());
+      _store.updateInField(_tableId, _keyTuple, 5, _index * 1, bytes((_slice)), getValueSchema());
     }
   }
 
@@ -575,10 +423,9 @@ library Player {
     uint32 money,
     uint256 x,
     uint256 y,
-    bytes memory assets,
     bytes memory transactions
   ) internal {
-    bytes memory _data = encode(gameId, state, money, x, y, assets, transactions);
+    bytes memory _data = encode(gameId, state, money, x, y, transactions);
 
     bytes32[] memory _keyTuple = new bytes32[](1);
     _keyTuple[0] = key;
@@ -595,10 +442,9 @@ library Player {
     uint32 money,
     uint256 x,
     uint256 y,
-    bytes memory assets,
     bytes memory transactions
   ) internal {
-    bytes memory _data = encode(gameId, state, money, x, y, assets, transactions);
+    bytes memory _data = encode(gameId, state, money, x, y, transactions);
 
     bytes32[] memory _keyTuple = new bytes32[](1);
     _keyTuple[0] = key;
@@ -608,12 +454,12 @@ library Player {
 
   /** Set the full data using the data struct */
   function set(bytes32 key, PlayerData memory _table) internal {
-    set(key, _table.gameId, _table.state, _table.money, _table.x, _table.y, _table.assets, _table.transactions);
+    set(key, _table.gameId, _table.state, _table.money, _table.x, _table.y, _table.transactions);
   }
 
   /** Set the full data using the data struct (using the specified store) */
   function set(IStore _store, bytes32 key, PlayerData memory _table) internal {
-    set(_store, key, _table.gameId, _table.state, _table.money, _table.x, _table.y, _table.assets, _table.transactions);
+    set(_store, key, _table.gameId, _table.state, _table.money, _table.x, _table.y, _table.transactions);
   }
 
   /**
@@ -642,12 +488,6 @@ library Player {
       unchecked {
         _end = 136 + _encodedLengths.atIndex(0);
       }
-      _table.assets = (bytes(SliceLib.getSubslice(_blob, _start, _end).toBytes()));
-
-      _start = _end;
-      unchecked {
-        _end += _encodedLengths.atIndex(1);
-      }
       _table.transactions = (bytes(SliceLib.getSubslice(_blob, _start, _end).toBytes()));
     }
   }
@@ -659,17 +499,15 @@ library Player {
     uint32 money,
     uint256 x,
     uint256 y,
-    bytes memory assets,
     bytes memory transactions
   ) internal pure returns (bytes memory) {
     PackedCounter _encodedLengths;
     // Lengths are effectively checked during copy by 2**40 bytes exceeding gas limits
     unchecked {
-      _encodedLengths = PackedCounterLib.pack(bytes(assets).length, bytes(transactions).length);
+      _encodedLengths = PackedCounterLib.pack(bytes(transactions).length);
     }
 
-    return
-      abi.encodePacked(gameId, state, money, x, y, _encodedLengths.unwrap(), bytes((assets)), bytes((transactions)));
+    return abi.encodePacked(gameId, state, money, x, y, _encodedLengths.unwrap(), bytes((transactions)));
   }
 
   /** Encode keys as a bytes32 array using this table's schema */

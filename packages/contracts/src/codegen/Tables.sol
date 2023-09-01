@@ -11,5 +11,7 @@ import { MapItem, MapItemData, MapItemTableId } from "./tables/MapItem.sol";
 import { MapItemValue, MapItemValueTableId } from "./tables/MapItemValue.sol";
 import { IsPlayer, IsPlayerTableId } from "./tables/IsPlayer.sol";
 import { Player, PlayerData, PlayerTableId } from "./tables/Player.sol";
+import { RaiseColddown, RaiseColddownData, RaiseColddownTableId } from "./tables/RaiseColddown.sol";
+import { AssetsList, AssetsListData, AssetsListTableId } from "./tables/AssetsList.sol";
 import { Log, LogData, LogTableId } from "./tables/Log.sol";
 import { TransactionList, TransactionListData, TransactionListTableId } from "./tables/TransactionList.sol";

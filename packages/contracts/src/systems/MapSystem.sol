@@ -16,10 +16,6 @@ import { StoreCore } from "@latticexyz/store/src/StoreCore.sol";
 
 
 contract MapSystem is System {
-    function testLog() public {
-        
-    }
-
     function move(uint256 targetX, uint256 targetY) public returns(bool){
         bytes32 player = addressToEntityKey(_msgSender());
         require(IsPlayer.get(player), "Not a player!!!");

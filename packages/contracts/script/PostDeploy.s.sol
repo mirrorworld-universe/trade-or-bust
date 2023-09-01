@@ -45,15 +45,27 @@ contract PostDeploy is Script {
     uint N = 1;
     uint R = 2;
 
-    uint[8][8] memory map = [
-        [O, N, N, R, N, N, N, O],
-        [O, N, N, R, R, N, N, O],
-        [O, N, R, R, R, N, N, O],
-        [O, N, R, R, R, N, N, O],
-        [O, N, R, R, R, N, N, O],
-        [O, N, N, R, N, N, N, O],
-        [O, N, N, R, N, N, N, O],
-        [O, N, N, R, N, N, N, O]
+    uint[20][20] memory map = [
+        [O, N, N, R, N, N, N, O, O, O, O, O, O, O, O, O, O, O, O, O],
+        [O, N, N, R, N, N, N, O, O, O, O, O, O, O, O, O, O, O, O, O],
+        [O, N, N, R, N, N, N, O, O, O, O, O, O, O, O, O, O, O, O, O],
+        [O, N, N, R, N, N, N, O, O, O, O, O, O, O, O, O, O, O, O, O],
+        [O, N, N, R, N, N, N, O, O, O, O, O, O, O, O, O, O, O, O, O],
+        [O, N, N, R, N, N, N, O, O, O, O, O, O, O, O, O, O, O, O, O],
+        [O, N, N, R, N, N, N, O, O, O, O, O, O, O, O, O, O, O, O, O],
+        [O, N, N, R, N, N, N, O, O, O, O, O, O, O, O, O, O, O, O, O],
+        [O, N, N, R, N, N, N, O, O, O, O, O, O, O, O, O, O, O, O, O],
+        [O, N, N, R, N, N, N, O, O, O, O, O, O, O, O, O, O, O, O, O],
+        [O, N, N, R, N, N, N, O, O, O, O, O, O, O, O, O, O, O, O, O],
+        [O, N, N, R, N, N, N, O, O, O, O, O, O, O, O, O, O, O, O, O],
+        [O, N, N, R, N, N, N, O, O, O, O, O, O, O, O, O, O, O, O, O],
+        [O, N, N, R, N, N, N, O, O, O, O, O, O, O, O, O, O, O, O, O],
+        [O, N, N, R, N, N, N, O, O, O, O, O, O, O, O, O, O, O, O, O],
+        [O, N, N, R, N, N, N, O, O, O, O, O, O, O, O, O, O, O, O, O],
+        [O, N, N, R, N, N, N, O, O, O, O, O, O, O, O, O, O, O, O, O],
+        [O, N, N, R, N, N, N, O, O, O, O, O, O, O, O, O, O, O, O, O],
+        [O, N, N, R, N, N, N, O, O, O, O, O, O, O, O, O, O, O, O, O],
+        [O, N, N, R, N, N, N, O, O, O, O, O, O, O, O, O, O, O, O, O]
     ];
 
     uint32 height = uint32(map.length);

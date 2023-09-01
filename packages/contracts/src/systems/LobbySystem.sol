@@ -2,7 +2,7 @@
 pragma solidity >=0.8.0;
 
 import { System } from "@latticexyz/world/src/System.sol";
-import { Log,Counter,Player,Game ,GameData,GameState,GameMap,MapItem,PlayerData,TransactionList,IsPlayer,GameMapData} from "../codegen/Tables.sol";
+import { RaiseColddown, AssetsList, Log,Counter,Player,Game ,GameData,GameState,GameMap,MapItem,PlayerData,TransactionList,IsPlayer,GameMapData} from "../codegen/Tables.sol";
 import { addressToEntityKey } from "../addressToEntityKey.sol";
 import { IWorld } from "../../src/codegen/world/IWorld.sol";
 import { getUniqueEntity } from "@latticexyz/world/src/modules/uniqueentity/getUniqueEntity.sol";
@@ -16,18 +16,19 @@ contract LobbySystem is System {
 
         GameData memory gameData = Game.get();
         GameMapData memory gameMap = GameMap.get();
-        uint[][] memory mapArray = bytesToUintArray(gameMap.mapArray);
-        uint256[2][] memory coordinations = getRandomCoordinates(mapArray,8,8,1);
+        uint[][] memory mapArray = bytesToUintArray(gameMap.mapArray,20,20);
+        uint256[2][] memory coordinations = getRandomCoordinates(mapArray,20,20,1);
 
         uint32 playerState = 2;
-        bytes memory assets = new bytes(0);
         bytes memory transactions = new bytes(0);
-        Player.set(player, gameData.gameId, playerState, 50, coordinations[0][0],coordinations[0][1],assets, transactions);
+        Player.set(player, gameData.gameId, playerState, 50, coordinations[0][0],coordinations[0][1], transactions);
 
         bytes32[] memory list = new bytes32[](0);
         TransactionList.set(player, list);
 
-        Log.set(player,1);
+        AssetsList.set(player,0,0,0,0,0,0);
+
+        RaiseColddown.set(player,0,0);
 
         return 2;
     }
@@ -50,8 +51,8 @@ contract LobbySystem is System {
                 
                 // initGameMap();
                 GameMapData memory gameMap = GameMap.get();
-                uint[][] memory mapArray = bytesToUintArray(gameMap.mapArray);
-                initMapItems(mapArray,8,8);
+                uint[][] memory mapArray = bytesToUintArray(gameMap.mapArray,20,20);
+                initMapItems(mapArray,20,20);
                 return 2;
             }else{
                 return 4;
@@ -61,74 +62,45 @@ contract LobbySystem is System {
         return 3;
     }
 
-    function bytesToUintArray(bytes memory data) public pure returns (uint[][] memory) {
-        require(data.length % 32 == 0, "Invalid data length");
+    // function bytesToUintArray(bytes memory data) public pure returns (uint[][] memory) {
+    //     require(data.length % 32 == 0, "bytesToUintArray Invalid data length");
 
-        uint numElements = data.length / 32;
-        uint[][] memory result = new uint[][](numElements);
+    //     uint numElements = data.length / 32;
+    //     uint[][] memory result = new uint[][](numElements);
         
-        assembly {
-            // 获取数据的指针
-            let ptr := add(data, 0x20)
+    //     assembly {
+    //         // 获取数据的指针
+    //         let ptr := add(data, 0x20)
             
-            for {
-                let i := 0
-            } lt(i, numElements) {
-                i := add(i, 1)
-            } {
-                let subPtr := add(ptr, mul(i, 32))
-                mstore(add(result, mul(i, 0x20)), mload(subPtr))
+    //         for {
+    //             let i := 0
+    //         } lt(i, numElements) {
+    //             i := add(i, 1)
+    //         } {
+    //             let subPtr := add(ptr, mul(i, 32))
+    //             mstore(add(result, mul(i, 0x20)), mload(subPtr))
+    //         }
+    //     }
+        
+    //     return result;
+    // }
+
+
+    function bytesToUintArray(bytes memory data, uint32 width, uint32 height) public pure returns (uint[][] memory) {
+        require(data.length == width * height, "Invalid data length");
+
+        uint[][] memory result = new uint[][](height);
+        
+        for (uint32 y = 0; y < height; y++) {
+            result[y] = new uint[](width);
+
+            for (uint32 x = 0; x < width; x++) {
+                uint8 terrainType = uint8(data[(y * width) + x]);
+                result[y][x] = terrainType;
             }
         }
         
         return result;
-    }
-
-    // function initGameMap() private{
-    //     uint O = 0;//No map here
-    //     uint N = 1;//Normal map block
-
-    //     //Odd line is left and even line is right
-    //     uint[8][8] memory map = [
-    //         [O, N, N, N, N, N, N, O],
-    //         [O, N, N, N, N, N, N, O],
-    //         [O, N, N, N, N, N, N, O],
-    //         [O, N, N, N, N, N, N, O],
-    //         [O, N, N, N, N, N, N, O],
-    //         [O, N, N, N, N, N, N, O],
-    //         [O, N, N, N, N, N, N, O],
-    //         [O, N, N, N, N, N, N, O]
-    //     ];
-
-    //     uint32 height = uint32(map.length);
-    //     uint32 width = uint32(map[0].length);
-    //     bytes memory terrain = new bytes(width * height);
-
-    //     for (uint32 y = 0; y < height; y++) {
-    //     for (uint32 x = 0; x < width; x++) {
-    //             uint terrainType = map[y][x];
-    //             if (terrainType == O) continue;
-        
-    //             terrain[(y * width) + x] = bytes1(uint8(terrainType));
-    //         }
-    //     }
-    
-    //     GameMap.set(width, height, terrain);
-
-    //     initMapItems(convertArray(map));
-    // }
-
-    function convertArray(uint[8][8] memory fixedArray) public pure returns (uint[][] memory) {
-        uint[][] memory dynamicArray = new uint[][](8);
-
-        for (uint i = 0; i < 8; i++) {
-            dynamicArray[i] = new uint[](8);
-            for (uint j = 0; j < 8; j++) {
-                dynamicArray[i][j] = fixedArray[i][j];
-            }
-        }
-
-        return dynamicArray;
     }
 
     function initMapItems(uint[][] memory mapArray,uint256 width,uint256 height) private{
@@ -147,26 +119,11 @@ contract LobbySystem is System {
         }
     }
 
-    // function decodeMap(bytes memory terrain, uint32 width) private pure returns (uint[8][8] memory) {
-    //     uint32 height = uint32(terrain.length) / width;
-    //     uint[][] memory map = new uint[][](height);
-        
-    //     for (uint32 y = 0; y < height; y++) {
-    //         map[y] = new uint[](width);
-            
-    //         for (uint32 x = 0; x < width; x++) {
-    //             map[y][x] = uint8(terrain[(y * width) + x]);
-    //         }
-    //     }
-        
-    //     return map;
-    // }
-
     function getRandomCoordinates(uint[][] memory mapArray,uint256 width,uint256 height, uint n) private view returns (uint[2][] memory) {
         uint[2][] memory coordinates = new uint[2][](n);
-        uint remaining = 64;
+        uint remaining = 400;
         uint selectedCount = 0;
-        uint[2][64] memory selectedCoordinates;
+        uint[2][400] memory selectedCoordinates;
 
         for (uint i = 0; i < width; i++) {
             for (uint j = 0; j < height; j++) {
@@ -189,7 +146,7 @@ contract LobbySystem is System {
         return coordinates;
     }
 
-    function isCoordinateSelected(uint[2][64] memory selectedCoordinates, uint x, uint y) private pure returns (bool) {
+    function isCoordinateSelected(uint[2][400] memory selectedCoordinates, uint x, uint y) private pure returns (bool) {
         for (uint i = 0; i < selectedCoordinates.length; i++) {
             if (selectedCoordinates[i][0] == x && selectedCoordinates[i][1] == y) {
                 return true;

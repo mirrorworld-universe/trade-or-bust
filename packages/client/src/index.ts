@@ -5,7 +5,7 @@ import { getComponentValue,getComponentValueStrict, Has, Not  } from "@latticexy
 
 const {
   components,
-  systemCalls: { increment,joinGame,askStart,move },
+  systemCalls: { increment,joinGame,askStart,move,pickAsset,pickFund },
   network,
 } = await setup();
 
@@ -82,13 +82,33 @@ components.Log.update$.subscribe((update)=>{
   console.log("Log updated", update);
 });
 
+components.AssetsList.update$.subscribe((update)=>{
+  const [nextValue, prevValue] = update.value;
+  console.log("AssetsList updated", update);
+  globalThis.ponzi.assetslist_update?.(update);
+});
+
+components.RaiseColddown.update$.subscribe((update)=>{
+  const [nextValue, prevValue] = update.value;
+  console.log("RaiseColddown updated", update);
+  globalThis.ponzi.raiseColddown_update?.(update);
+});
+
 //get functions
 (window as any).getPlayers = () => {
   return components.Player.values;
 }
 
+(window as any).getIsPlayers = () => {
+  return components.IsPlayer.values;
+}
+
 (window as any).getMapItems = ()=>{
   return components.MapItem.values;
+}
+
+(window as any).getAssetsList = ()=>{
+  return components.AssetsList.values;
 }
 
 //Query
@@ -97,6 +117,7 @@ components.Log.update$.subscribe((update)=>{
   console.log("getValueByComAndEntity:", data);
   return data;
 };
+
 
 // Just for demonstration purposes: we create a global function that can be
 // called to invoke the Increment system contract via the world. (See IncrementSystem.sol.)
@@ -120,6 +141,16 @@ components.Log.update$.subscribe((update)=>{
   console.log("move:", data);
   return data;
 };
+(window as any).pickAsset = async (assetKind) => {
+  console.log("send pickAsset:", assetKind);
+  await pickAsset(assetKind);
+};
+(window as any).pickFund = async (assetKind) => {
+  console.log("send pickFund:", assetKind);
+  await pickFund(assetKind);
+};
+
+
 // https://vitejs.dev/guide/env-and-mode.html
 if (import.meta.env.DEV) {
   const { mount: mountDevTools } = await import("@latticexyz/dev-tools");

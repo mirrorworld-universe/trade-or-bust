@@ -62,7 +62,7 @@
         "designResolution": {
             "width": 1280,
             "height": 720,
-            "policy": 4
+            "policy": 2
         }
     },
     "rendering": {

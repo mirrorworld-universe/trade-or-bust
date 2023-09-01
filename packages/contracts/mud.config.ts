@@ -78,9 +78,26 @@ export default mudConfig({
         money:'uint32',
         x:'uint256',
         y:'uint256',
-        assets:'bytes',
         transactions:'bytes'
       }
+    },
+    RaiseColddown:{
+        dataStruct:true,
+        schema:{
+          start:'uint256',
+          end:'uint256',
+        }
+    },
+    AssetsList:{
+        dataStruct:true,
+        schema:{
+          gpu:'int8',
+          bitcoin:'int8',
+          battery:'int8',
+          leiter:'int8',
+          gold:'int8',
+          oil:'int8'
+        }
     },
     Log:{
       dataStruct:true,

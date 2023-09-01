@@ -8,7 +8,5 @@ interface ILobbySystem {
 
   function askStart() external returns (uint32);
 
-  function bytesToUintArray(bytes memory data) external pure returns (uint[][] memory);
-
-  function convertArray(uint[8][8] memory fixedArray) external pure returns (uint[][] memory);
+  function bytesToUintArray(bytes memory data, uint32 width, uint32 height) external pure returns (uint[][] memory);
 }
