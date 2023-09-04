@@ -6,6 +6,7 @@ pragma solidity >=0.8.0;
 import { IBaseWorld } from "@latticexyz/world/src/interfaces/IBaseWorld.sol";
 
 import { IAssetsSystem } from "./IAssetsSystem.sol";
+import { IGameFlowSystem } from "./IGameFlowSystem.sol";
 import { IIncrementSystem } from "./IIncrementSystem.sol";
 import { ILobbySystem } from "./ILobbySystem.sol";
 import { IMapSystem } from "./IMapSystem.sol";
@@ -15,6 +16,14 @@ import { ITradeSystem } from "./ITradeSystem.sol";
  * The IWorld interface includes all systems dynamically added to the World
  * during the deploy process.
  */
-interface IWorld is IBaseWorld, IAssetsSystem, IIncrementSystem, ILobbySystem, IMapSystem, ITradeSystem {
+interface IWorld is
+  IBaseWorld,
+  IAssetsSystem,
+  IGameFlowSystem,
+  IIncrementSystem,
+  ILobbySystem,
+  IMapSystem,
+  ITradeSystem
+{
 
 }

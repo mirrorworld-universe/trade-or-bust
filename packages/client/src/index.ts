@@ -1,11 +1,11 @@
 import { mount as mountDevTools } from "@latticexyz/dev-tools";
 import { setup } from "./mud/setup";
 import mudConfig from "contracts/mud.config";
-import { getComponentValue,getComponentValueStrict, Has, Not  } from "@latticexyz/recs";
+import { runQuery ,getComponentValue,getComponentValueStrict, Has, Not  } from "@latticexyz/recs";
 
 const {
   components,
-  systemCalls: { increment,joinGame,askStart,move,pickAsset,pickFund },
+  systemCalls: { increment,joinGame,askStart,move,pickAsset,pickFund,trade,acceptTrade,rejectTrade,finishGame },
   network,
 } = await setup();
 
@@ -94,6 +94,28 @@ components.RaiseColddown.update$.subscribe((update)=>{
   globalThis.ponzi.raiseColddown_update?.(update);
 });
 
+//Trade
+components.UnsolicitedTransaction.update$.subscribe((update)=>{
+  const [nextValue, prevValue] = update.value;
+  console.log("UnsolicitedTransaction updated", update);
+  // globalThis.ponzi.tradelist_update?.(update);
+});
+components.PassiveTransaction.update$.subscribe((update)=>{
+  const [nextValue, prevValue] = update.value;
+  console.log("PassiveTransaction updated", update);
+  globalThis.ponzi.passivetransaction_update?.(update);
+});
+components.TradeList.update$.subscribe((update)=>{
+  const [nextValue, prevValue] = update.value;
+  console.log("TradeList updated", update);
+  globalThis.ponzi.tradelist_update?.(update);
+});
+components.PlayerGameResult.update$.subscribe((update)=>{
+  const [nextValue, prevValue] = update.value;
+  console.log("PlayerGameResult updated", update);
+  globalThis.ponzi.playergameresult_update?.(update);
+});
+
 //get functions
 (window as any).getPlayers = () => {
   return components.Player.values;
@@ -117,6 +139,15 @@ components.RaiseColddown.update$.subscribe((update)=>{
   console.log("getValueByComAndEntity:", data);
   return data;
 };
+
+(window as any).queryAssetsList = async ()=>{
+    const matchingEntities = runQuery([
+      Has(components.AssetsList)
+      // Not(components.IsTrading)
+    ])
+
+    return matchingEntities;
+}
 
 
 // Just for demonstration purposes: we create a global function that can be
@@ -147,8 +178,26 @@ components.RaiseColddown.update$.subscribe((update)=>{
 };
 (window as any).pickFund = async (assetKind) => {
   console.log("send pickFund:", assetKind);
-  await pickFund(assetKind);
+  await pickFund();
 };
+(window as any).trade = async (targetPlayer:string,assetKind:number,money:number) => {
+  console.log("send trade:", targetPlayer, money, assetKind);
+  await trade(targetPlayer,assetKind,money);
+};
+(window as any).acceptTrade = async () => {
+  let data = await acceptTrade();
+  console.log("send acceptTrade:"+data);
+};
+(window as any).rejectTrade = async () => {
+  let data = await rejectTrade();
+  console.log("send rejectTrade:"+data);
+};
+
+(window as any).finishGame = async () => {
+  let data = await finishGame();
+  console.log("send finishGame:"+data);
+};
+
 
 
 // https://vitejs.dev/guide/env-and-mode.html

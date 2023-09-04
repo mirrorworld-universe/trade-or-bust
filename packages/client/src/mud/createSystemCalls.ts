@@ -44,12 +44,36 @@ export function createSystemCalls(
     await waitForTransaction(tx);
   };
 
+  const trade = async (targetPlayer:string,assetType:number,money:number) => {
+    const tx = await worldContract.write.trade([targetPlayer,assetType,money]);
+    return await waitForTransaction(tx);
+  };
+
+  const acceptTrade = async () => {
+    const tx = await worldContract.write.acceptTrade();
+    return await waitForTransaction(tx);
+  };
+
+  const rejectTrade = async () => {
+    const tx = await worldContract.write.rejectTrade();
+    return await waitForTransaction(tx);
+  };
+
+  const finishGame = async () => {
+    const tx = await worldContract.write.finishGame();
+    return await waitForTransaction(tx);
+  };
+
   return {
     increment,
     joinGame,
     askStart,
     move,
     pickAsset,
-    pickFund
+    pickFund,
+    trade,
+    acceptTrade,
+    rejectTrade,
+    finishGame
   };
 }

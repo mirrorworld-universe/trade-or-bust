@@ -7,6 +7,4 @@ interface ILobbySystem {
   function joinGame() external returns (uint32);
 
   function askStart() external returns (uint32);
-
-  function bytesToUintArray(bytes memory data, uint32 width, uint32 height) external pure returns (uint[][] memory);
 }

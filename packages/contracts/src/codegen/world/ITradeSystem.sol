@@ -5,4 +5,10 @@ pragma solidity >=0.8.0;
 
 interface ITradeSystem {
   function trade(bytes32 targetPlayer, uint8 assetKind, uint32 money) external;
+
+  function acceptTrade() external returns (bool);
+
+  function rejectTrade() external returns (bool);
+
+  function concatenate(string memory str, uint256 num) external pure returns (string memory);
 }

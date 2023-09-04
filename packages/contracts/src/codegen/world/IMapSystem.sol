@@ -5,12 +5,4 @@ pragma solidity >=0.8.0;
 
 interface IMapSystem {
   function move(uint256 targetX, uint256 targetY) external returns (bool);
-
-  function checkAndPushList(bytes32 seekPlayer, bytes32 findPlayer) external;
-
-  function calculateDistance(uint256 x1, uint256 y1, uint256 x2, uint256 y2, int256 limit) external pure returns (bool);
-
-  function concatenateStringWithUint(string memory message, uint256 number) external pure returns (string memory);
-
-  function concatenateBytesWithUint(string memory message, uint256 number) external pure returns (bytes memory);
 }

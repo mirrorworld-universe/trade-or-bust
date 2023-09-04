@@ -77,8 +77,7 @@ export default mudConfig({
         state:'uint32',
         money:'uint32',
         x:'uint256',
-        y:'uint256',
-        transactions:'bytes'
+        y:'uint256'
       }
     },
     RaiseColddown:{
@@ -103,11 +102,52 @@ export default mudConfig({
       dataStruct:true,
       schema:'uint8',
     },
+    //Partner list
     TransactionList:{
       dataStruct:true,
       schema:{
         list:'bytes32[]'
       }
     },
+    //trade transaction list
+    TradeList:{
+      dataStruct:true,
+      schema:{
+        list:'bytes'
+      }
+    },
+    IsTrading:{
+      dataStruct:false,
+      schema:'bool'
+    },
+    PlayerGameResult:{
+      dataStruct:true,
+      schema:{
+        rank:'int32',
+        points:'int32',
+        gpu:'int8',
+        bitcoin:'int8',
+        battery:'int8',
+        leiter:'int8',
+        gold:'int8',
+        oil:'int8',
+      }
+    },
+    UnsolicitedTransaction:{
+      dataStruct:true,
+      schema:{
+        asset:'uint8',
+        money:'uint32',
+        to:'bytes32'
+      }
+    },
+    PassiveTransaction:{
+      dataStruct:true,
+      schema:{
+        asset:'uint8',
+        money:'uint32',
+        from:'bytes32'
+      }
+    }
   },
 });

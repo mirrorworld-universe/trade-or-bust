@@ -15,3 +15,8 @@ import { RaiseColddown, RaiseColddownData, RaiseColddownTableId } from "./tables
 import { AssetsList, AssetsListData, AssetsListTableId } from "./tables/AssetsList.sol";
 import { Log, LogData, LogTableId } from "./tables/Log.sol";
 import { TransactionList, TransactionListData, TransactionListTableId } from "./tables/TransactionList.sol";
+import { TradeList, TradeListData, TradeListTableId } from "./tables/TradeList.sol";
+import { IsTrading, IsTradingTableId } from "./tables/IsTrading.sol";
+import { PlayerGameResult, PlayerGameResultData, PlayerGameResultTableId } from "./tables/PlayerGameResult.sol";
+import { UnsolicitedTransaction, UnsolicitedTransactionData, UnsolicitedTransactionTableId } from "./tables/UnsolicitedTransaction.sol";
+import { PassiveTransaction, PassiveTransactionData, PassiveTransactionTableId } from "./tables/PassiveTransaction.sol";

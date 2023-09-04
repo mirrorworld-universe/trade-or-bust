@@ -97,7 +97,7 @@ contract MapSystem is System {
         return true;
     }
 
-    function checkAndPushList(bytes32 seekPlayer, bytes32 findPlayer) public {
+    function checkAndPushList(bytes32 seekPlayer, bytes32 findPlayer) private {
 
         TransactionListData memory ptld = TransactionList.get(seekPlayer);
         bool knowTmpP = false;
@@ -127,7 +127,7 @@ contract MapSystem is System {
     //     return newList;
     // }
 
-    function calculateDistance(uint256 x1, uint256 y1, uint256 x2, uint256 y2, int256 limit) public pure returns (bool) {
+    function calculateDistance(uint256 x1, uint256 y1, uint256 x2, uint256 y2, int256 limit) private pure returns (bool) {
         int256 deltaX = int256(x2) - int256(x1);
         int256 deltaY = int256(y2) - int256(y1);
         
@@ -156,7 +156,7 @@ contract MapSystem is System {
         return a > b ? a : b;
     }
 
-    function concatenateStringWithUint(string memory message ,uint256 number) public pure returns (string memory) {
+    function concatenateStringWithUint(string memory message ,uint256 number) private pure returns (string memory) {
 
         string memory numberString = uintToString(number);
         bytes memory messageBytes = bytes(message);
@@ -178,7 +178,7 @@ contract MapSystem is System {
         return string(result);
     }
 
-    function concatenateBytesWithUint(string memory message ,uint256 number) public pure returns (bytes memory) {
+    function concatenateBytesWithUint(string memory message ,uint256 number) private pure returns (bytes memory) {
 
         string memory numberString = uintToString(number);
         bytes memory messageBytes = bytes(message);

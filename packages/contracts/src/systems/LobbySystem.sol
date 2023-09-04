@@ -2,7 +2,7 @@
 pragma solidity >=0.8.0;
 
 import { System } from "@latticexyz/world/src/System.sol";
-import { RaiseColddown, AssetsList, Log,Counter,Player,Game ,GameData,GameState,GameMap,MapItem,PlayerData,TransactionList,IsPlayer,GameMapData} from "../codegen/Tables.sol";
+import { PlayerGameResult,TradeList,TransactionList,RaiseColddown, AssetsList, Log,Counter,Player,Game ,GameData,GameState,GameMap,MapItem,PlayerData,IsPlayer,GameMapData} from "../codegen/Tables.sol";
 import { addressToEntityKey } from "../addressToEntityKey.sol";
 import { IWorld } from "../../src/codegen/world/IWorld.sol";
 import { getUniqueEntity } from "@latticexyz/world/src/modules/uniqueentity/getUniqueEntity.sol";
@@ -20,8 +20,7 @@ contract LobbySystem is System {
         uint256[2][] memory coordinations = getRandomCoordinates(mapArray,20,20,1);
 
         uint32 playerState = 2;
-        bytes memory transactions = new bytes(0);
-        Player.set(player, gameData.gameId, playerState, 50, coordinations[0][0],coordinations[0][1], transactions);
+        Player.set(player, gameData.gameId, playerState, 50, coordinations[0][0],coordinations[0][1]);
 
         bytes32[] memory list = new bytes32[](0);
         TransactionList.set(player, list);
@@ -29,6 +28,9 @@ contract LobbySystem is System {
         AssetsList.set(player,0,0,0,0,0,0);
 
         RaiseColddown.set(player,0,0);
+
+        // bytes memory list2 = '';
+        TradeList.set(player,'');
 
         return 2;
     }
@@ -62,31 +64,7 @@ contract LobbySystem is System {
         return 3;
     }
 
-    // function bytesToUintArray(bytes memory data) public pure returns (uint[][] memory) {
-    //     require(data.length % 32 == 0, "bytesToUintArray Invalid data length");
-
-    //     uint numElements = data.length / 32;
-    //     uint[][] memory result = new uint[][](numElements);
-        
-    //     assembly {
-    //         // 获取数据的指针
-    //         let ptr := add(data, 0x20)
-            
-    //         for {
-    //             let i := 0
-    //         } lt(i, numElements) {
-    //             i := add(i, 1)
-    //         } {
-    //             let subPtr := add(ptr, mul(i, 32))
-    //             mstore(add(result, mul(i, 0x20)), mload(subPtr))
-    //         }
-    //     }
-        
-    //     return result;
-    // }
-
-
-    function bytesToUintArray(bytes memory data, uint32 width, uint32 height) public pure returns (uint[][] memory) {
+    function bytesToUintArray(bytes memory data, uint32 width, uint32 height) private pure returns (uint[][] memory) {
         require(data.length == width * height, "Invalid data length");
 
         uint[][] memory result = new uint[][](height);
