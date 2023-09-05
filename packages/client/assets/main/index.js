@@ -374,6 +374,7 @@ System.register("chunks:///_virtual/ccc_msg.ts", ['cc'], function (exports) {
       ccc_msg.on_player_update = "on_player_update";
       ccc_msg.on_gamestate_update = "on_gamestate_update";
       ccc_msg.on_gamemap_update = "on_gamemap_update";
+      ccc_msg.on_gamemap_walkrecord_update = "on_gamemap_walkrecord_update";
       ccc_msg.on_mapitem_update = "on_mapitem_update";
       ccc_msg.on_isplayer_update = "on_isplayer_update";
       ccc_msg.network_block_ui = "network_block_ui";
@@ -498,6 +499,92 @@ System.register("chunks:///_virtual/component_state.ts", ['cc'], function (expor
   };
 });
 
+System.register("chunks:///_virtual/coor_utils.ts", ['cc'], function (exports) {
+  var cclegacy;
+  return {
+    setters: [function (module) {
+      cclegacy = module.cclegacy;
+    }],
+    execute: function () {
+      cclegacy._RF.push({}, "bff6aGdFNBMKpL9ymzamZne", "coor_utils", undefined);
+
+      var coor_utils = exports('coor_utils', /*#__PURE__*/function () {
+        function coor_utils() {}
+
+        coor_utils.getNeighboringHexes = function getNeighboringHexes(row, col) {
+          // 根据当前行数选择相应的方向数组
+          var directions = row % 2 === 0 ? [{
+            rowOff: 0,
+            colOff: 1
+          }, // 右
+          {
+            rowOff: 0,
+            colOff: -1
+          }, // 左
+          {
+            rowOff: 1,
+            colOff: -1
+          }, // 左上
+          {
+            rowOff: -1,
+            colOff: -1
+          }, // 左下
+          {
+            rowOff: 1,
+            colOff: 0
+          }, // 右上
+          {
+            rowOff: -1,
+            colOff: 0
+          } // 右下
+          ] : [{
+            rowOff: 0,
+            colOff: -1
+          }, // 左
+          {
+            rowOff: 0,
+            colOff: 1
+          }, // 右
+          {
+            rowOff: 1,
+            colOff: 0
+          }, // 左上
+          {
+            rowOff: -1,
+            colOff: 0
+          }, // 左下
+          {
+            rowOff: 1,
+            colOff: 1
+          }, // 右上
+          {
+            rowOff: -1,
+            colOff: 1
+          } // 右下
+          ];
+          var neighboringHexes = [];
+
+          for (var i = 0; i < directions.length; i++) {
+            var dir = directions[i];
+            var neighborQ = row + dir.rowOff;
+            var neighborR = col + dir.colOff;
+            neighboringHexes.push({
+              row: neighborQ,
+              col: neighborR
+            });
+          }
+
+          return neighboringHexes;
+        };
+
+        return coor_utils;
+      }());
+
+      cclegacy._RF.pop();
+    }
+  };
+});
+
 System.register("chunks:///_virtual/counter-label.ts", ['./rollupPluginModLoBabelHelpers.js', 'cc', './ponzi-controller.ts'], function (exports) {
   var _inheritsLoose, cclegacy, _decorator, Label, log, Component, ponzi_controller;
 
@@ -579,27 +666,64 @@ System.register("chunks:///_virtual/counter-label.ts", ['./rollupPluginModLoBabe
 });
 
 System.register("chunks:///_virtual/data_center.ts", ['./rollupPluginModLoBabelHelpers.js', 'cc'], function (exports) {
-  var _createClass, cclegacy;
+  var _createClass, cclegacy, warn, log, sys;
 
   return {
     setters: [function (module) {
       _createClass = module.createClass;
     }, function (module) {
       cclegacy = module.cclegacy;
+      warn = module.warn;
+      log = module.log;
+      sys = module.sys;
     }],
     execute: function () {
       cclegacy._RF.push({}, "fe2486vschNp7nd3k0xklcP", "data_center", undefined);
 
       var data_center = exports('data_center', /*#__PURE__*/function () {
         function data_center() {
-          this.players = void 0;
+          this._mapRecordKey = "map_record_key_";
         }
 
         var _proto = data_center.prototype;
 
-        _proto.data_center = function data_center() {};
+        _proto.data_center = function data_center() {}; // 存储二维数组
 
-        _proto.onPlayerUpdate = function onPlayerUpdate(oldObj, newObj) {};
+
+        _proto.saveMapWalkRecord = function saveMapWalkRecord(data) {
+          var gameObj = globalThis.ponzi.game;
+
+          if (!gameObj) {
+            warn("No gameobj when saving map record");
+            return;
+          }
+
+          var jsonString = JSON.stringify(data);
+          log("Save map record:" + this._mapRecordKey + gameObj.gameId + jsonString);
+          sys.localStorage.setItem(this._mapRecordKey + gameObj.gameId, jsonString);
+        } // 获取二维数组
+        ;
+
+        _proto.loadMapWalkRecord = function loadMapWalkRecord() {
+          var gameObj = globalThis.ponzi.game;
+
+          if (!gameObj) {
+            warn("No gameobj when loading map record");
+            return null;
+          }
+
+          var jsonString = sys.localStorage.getItem(this._mapRecordKey + gameObj.gameId);
+
+          if (jsonString) {
+            var recordArray = JSON.parse(jsonString);
+            log("load map record:" + this._mapRecordKey + gameObj.gameId + jsonString);
+            return recordArray;
+          } else {
+            var newArray = [];
+            this.saveMapWalkRecord(newArray);
+            return newArray;
+          }
+        };
 
         _createClass(data_center, null, [{
           key: "instance",
@@ -1336,6 +1460,8 @@ System.register("chunks:///_virtual/HexMapTile.ts", ['cc'], function (exports) {
         this.x = void 0;
         this.y = void 0;
         this.emoji = void 0;
+        this.row = void 0;
+        this.col = void 0;
       });
 
       cclegacy._RF.pop();
@@ -1561,6 +1687,10 @@ System.register("chunks:///_virtual/lobby-controller.ts", ['./rollupPluginModLoB
 
           _initializerDefineProperty(_this, "gameNode", _descriptor7, _assertThisInitialized(_this));
 
+          _this.IsPlayerButGameNotStart = "The Round Has Not Started Yet";
+          _this.NotPlayerButGameIsStart = "Game is started, just waiting for entering game!";
+          _this.IsPlayerGameReachTimeButNotStart = "The Game Has Already Started, Please Click \"Play\" To Begin.";
+          _this.NotPlayerAndGameNotReachTime = "Game is not start, just join us!";
           _this.welcomeInited = false;
           _this.inited = false;
           _this.timer = null;
@@ -1763,10 +1893,9 @@ System.register("chunks:///_virtual/lobby-controller.ts", ['./rollupPluginModLoB
                     return _regeneratorRuntime().wrap(function _callee7$(_context7) {
                       while (1) switch (_context7.prev = _context7.next) {
                         case 0:
-                          log("Count down is finished,ask to enter game!");
                           self.updateLobby();
 
-                        case 2:
+                        case 1:
                         case "end":
                           return _context7.stop();
                       }
@@ -1798,31 +1927,30 @@ System.register("chunks:///_virtual/lobby-controller.ts", ['./rollupPluginModLoB
                   gameObj = globalThis.ponzi.game;
 
                   if (gameObj) {
-                    _context9.next = 5;
+                    _context9.next = 4;
                     break;
                   }
 
-                  log("no gameObj, stop updateing lobby");
                   return _context9.abrupt("return");
 
-                case 5:
+                case 4:
                   isPlayer = false;
-                  _context9.prev = 6;
+                  _context9.prev = 5;
                   playerEntity = globalThis.ponzi.currentPlayer;
-                  _context9.next = 10;
+                  _context9.next = 9;
                   return window.queryValue == null ? void 0 : window.queryValue(window.env.components.IsPlayer, playerEntity);
 
-                case 10:
+                case 9:
                   isPlayer = _context9.sent;
-                  _context9.next = 16;
+                  _context9.next = 15;
                   break;
 
-                case 13:
-                  _context9.prev = 13;
-                  _context9.t0 = _context9["catch"](6);
+                case 12:
+                  _context9.prev = 12;
+                  _context9.t0 = _context9["catch"](5);
                   isPlayer = false;
 
-                case 16:
+                case 15:
                   if (gameState == component_state.game_ingame) {
                     if (isPlayer) {
                       log("ingame+isPlayer");
@@ -1832,7 +1960,7 @@ System.register("chunks:///_virtual/lobby-controller.ts", ['./rollupPluginModLoB
                     } else {
                       this.showLobbyNode();
                       log("ingame+notPlayer");
-                      this.contentLabel.string = "Game is started, just waiting for entering game!";
+                      this.contentLabel.string = this.NotPlayerButGameIsStart;
                       this.btnJoinGame.active = true;
                       this.btnTriggerGame.active = false;
                     }
@@ -1854,11 +1982,11 @@ System.register("chunks:///_virtual/lobby-controller.ts", ['./rollupPluginModLoB
 
                       if (_leftSeconds > 0) {
                         log("gameWaiting+isPlayer+notStart");
-                        this.contentLabel.string = "You have joined the game, waiting for game starting...";
+                        this.contentLabel.string = this.IsPlayerButGameNotStart;
                         this.startCountdownAnimator(_leftSeconds);
                       } else {
                         log("gameWaiting+isPlayer+isStarted");
-                        this.contentLabel.string = "The game is start now, please enter it.";
+                        this.contentLabel.string = this.IsPlayerGameReachTimeButNotStart;
                         this.btnJoinGame.active = false;
                         this.btnTriggerGame.active = true;
                       }
@@ -1869,17 +1997,17 @@ System.register("chunks:///_virtual/lobby-controller.ts", ['./rollupPluginModLoB
                         this.startCountdownAnimator(leftSeconds);
                       }
 
-                      this.contentLabel.string = "Game is not start, just join us!";
+                      this.contentLabel.string = this.NotPlayerAndGameNotReachTime;
                       this.btnJoinGame.active = true;
                       this.btnTriggerGame.active = false;
                     }
                   }
 
-                case 17:
+                case 16:
                 case "end":
                   return _context9.stop();
               }
-            }, _callee9, this, [[6, 13]]);
+            }, _callee9, this, [[5, 12]]);
           }));
 
           function updateLobby() {
@@ -1887,75 +2015,26 @@ System.register("chunks:///_virtual/lobby-controller.ts", ['./rollupPluginModLoB
           }
 
           return updateLobby;
-        }() //A game's start time is passed but not trigger by a user
-        //Only about time
-        ;
-
-        _proto.showStartingLobby = /*#__PURE__*/function () {
-          var _showStartingLobby = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee10() {
-            var playerEntity, currentPlayer;
-            return _regeneratorRuntime().wrap(function _callee10$(_context10) {
-              while (1) switch (_context10.prev = _context10.next) {
-                case 0:
-                  this.contentLabel.string = "Game is started, just enter game!";
-                  this.showLobbyNode();
-                  playerEntity = globalThis.ponzi.currentPlayer;
-                  currentPlayer = null;
-                  _context10.prev = 4;
-                  _context10.next = 7;
-                  return window.queryValue == null ? void 0 : window.queryValue(window.env.components.Player, playerEntity);
-
-                case 7:
-                  currentPlayer = _context10.sent;
-                  _context10.next = 13;
-                  break;
-
-                case 10:
-                  _context10.prev = 10;
-                  _context10.t0 = _context10["catch"](4);
-                  currentPlayer = null;
-
-                case 13:
-                  if (currentPlayer) {
-                    this.btnTriggerGame.active = true;
-                    this.btnJoinGame.active = false;
-                  } else {
-                    this.btnTriggerGame.active = false;
-                    this.btnJoinGame.active = true;
-                  }
-
-                case 14:
-                case "end":
-                  return _context10.stop();
-              }
-            }, _callee10, this, [[4, 10]]);
-          }));
-
-          function showStartingLobby() {
-            return _showStartingLobby.apply(this, arguments);
-          }
-
-          return showStartingLobby;
         }();
 
         _proto.registerListeners = function registerListeners() {
           var self = this;
-          ponzi_controller.instance.on(ccc_msg.on_gamestate_update, /*#__PURE__*/_asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee11(obj) {
-            return _regeneratorRuntime().wrap(function _callee11$(_context11) {
-              while (1) switch (_context11.prev = _context11.next) {
+          ponzi_controller.instance.on(ccc_msg.on_gamestate_update, /*#__PURE__*/_asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee10(obj) {
+            return _regeneratorRuntime().wrap(function _callee10$(_context10) {
+              while (1) switch (_context10.prev = _context10.next) {
                 case 0:
                   self.updateLobby();
 
                 case 1:
                 case "end":
-                  return _context11.stop();
+                  return _context10.stop();
               }
-            }, _callee11);
+            }, _callee10);
           })));
-          ponzi_controller.instance.on(ccc_msg.on_isplayer_update, /*#__PURE__*/_asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee12(obj) {
+          ponzi_controller.instance.on(ccc_msg.on_isplayer_update, /*#__PURE__*/_asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee11(obj) {
             var entity, playerEntity, hash;
-            return _regeneratorRuntime().wrap(function _callee12$(_context12) {
-              while (1) switch (_context12.prev = _context12.next) {
+            return _regeneratorRuntime().wrap(function _callee11$(_context11) {
+              while (1) switch (_context11.prev = _context11.next) {
                 case 0:
                   entity = obj.entity;
                   obj.newValue;
@@ -1968,9 +2047,9 @@ System.register("chunks:///_virtual/lobby-controller.ts", ['./rollupPluginModLoB
 
                 case 5:
                 case "end":
-                  return _context12.stop();
+                  return _context11.stop();
               }
-            }, _callee12);
+            }, _callee11);
           })));
         };
 
@@ -2295,15 +2374,15 @@ System.register("chunks:///_virtual/lobby-playerlist.ts", ['./rollupPluginModLoB
   };
 });
 
-System.register("chunks:///_virtual/main", ['./debug-view-runtime-control.ts', './Singleton.ts', './lobby-controller.ts', './counter-label.ts', './ccc_msg.ts', './component_state.ts', './ponzi_config.ts', './GameData.ts', './JsCaller.ts', './MUDListener.ts', './PlayerData.ts', './data_center.ts', './ponzi-controller.ts', './ponzi-model.ts', './FakeMessageCenter.ts', './test.ts', './TradeListItem.ts', './bytes_utils.ts', './list_utils.ts', './object_utils.ts', './rule_utils.ts', './string_utils.ts', './time_utils.ts', './HexMapTile.ts', './RoleLocalObj.ts', './UnsolicitedTransactionObj.ts', './temp_data.ts', './game_ui_controller.ts', './lobby-playerlist-model.ts', './lobby-playerlist.ts', './map-controller.ts', './mapblock.ts', './pick-money-card.ts', './player-model.ts', './pick_asset.ts', './rank.ts', './single-button-pop.ts', './trade-ask.ts', './trade_input_price.ts', './popupui_manager.ts', './trade.ts', './button_raisingcapital.ts', './changing_ellipses.ts', './fond_card.ts', './game_countdown.ts', './item_asset.ts', './mapitem.ts', './pick_asset_item.ts', './right-player-list-item.ts', './right-player-list.ts', './rules.ts', './title-money.ts', './toggle.ts', './trade-asset-item.ts', './trade_parter_item.ts'], function () {
+System.register("chunks:///_virtual/main", ['./debug-view-runtime-control.ts', './Singleton.ts', './lobby-controller.ts', './counter-label.ts', './ccc_msg.ts', './component_state.ts', './ponzi_config.ts', './GameData.ts', './JsCaller.ts', './MUDListener.ts', './PlayerData.ts', './data_center.ts', './ponzi-controller.ts', './ponzi-model.ts', './FakeMessageCenter.ts', './test.ts', './TradeListItem.ts', './bytes_utils.ts', './coor_utils.ts', './list_utils.ts', './object_utils.ts', './rule_utils.ts', './string_utils.ts', './time_utils.ts', './HexMapTile.ts', './RoleLocalObj.ts', './RowCol.ts', './UnsolicitedTransactionObj.ts', './temp_data.ts', './game_ui_controller.ts', './lobby-playerlist-model.ts', './lobby-playerlist.ts', './map-controller.ts', './mapblock.ts', './pick-money-card.ts', './player-model.ts', './pick_asset.ts', './rank.ts', './single-button-pop.ts', './trade-ask.ts', './trade_input_price.ts', './popupui_manager.ts', './trade.ts', './button_raisingcapital.ts', './changing_ellipses.ts', './fond_card.ts', './game_countdown.ts', './item_asset.ts', './mapitem.ts', './pick_asset_item.ts', './right-player-list-item.ts', './right-player-list.ts', './rules.ts', './title-money.ts', './toggle.ts', './trade-asset-item.ts', './trade_parter_item.ts'], function () {
   return {
-    setters: [null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null],
+    setters: [null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null],
     execute: function () {}
   };
 });
 
-System.register("chunks:///_virtual/map-controller.ts", ['./rollupPluginModLoBabelHelpers.js', 'cc', './ponzi-controller.ts', './ccc_msg.ts', './mapblock.ts', './string_utils.ts', './component_state.ts', './player-model.ts', './RoleLocalObj.ts', './ponzi_config.ts'], function (exports) {
-  var _applyDecoratedDescriptor, _inheritsLoose, _initializerDefineProperty, _assertThisInitialized, _createForOfIteratorHelperLoose, _extends, cclegacy, _decorator, Node, log, instantiate, Vec3, Component, ponzi_controller, ccc_msg, mapblock, string_utils, component_state, player_model, RoleLocalObj, ponzi_config;
+System.register("chunks:///_virtual/map-controller.ts", ['./rollupPluginModLoBabelHelpers.js', 'cc', './ponzi-controller.ts', './ccc_msg.ts', './mapblock.ts', './string_utils.ts', './component_state.ts', './player-model.ts', './RoleLocalObj.ts', './ponzi_config.ts', './data_center.ts', './RowCol.ts', './coor_utils.ts', './mapitem.ts'], function (exports) {
+  var _applyDecoratedDescriptor, _inheritsLoose, _initializerDefineProperty, _assertThisInitialized, _createForOfIteratorHelperLoose, _extends, cclegacy, _decorator, Node, log, instantiate, Vec3, Component, ponzi_controller, ccc_msg, mapblock, string_utils, component_state, player_model, RoleLocalObj, ponzi_config, data_center, RowCol, coor_utils, mapitem;
 
   return {
     setters: [function (module) {
@@ -2337,6 +2416,14 @@ System.register("chunks:///_virtual/map-controller.ts", ['./rollupPluginModLoBab
       RoleLocalObj = module.RoleLocalObj;
     }, function (module) {
       ponzi_config = module.ponzi_config;
+    }, function (module) {
+      data_center = module.data_center;
+    }, function (module) {
+      RowCol = module.RowCol;
+    }, function (module) {
+      coor_utils = module.coor_utils;
+    }, function (module) {
+      mapitem = module.mapitem;
     }],
     execute: function () {
       var _dec, _dec2, _dec3, _dec4, _dec5, _dec6, _dec7, _class, _class2, _descriptor, _descriptor2, _descriptor3, _descriptor4, _descriptor5, _descriptor6;
@@ -2383,6 +2470,7 @@ System.register("chunks:///_virtual/map-controller.ts", ['./rollupPluginModLoBab
 
           _this.terrainArray = void 0;
           _this.inited = false;
+          _this._oldMapChangeResult = void 0;
           _this.tmpCoorArray = void 0;
           return _this;
         }
@@ -2424,7 +2512,11 @@ System.register("chunks:///_virtual/map-controller.ts", ['./rollupPluginModLoBab
             var newMap = changeResult['mapArray'];
             var width = Number((_globalThis$ponzi$gam2 = globalThis.ponzi.gameMap) == null ? void 0 : _globalThis$ponzi$gam2.width);
             var height = Number((_globalThis$ponzi$gam3 = globalThis.ponzi.gameMap) == null ? void 0 : _globalThis$ponzi$gam3.height);
+            self._oldMapChangeResult = changeResult;
             self.drawMap(width, height, newMap);
+          });
+          ponzi_controller.instance.on(ccc_msg.on_gamemap_walkrecord_update, function () {
+            self.updateMap();
           });
           ponzi_controller.instance.on(ccc_msg.on_mapitem_update, function (oldValue, newValue) {
             self.drawItem();
@@ -2478,11 +2570,11 @@ System.register("chunks:///_virtual/map-controller.ts", ['./rollupPluginModLoBab
 
               if (key == 'x') {
                 var valueNum = Number(value);
-                obj.x = valueNum;
+                obj.row = valueNum;
               } else if (key == 'y') {
                 var _valueNum = Number(value);
 
-                obj.y = _valueNum;
+                obj.col = _valueNum;
               } else if (key == 'money') {
                 var _valueNum2 = Number(value);
 
@@ -2500,7 +2592,7 @@ System.register("chunks:///_virtual/map-controller.ts", ['./rollupPluginModLoBab
             var newNode = instantiate(self.playerModel);
             newNode.setParent(self.playerParent);
             newNode.active = true;
-            var pos = self.tmpCoorArray[_value.y][_value.x];
+            var pos = self.tmpCoorArray[_value.row][_value.col];
             newNode.position = new Vec3(pos.x, pos.y, 0);
             var script = newNode.getComponent(player_model);
             script.init(_key2);
@@ -2535,13 +2627,14 @@ System.register("chunks:///_virtual/map-controller.ts", ['./rollupPluginModLoBab
               array[index] = obj;
 
               if (key == 'x') {
-                obj.x = valueNum;
+                obj.row = valueNum;
               } else if (key == 'y') {
-                obj.y = valueNum;
+                obj.col = valueNum;
               }
             }
           }
 
+          var recordMap = data_center.instance.loadMapWalkRecord();
           log("item.values:", array);
           var self = this;
           self.itemParent.removeAllChildren();
@@ -2549,13 +2642,16 @@ System.register("chunks:///_virtual/map-controller.ts", ['./rollupPluginModLoBab
             var newNode = instantiate(self.mapItemModel);
             newNode.setParent(self.itemParent);
             newNode.active = true;
-            var pos = self.tmpCoorArray[ele.y][ele.x];
+            var pos = self.tmpCoorArray[ele.row][ele.col];
             newNode.position = new Vec3(pos.x, pos.y, 0);
+            var script = newNode.getComponent(mapitem);
+            script.init(recordMap[ele.row] && recordMap[ele.row][ele.col] == 1);
           });
         };
 
         _proto.drawMap = function drawMap(width, height, newMap) {
-          var _window$mudutils;
+          var _window$mudutils,
+              _this2 = this;
 
           if (!newMap) {
             log("No map data to draw!");
@@ -2572,12 +2668,60 @@ System.register("chunks:///_virtual/map-controller.ts", ['./rollupPluginModLoBab
           var coordinationArray = this.moveAllTiles(hexMap, centerX, centerY);
           this.tmpCoorArray = coordinationArray; // log("coordinationArray 111:",coordinationArray);
 
-          var coorMap = this.generateHexCoorMap();
+          var coorMap = this.generateHexCoorMap(); //check player
 
-          for (var i = 0; i < coordinationArray.length; i++) {
-            for (var j = 0; j < coordinationArray[i].length; j++) {
-              var tile = coordinationArray[i][j];
-              var coor = coorMap[i][j]; // 在这里访问和操作每个地图块（tile）
+          var array = {};
+          var players = window.getPlayers == null ? void 0 : window.getPlayers();
+
+          for (var key in players) {
+            var map = players[key];
+
+            for (var _iterator3 = _createForOfIteratorHelperLoose(map), _step3; !(_step3 = _iterator3()).done;) {
+              var _step3$value = _step3.value,
+                  entity = _step3$value[0],
+                  value = _step3$value[1]; //   console.log(key, entity, value);
+
+              var hash = string_utils.getHashFromSymbol(entity);
+
+              if (!array[hash]) {
+                array[hash] = new RoleLocalObj();
+              }
+
+              var obj = array[hash];
+              array[hash] = obj;
+
+              if (key == 'x') {
+                var valueNum = Number(value);
+                obj.row = valueNum;
+              } else if (key == 'y') {
+                var _valueNum3 = Number(value);
+
+                obj.col = _valueNum3;
+              }
+            }
+          }
+
+          var recordMap = data_center.instance.loadMapWalkRecord();
+
+          for (var _key3 in array) {
+            var _value2 = array[_key3];
+
+            if (_key3 == globalThis.ponzi.currentPlayer) {
+              this.giveValue(recordMap, _value2.row, _value2.col);
+              var arround = coor_utils.getNeighboringHexes(_value2.row, _value2.col);
+              arround.forEach(function (ele) {
+                _this2.giveValue(recordMap, ele.row, ele.col);
+              });
+            }
+          }
+
+          data_center.instance.saveMapWalkRecord(recordMap);
+          this.mapParent.removeAllChildren();
+
+          for (var row = 0; row < coordinationArray.length; row++) {
+            for (var col = 0; col < coordinationArray[row].length; col++) {
+              var tile = coordinationArray[row][col];
+              var coor = coorMap[row][col]; // 在这里访问和操作每个地图块（tile）
               // console.log(`Tile at (${tile.x}, ${tile.y}): ${tile.emoji}`);
 
               var newNode = instantiate(this.mapBlockModel);
@@ -2585,7 +2729,13 @@ System.register("chunks:///_virtual/map-controller.ts", ['./rollupPluginModLoBab
               newNode.active = true;
               newNode.position = new Vec3(tile.x, tile.y, 0);
               var script = newNode.getComponent(mapblock);
-              script.init(coor); // script.showLabel(coor.x + ","+coor.y);
+
+              if (recordMap[row]) {
+                recordMap[row][col];
+              }
+
+              script.init(coor, recordMap[row] && recordMap[row][col] == 1);
+              if (ponzi_config.showCoor) script.showLabel(coor.row + "," + coor.col);
             }
           }
         };
@@ -2597,15 +2747,12 @@ System.register("chunks:///_virtual/map-controller.ts", ['./rollupPluginModLoBab
             var row = [];
 
             for (var j = 0; j < ponzi_config.mapWH; j++) {
-              var x = j;
-              var y = i;
-              var emoji = "▲"; // 这里使用 ▲ 作为示例地图块的表现形式，你可以根据需求修改
-
-              row.push({
-                x: x,
-                y: y,
-                emoji: emoji
-              });
+              // const x = j;
+              // const y = i;
+              var tmp = new RowCol();
+              tmp.row = i;
+              tmp.col = j;
+              row.push(tmp);
             }
 
             mapArray.push(row);
@@ -2617,13 +2764,13 @@ System.register("chunks:///_virtual/map-controller.ts", ['./rollupPluginModLoBab
         _proto.generateHexMap = function generateHexMap(size, hSize) {
           var mapArray = [];
 
-          for (var i = 0; i < ponzi_config.mapWH; i++) {
+          for (var rowIdx = 0; rowIdx < ponzi_config.mapWH; rowIdx++) {
             var row = [];
-            var evenRowOffset = i % 2 === 0 ? 0 : size / 2;
+            var evenRowOffset = rowIdx % 2 === 0 ? 0 : size / 2;
 
-            for (var j = 0; j < ponzi_config.mapWH; j++) {
-              var x = size * j + evenRowOffset;
-              var y = hSize * i;
+            for (var colIdx = 0; colIdx < ponzi_config.mapWH; colIdx++) {
+              var x = size * colIdx + evenRowOffset;
+              var y = hSize * rowIdx;
               var emoji = "▲"; // 这里使用 ▲ 作为示例地图块的表现形式，你可以根据需求修改
 
               row.push({
@@ -2653,6 +2800,11 @@ System.register("chunks:///_virtual/map-controller.ts", ['./rollupPluginModLoBab
             });
           });
           return shiftedMapArray;
+        };
+
+        _proto.giveValue = function giveValue(recordMap, row, col) {
+          if (!recordMap[row]) recordMap[row] = [];
+          recordMap[row][col] = 1;
         };
 
         return map_controller;
@@ -2689,8 +2841,8 @@ System.register("chunks:///_virtual/map-controller.ts", ['./rollupPluginModLoBab
       })), _class2)) || _class));
 
       var MapItemLocalObj = function MapItemLocalObj() {
-        this.x = void 0;
-        this.y = void 0;
+        this.row = void 0;
+        this.col = void 0;
       };
 
       cclegacy._RF.pop();
@@ -2698,8 +2850,8 @@ System.register("chunks:///_virtual/map-controller.ts", ['./rollupPluginModLoBab
   };
 });
 
-System.register("chunks:///_virtual/mapblock.ts", ['./rollupPluginModLoBabelHelpers.js', 'cc', './ponzi-controller.ts', './ccc_msg.ts'], function (exports) {
-  var _applyDecoratedDescriptor, _inheritsLoose, _initializerDefineProperty, _assertThisInitialized, _asyncToGenerator, _regeneratorRuntime, cclegacy, _decorator, Label, Node, Component, log, ponzi_controller, ccc_msg;
+System.register("chunks:///_virtual/mapblock.ts", ['./rollupPluginModLoBabelHelpers.js', 'cc', './ponzi-controller.ts', './ccc_msg.ts', './data_center.ts', './coor_utils.ts'], function (exports) {
+  var _applyDecoratedDescriptor, _inheritsLoose, _initializerDefineProperty, _assertThisInitialized, _asyncToGenerator, _regeneratorRuntime, cclegacy, _decorator, Label, Node, warn, Component, log, ponzi_controller, ccc_msg, data_center, coor_utils;
 
   return {
     setters: [function (module) {
@@ -2714,12 +2866,17 @@ System.register("chunks:///_virtual/mapblock.ts", ['./rollupPluginModLoBabelHelp
       _decorator = module._decorator;
       Label = module.Label;
       Node = module.Node;
+      warn = module.warn;
       Component = module.Component;
       log = module.log;
     }, function (module) {
       ponzi_controller = module.ponzi_controller;
     }, function (module) {
       ccc_msg = module.ccc_msg;
+    }, function (module) {
+      data_center = module.data_center;
+    }, function (module) {
+      coor_utils = module.coor_utils;
     }],
     execute: function () {
       var _dec, _dec2, _dec3, _dec4, _class, _class2, _descriptor, _descriptor2, _descriptor3;
@@ -2763,16 +2920,17 @@ System.register("chunks:///_virtual/mapblock.ts", ['./rollupPluginModLoBabelHelp
 
         _proto.update = function update(deltaTime) {};
 
-        _proto.init = function init(mapTile) {
+        _proto.init = function init(mapTile, isWalked) {
           this.mapTile = mapTile;
           this.label.node.active = false;
+          this.walkedImage.active = isWalked;
+          this.newImage.active = !isWalked;
         };
 
         _proto.showLabel = function showLabel(content) {
           this.label.string = content;
-          this.label.node.active = true;
-          this.walkedImage.active = false;
-          this.newImage.active = true;
+          this.label.node.active = true; // this.walkedImage.active = false;
+          // this.newImage.active = true;
         };
 
         _proto.onBlockClicked = /*#__PURE__*/function () {
@@ -2780,32 +2938,35 @@ System.register("chunks:///_virtual/mapblock.ts", ['./rollupPluginModLoBabelHelp
             return _regeneratorRuntime().wrap(function _callee$(_context) {
               while (1) switch (_context.prev = _context.next) {
                 case 0:
-                  log("click block:", this.mapTile.x, this.mapTile.y);
+                  log("click block:", this.mapTile.row, this.mapTile.col);
+                  this.updateMapWalkRecord(this.mapTile.row, this.mapTile.col);
                   ponzi_controller.instance.sendCCCMsg(ccc_msg.network_block_ui, true);
-                  _context.prev = 2;
-                  _context.next = 5;
-                  return window.move == null ? void 0 : window.move(this.mapTile.x, this.mapTile.y);
+                  _context.prev = 3;
+                  _context.next = 6;
+                  return window.move == null ? void 0 : window.move(this.mapTile.row, this.mapTile.col);
 
-                case 5:
-                  _context.next = 10;
+                case 6:
+                  this.updateMapWalkRecord(this.mapTile.row, this.mapTile.col);
+                  ponzi_controller.instance.sendCCCMsg(ccc_msg.on_gamemap_walkrecord_update, null);
+                  _context.next = 13;
                   break;
 
-                case 7:
-                  _context.prev = 7;
-                  _context.t0 = _context["catch"](2);
+                case 10:
+                  _context.prev = 10;
+                  _context.t0 = _context["catch"](3);
                   ponzi_controller.instance.sendCCCMsg(ccc_msg.single_button_dialog, {
                     content: "You can't go there",
                     btnText: "OK"
                   });
 
-                case 10:
+                case 13:
                   ponzi_controller.instance.sendCCCMsg(ccc_msg.network_block_ui, false);
 
-                case 11:
+                case 14:
                 case "end":
                   return _context.stop();
               }
-            }, _callee, this, [[2, 7]]);
+            }, _callee, this, [[3, 10]]);
           }));
 
           function onBlockClicked() {
@@ -2814,6 +2975,26 @@ System.register("chunks:///_virtual/mapblock.ts", ['./rollupPluginModLoBabelHelp
 
           return onBlockClicked;
         }();
+
+        _proto.updateMapWalkRecord = function updateMapWalkRecord(row, col) {
+          var _this2 = this;
+
+          var recordMap = data_center.instance.loadMapWalkRecord();
+          this.giveValue(recordMap, row, col);
+          warn("Hex center:" + row + " " + col);
+          var arround = coor_utils.getNeighboringHexes(row, col);
+          arround.forEach(function (ele) {
+            warn("Hex:" + ele.row + " " + ele.col);
+
+            _this2.giveValue(recordMap, ele.row, ele.col);
+          });
+          data_center.instance.saveMapWalkRecord(recordMap);
+        };
+
+        _proto.giveValue = function giveValue(recordMap, row, col) {
+          if (!recordMap[row]) recordMap[row] = [];
+          recordMap[row][col] = 1;
+        };
 
         return mapblock;
       }(Component), (_descriptor = _applyDecoratedDescriptor(_class2.prototype, "label", [_dec2], {
@@ -2839,30 +3020,50 @@ System.register("chunks:///_virtual/mapblock.ts", ['./rollupPluginModLoBabelHelp
 });
 
 System.register("chunks:///_virtual/mapitem.ts", ['./rollupPluginModLoBabelHelpers.js', 'cc'], function (exports) {
-  var _inheritsLoose, cclegacy, _decorator, tween, v2, Component;
+  var _applyDecoratedDescriptor, _inheritsLoose, _initializerDefineProperty, _assertThisInitialized, cclegacy, _decorator, Node, tween, v2, Component;
 
   return {
     setters: [function (module) {
+      _applyDecoratedDescriptor = module.applyDecoratedDescriptor;
       _inheritsLoose = module.inheritsLoose;
+      _initializerDefineProperty = module.initializerDefineProperty;
+      _assertThisInitialized = module.assertThisInitialized;
     }, function (module) {
       cclegacy = module.cclegacy;
       _decorator = module._decorator;
+      Node = module.Node;
       tween = module.tween;
       v2 = module.v2;
       Component = module.Component;
     }],
     execute: function () {
-      var _dec, _class;
+      var _dec, _dec2, _dec3, _class, _class2, _descriptor, _descriptor2;
 
       cclegacy._RF.push({}, "49b4aAjQItOMplhuIvp5DQa", "mapitem", undefined);
 
       var ccclass = _decorator.ccclass,
           property = _decorator.property;
-      var mapitem = exports('mapitem', (_dec = ccclass('mapitem'), _dec(_class = /*#__PURE__*/function (_Component) {
+      var mapitem = exports('mapitem', (_dec = ccclass('mapitem'), _dec2 = property({
+        type: Node
+      }), _dec3 = property({
+        type: Node
+      }), _dec(_class = (_class2 = /*#__PURE__*/function (_Component) {
         _inheritsLoose(mapitem, _Component);
 
         function mapitem() {
-          return _Component.apply(this, arguments) || this;
+          var _this;
+
+          for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
+            args[_key] = arguments[_key];
+          }
+
+          _this = _Component.call.apply(_Component, [this].concat(args)) || this;
+
+          _initializerDefineProperty(_this, "lightNode", _descriptor, _assertThisInitialized(_this));
+
+          _initializerDefineProperty(_this, "darkNode", _descriptor2, _assertThisInitialized(_this));
+
+          return _this;
         }
 
         var _proto = mapitem.prototype;
@@ -2870,6 +3071,11 @@ System.register("chunks:///_virtual/mapitem.ts", ['./rollupPluginModLoBabelHelpe
         _proto.start = function start() {};
 
         _proto.update = function update(deltaTime) {};
+
+        _proto.init = function init(showLight) {
+          this.lightNode.active = showLight;
+          this.darkNode.active = !showLight;
+        };
 
         _proto.coinJumpAndFly = function coinJumpAndFly(coin, target, callback) {
           // 获取金币的初始坐标
@@ -2899,7 +3105,17 @@ System.register("chunks:///_virtual/mapitem.ts", ['./rollupPluginModLoBabelHelpe
         };
 
         return mapitem;
-      }(Component)) || _class));
+      }(Component), (_descriptor = _applyDecoratedDescriptor(_class2.prototype, "lightNode", [_dec2], {
+        configurable: true,
+        enumerable: true,
+        writable: true,
+        initializer: null
+      }), _descriptor2 = _applyDecoratedDescriptor(_class2.prototype, "darkNode", [_dec3], {
+        configurable: true,
+        enumerable: true,
+        writable: true,
+        initializer: null
+      })), _class2)) || _class));
 
       cclegacy._RF.pop();
     }
@@ -3453,6 +3669,7 @@ System.register("chunks:///_virtual/ponzi_config.ts", ['cc'], function (exports)
       var ponzi_config = exports('ponzi_config', function ponzi_config() {});
       ponzi_config.fakeBlockTime = 5;
       ponzi_config.mapWH = 20;
+      ponzi_config.showCoor = false;
 
       cclegacy._RF.pop();
     }
@@ -4541,10 +4758,29 @@ System.register("chunks:///_virtual/RoleLocalObj.ts", ['cc'], function (exports)
         this.gameId = void 0;
         this.state = void 0;
         this.money = void 0;
-        this.x = void 0;
-        this.y = void 0;
+        this.row = void 0;
+        this.col = void 0;
         this.assets = void 0;
         this.transactions = void 0;
+      });
+
+      cclegacy._RF.pop();
+    }
+  };
+});
+
+System.register("chunks:///_virtual/RowCol.ts", ['cc'], function (exports) {
+  var cclegacy;
+  return {
+    setters: [function (module) {
+      cclegacy = module.cclegacy;
+    }],
+    execute: function () {
+      cclegacy._RF.push({}, "637703VAvtEYaVriGd18T+w", "RowCol", undefined);
+
+      var RowCol = exports('RowCol', function RowCol() {
+        this.row = void 0;
+        this.col = void 0;
       });
 
       cclegacy._RF.pop();
