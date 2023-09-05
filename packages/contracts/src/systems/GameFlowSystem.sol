@@ -2,7 +2,8 @@
 pragma solidity >=0.8.0;
 
 import { System } from "@latticexyz/world/src/System.sol";
-import { PlayerTableId,GameState,AssetsListData, AssetsList, AssetsListTableId,PlayerGameResult, Counter } from "../codegen/Tables.sol";
+import { MapItem,MapItemTableId,RaiseColddown,TransactionList,PlayerGameResult, TradeListData, TradeList, PassiveTransactionData, IsTrading, PassiveTransaction, UnsolicitedTransaction,IsTrading, AssetsListData,AssetsList,Player,Game ,GameData,GameState,PlayerData,PlayerTableId,IsPlayer} from "../codegen/Tables.sol";
+
 import { addressToEntityKey } from "../addressToEntityKey.sol";
 import { query, QueryFragment, QueryType } from "@latticexyz/world/src/modules/keysintable/query.sol";
 
@@ -81,6 +82,67 @@ contract GameFlowSystem is System {
 
             PlayerGameResult.set(p,rank,totalScore,gpu,bitcoin,battery,leiter,gold,oil);
         }
+
+        clearPlayerComponents();
+        clearMapComponents();
+        resetGame();
+    }
+
+    function clearPlayerComponents() private {
+        QueryFragment[] memory fragments = new QueryFragment[](1);
+        fragments[0] = QueryFragment(QueryType.Has, PlayerTableId, new bytes(0));
+        bytes32[][] memory keyTuples = query(fragments);
+
+        
+        for (uint256 a = 0; a < keyTuples.length; a++) {
+            bytes32[] memory allPlayers = keyTuples[a];
+
+            for (uint256 i = 0; i < allPlayers.length; i++) {
+                bytes32 tmpPlayer = allPlayers[i];
+
+                //Player
+                IsPlayer.deleteRecord(tmpPlayer);
+                Player.deleteRecord(tmpPlayer);
+
+                //Trade
+                AssetsList.deleteRecord(tmpPlayer);
+                UnsolicitedTransaction.deleteRecord(tmpPlayer);
+                PassiveTransaction.deleteRecord(tmpPlayer);
+                TradeList.deleteRecord(tmpPlayer);
+                TransactionList.deleteRecord(tmpPlayer);
+                RaiseColddown.deleteRecord(tmpPlayer);
+
+                //
+            }
+        }
+    }
+
+    function clearMapComponents() private{
+
+        QueryFragment[] memory fragments = new QueryFragment[](1);
+        fragments[0] = QueryFragment(QueryType.Has, MapItemTableId, new bytes(0));
+        bytes32[][] memory keyTuples = query(fragments);
+
+        
+        for (uint256 a = 0; a < keyTuples.length; a++) {
+            bytes32[] memory array1 = keyTuples[a];
+
+            for (uint256 i = 0; i < array1.length; i++) {
+                bytes32 tmpEntity = array1[i];
+
+                MapItem.deleteRecord(tmpEntity);
+            }
+        }
+    }
+
+    function resetGame() private{
+        uint gameSec = 48 * 3600;
+        uint startWaitSec = 1 * 60;
+        uint256 gameId = block.timestamp;
+        uint256 startTime = block.timestamp + startWaitSec;
+        uint256 endTime = startTime + gameSec;
+
+        Game.set(gameId, startTime, endTime);
     }
 
     function isBytes32NonZero(bytes32 value) private pure returns (bool) {
