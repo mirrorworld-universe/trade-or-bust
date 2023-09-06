@@ -29,7 +29,8 @@ contract LobbySystem is System {
 
         RaiseColddown.set(player,0,0);
 
-        // bytes memory list2 = '';
+        PlayerGameResult.deleteRecord(player);
+        
         TradeList.set(player,'');
 
         return 2;
