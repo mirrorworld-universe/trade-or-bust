@@ -28,7 +28,7 @@ components.GameState.update$.subscribe((update) => {
   const [nextValue, prevValue] = update.value;
   console.log("GameState updated", update, { nextValue, prevValue });
   globalThis.ponzi.gameState = nextValue.value;
-  globalThis.ponzi.gamestate_update?.(prevValue.value, nextValue.value);
+  globalThis.ponzi.gamestate_update?.(prevValue?.value, nextValue?.value);
 });
 
 components.Counter.update$.subscribe((update) => {
