@@ -61,7 +61,7 @@ components.GameMap.update$.subscribe((update)=>{
 
 components.MapItem.update$.subscribe((update)=>{
   const [nextValue, prevValue] = update.value;
-  console.log("MapItems updated", { nextValue, prevValue });
+  // console.log("MapItems updated", { nextValue, prevValue });
   globalThis.ponzi.mapitems_update?.(prevValue, nextValue);
 });
 
