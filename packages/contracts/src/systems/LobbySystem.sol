@@ -17,7 +17,7 @@ contract LobbySystem is System {
         GameData memory gameData = Game.get();
         GameMapData memory gameMap = GameMap.get();
         uint[][] memory mapArray = bytesToUintArray(gameMap.mapArray,20,20);
-        uint256[2][] memory coordinations = getRandomCoordinates(mapArray,20,20,1);
+        uint256[2][] memory coordinations = getBornCoordinates(mapArray,20,20,1);
 
         uint32 playerState = 2;
         Player.set(player, gameData.gameId, playerState, 50, coordinations[0][0],coordinations[0][1]);
@@ -123,6 +123,30 @@ contract LobbySystem is System {
         }
         
         return coordinates;
+    }
+
+    function getBornCoordinates(uint[][] memory mapArray, uint256 width, uint256 height, uint n) private view returns (uint[2][] memory) {
+        require(n <= ((12 - 8 + 1) * (12 - 8 + 1)), "Invalid number of coordinates requested."); // 校验所需坐标数量是否合法
+
+        uint[2][] memory coordinates = new uint[2][](n);
+        uint selectedCount = 0;
+
+        while (selectedCount < n) {
+            uint row = getRandomNumberInRange(8, 12); // 生成介于 8 和 12 之间的随机行号
+            uint col = getRandomNumberInRange(8, 12); // 生成介于 8 和 12 之间的随机列号
+
+            if (mapArray[row][col] == 0) { // 检查要选择的位置是否符合条件，例如等于 0
+                coordinates[selectedCount] = [row, col];
+                selectedCount++;
+            }
+        }
+
+        return coordinates;
+    }
+
+    function getRandomNumberInRange(uint256 min, uint256 max) private view returns (uint256) {
+        uint256 randomNumber = uint256(keccak256(abi.encodePacked(block.timestamp, block.difficulty, msg.sender)));
+        return (randomNumber % (max - min + 1)) + min;
     }
 
     function isCoordinateSelected(uint[2][400] memory selectedCoordinates, uint x, uint y) private pure returns (bool) {
