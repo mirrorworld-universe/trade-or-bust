@@ -67,7 +67,6 @@ contract GameFlowSystem is System {
 
         scoreObjList = sortScores(scoreObjList);
 
-
         for (uint256 a = 0; a < scoreObjList.length; a++) {
             ScoreObj memory obj = scoreObjList[a];
             bytes32 p = obj.player;
