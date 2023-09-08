@@ -2,9 +2,11 @@
 
 # **Game Introduction**
 
-**Trade or Bust is a fully on-chain economic strategy gamewhere players strategize to survive in a volatile economic market. ✨**
+**Trade or Bust is a fully on-chain economic strategy game where players strategize to survive in a volatile economic market. ✨**
 
-In this dynamic and unpredictable market, players are tasked with crafting personal strategies to continuously accumulate assets within a limited timeframe. Your journey involves securing financing, exploring a rich and varied map, engaging in covert trades with peers, and meeting interest payments to the central bank. Your ultimate goal? To survive the market's randomness and uncertainties, emerging as the triumphant victor in a vibrant economic battleground. Dive in, strategize, trade, and may the best player win! 👍
+In this dynamic and unpredictable market, players are tasked with crafting personal strategies to continuously accumulate assets within a limited timeframe. Your journey involves securing financing, exploring a rich and varied map, engaging in covert trades with peers, and meeting interest payments to the central bank. Your ultimate goal? To survive the market's randomness and uncertainties, emerging as the triumphant victor in a vibrant economic battleground. 
+
+Dive in, strategize, trade, and may the best player win! 👍
 
 ![github-present-gamethumb](./thumb/github-present-gamethumb.png)
 
