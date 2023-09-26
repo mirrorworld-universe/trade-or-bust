@@ -2,7 +2,12 @@ import { mount as mountDevTools } from "@latticexyz/dev-tools";
 import { setup } from "./mud/setup";
 import mudConfig from "contracts/mud.config";
 import { runQuery ,getComponentValue,getComponentValueStrict, Has, Not  } from "@latticexyz/recs";
-
+// import * as buffer from "buffer";
+// window.Buffer = buffer.Buffer;
+import { Buffer } from 'buffer';
+// @ts-ignore
+window.Buffer = Buffer;
+import { Connection, TransactionMessage, VersionedTransaction, SystemProgram, Transaction, clusterApiUrl } from "@solana/web3.js";
 const {
   components,
   systemCalls: { increment,joinGame,askStart,move,pickAsset,pickFund,trade,acceptTrade,rejectTrade,finishGame },
@@ -121,10 +126,6 @@ components.PlayerGameResult.update$.subscribe((update)=>{
   return components.Player.values;
 }
 
-(window as any).getIsPlayers = () => {
-  return components.IsPlayer.values;
-}
-
 (window as any).getMapItems = ()=>{
   return components.MapItem.values;
 }
@@ -199,19 +200,95 @@ components.PlayerGameResult.update$.subscribe((update)=>{
 };
 
 
-
-// https://vitejs.dev/guide/env-and-mode.html
-if (import.meta.env.DEV) {
-  const { mount: mountDevTools } = await import("@latticexyz/dev-tools");
-  mountDevTools({
-    config: mudConfig,
-    publicClient: network.publicClient,
-    walletClient: network.walletClient,
-    latestBlock$: network.latestBlock$,
-    blockStorageOperations$: network.blockStorageOperations$,
-    worldAddress: network.worldContract.address,
-    worldAbi: network.worldContract.abi,
-    write$: network.write$,
-    recsWorld: network.world,
+(window as any).getPhantom = async () =>{
+  console.error(1212);
+  const getProvider = () => {
+      if ('phantom' in window) {
+        const provider = window.phantom?.solana;
+    
+        if (provider?.isPhantom) {
+          return provider;
+        }
+      }
+    
+      window.open('https://phantom.app/', '_blank');
+  };
+  
+  const provider = getProvider(); // see "Detecting the Provider"
+  provider.on("connect", () => console.log("connected!"));// Forget user's public key once they disconnect
+  provider.on("disconnect", () => {
+      console.log("dsconnected!")
   });
+  provider.on('accountChanged', (publicKey) => {
+      if (publicKey) {
+        // Set new public key and continue as usual
+        console.log(`Switched to account ${publicKey.toBase58()}`);
+      } else {
+        // Attempt to reconnect to Phantom
+        provider.connect().catch((error) => {
+          // Handle connection failure
+        });
+      }
+  });
+  
+
+  // Will either automatically connect to Phantom, or do nothing.
+  provider.connect({ onlyIfTrusted: true })
+  .then(async ({publicKey}) => {
+    console.log("public key:",publicKey);
+      
+      // const message = `To avoid digital dognappers, sign below to authenticate with CryptoCorgis`;
+      // const encodedMessage = new TextEncoder().encode(message);
+      // const signedMessage = await provider.signMessage(encodedMessage, "utf8");
+      // Handle successful eager connection
+      sendAndSign(publicKey,provider);
+  })
+  .catch(async () => {
+      try {
+          const resp = await provider.connect();
+          console.log(resp.publicKey.toString());
+          // 26qv4GCcx98RihuK3c4T6ozB3J7L6VwCuFVc7Ta2A3Uo 
+          sendAndSign(resp.publicKey,provider);
+      } catch (err) {
+          // { code: 4001, message: 'User rejected the request.' }
+      }
+  });
+
+  // const provider = getProvider(); // see "Detecting the Provider"
+}
+
+const sendAndSign = async function(publicKey:any,provider:any){
+  console.log("sendAndSign enter...");
+  // const network = 'https://solana-api.projectserum.com';
+  // const network = 'mainnet-beta';
+  // create a connection to the cluster
+const connection = new Connection(clusterApiUrl());
+
+// get the latest blockhash
+const blockhash = await connection.getRecentBlockhash();
+  // create a transfer instruction
+  const transferInstruction = SystemProgram.transfer({
+    fromPubkey: publicKey,
+    toPubkey: publicKey,
+    lamports: 10,
+  });
+
+  // create a v0 compatible message
+  const messageV0 = new TransactionMessage({
+    payerKey: publicKey,
+    recentBlockhash: blockhash.blockhash,
+    instructions: [transferInstruction],
+  }).compileToV0Message();
+
+  // make a versioned transaction
+  const transactionV0 = new VersionedTransaction(messageV0);
+
+
+
+
+  // const connection = new Connection(network);
+  // const transaction = new Transaction();
+  const signResult = await provider.signAndSendTransaction(transactionV0);
+  let status = await connection.getSignatureStatus(signResult.signature);
+  console.log("phantom resutl:",signResult,status);
 }
