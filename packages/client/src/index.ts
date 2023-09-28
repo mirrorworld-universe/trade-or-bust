@@ -320,10 +320,26 @@ const blockhash = await connection.getRecentBlockhash();
 const timeDelay = 2500;
 var tradeOrBurstLib:any = null;
 const gameUuid = "game_5";
-var signingAuthorityWalletKeypair:any = null;
+var signingAuthorityWalletKeypair:Keypair = null;
 var connection:any = null;
 
-window.initSDK = async function(){
+(window as any).solanaSetAccount = function(storeString:string){
+  const encoder = new TextEncoder();
+  const uint8Array = encoder.encode(storeString);
+  signingAuthorityWalletKeypair = Keypair.fromSecretKey(uint8Array);
+  console.log("solana set account success:",signingAuthorityWalletKeypair);
+}
+
+window.initSDK = async function(useTestAccount:boolean){
+  
+  if(useTestAccount){
+    const playerOneSecretKey = "51eqcESEbATa1ATeogwAaHyD2Y4HvN8MYsgxHeGrhpxdeN1Dk3DZnAgzz2Vz1UeMxwkFuW5b7XjaRZzYU5RGbWhh";
+    const playerOneKeypair = Keypair.fromSecretKey(base58.decode(playerOneSecretKey))
+    signingAuthorityWalletKeypair = new Keypair();
+    signingAuthorityWalletKeypair = playerOneKeypair;
+    console.log("use key: ", playerOneSecretKey);
+    console.log("use key address: ", signingAuthorityWalletKeypair.publicKey.toBase58());
+  }
 
   const commitment: Commitment = 'processed';
   connection = new Connection('https://api.devnet.solana.com', {
@@ -331,7 +347,7 @@ window.initSDK = async function(){
       wsEndpoint: 'wss://api.devnet.solana.com/'
   });
   
-  signingAuthorityWalletKeypair = await createKeypair(connection);
+  // signingAuthorityWalletKeypair = await createKeypair(connection);
   console.log(process.env.NODE_ENV);
   // const userWallet = new NodeWallet(signingAuthorityWalletKeypair);
   const options = anchor.AnchorProvider.defaultOptions();
@@ -339,7 +355,7 @@ window.initSDK = async function(){
   const provider = new anchor.AnchorProvider(connection, null, options);
   anchor.setProvider(provider);
 
-  const tradeOrBurstLib = new TradeOrBurstLib(TRADE_OR_BURST_PROGRAM_ID, connection, null);
+  tradeOrBurstLib = new TradeOrBurstLib(TRADE_OR_BURST_PROGRAM_ID, connection, null);
 
 
   // tradeOrBurstLib = new TradeOrBurstLib(TRADE_OR_BURST_PROGRAM_ID, connection, userWallet);
@@ -386,26 +402,41 @@ window.initSDK = async function(){
   const rejectTradeEventListener = tradeOrBurstLib.addRejectTradeEventListener(handleRejectTradeEvent);
   const acceptTradeEventListener = tradeOrBurstLib.addAcceptTradeEventListener(handleAcceptTradeEvent);
   
-}
+};
 
 
-async function createKeypair(connection:any): Promise<Keypair> {
+(window as any).createKeypair = async function() {
+  if(!connection){
+    console.error("solana sdk not inited!");
+    return null;
+  }
+
   let kp = Keypair.generate();
+  console.log("new kp:",kp);
   console.log("new key: ", base58.encode(kp.secretKey));
   console.log("new key address: ", kp.publicKey.toBase58());
+  signingAuthorityWalletKeypair = kp;
 
   await connection.requestAirdrop(kp.publicKey, 1 * LAMPORTS_PER_SOL);
   return kp;
-}
+};
 
 (window as any).joinGame = async function(x: number, y: number) {
   if(!tradeOrBurstLib){
     console.error("tradeOrBurstLib is not inited yet!");
     return;
   }
-  console.log("Started joinGame");
-  let player: PublicKey = signingAuthorityWalletKeypair.publicKey.toBase58();
+  if(!signingAuthorityWalletKeypair){
+    console.error("need to set account or create account first!");
+    return;
+  }
+  let player: PublicKey = signingAuthorityWalletKeypair.publicKey;
   let tx = await tradeOrBurstLib.createJoinGameTransaction(player, player, gameUuid, x, y);
+
+
+  console.log("Started joinGame");
+  console.log("Started joinGame player:",player);
+  console.log("Started joinGame tx:",tx);
 
   await tradeOrBurstLib.addFeePayerAndRecentBlockHashInTransaction(tx, player);
 
@@ -416,6 +447,21 @@ async function createKeypair(connection:any): Promise<Keypair> {
 
   await delay(timeDelay);
 }
+
+//example 
+// async function joinGame(player: PublicKey, gameUuid: string, x: number, y: number, signer: Keypair) {
+//   console.log("Started joinGame");
+//   let tx = await tradeOrBurstLib.createJoinGameTransaction(player, player, gameUuid, x, y);
+
+//   await tradeOrBurstLib.addFeePayerAndRecentBlockHashInTransaction(tx, player);
+
+//   tradeOrBurstLib.signTransaction(tx, base58.encode(signer.secretKey));
+
+//   let txHash = await connection.sendRawTransaction(tx.serialize());
+//   console.log("Tx Hash: ", txHash);
+
+//   await delay(timeDelay);
+// }
 
 // async function removeEventListener(tradeOrBurstLib, listeners:any[]) {
 //   console.log("Started removeEventListener");

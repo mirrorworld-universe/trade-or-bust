@@ -5946,7 +5946,7 @@ System.register("chunks:///_virtual/solana-bridge.ts", ['./rollupPluginModLoBabe
 
         _proto.start = /*#__PURE__*/function () {
           var _start = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee() {
-            var i;
+            var i, keypair;
             return _regeneratorRuntime().wrap(function _callee$(_context) {
               while (1) switch (_context.prev = _context.next) {
                 case 0:
@@ -5960,9 +5960,13 @@ System.register("chunks:///_virtual/solana-bridge.ts", ['./rollupPluginModLoBabe
                   }
 
                   _context.next = 6;
-                  return window.getPhantom();
+                  return window.createKeypair();
 
                 case 6:
+                  keypair = _context.sent;
+                  log(keypair);
+
+                case 8:
                 case "end":
                   return _context.stop();
               }
