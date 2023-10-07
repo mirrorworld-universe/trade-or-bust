@@ -254,8 +254,8 @@ System.register("chunks:///_virtual/assets.ts", ['./rollupPluginModLoBabelHelper
   };
 });
 
-System.register("chunks:///_virtual/button_raisingcapital.ts", ['./rollupPluginModLoBabelHelpers.js', 'cc', './ponzi-controller.ts', './ccc_msg.ts', './time_utils.ts', './component_state.ts', './ponzi_config.ts'], function (exports) {
-  var _applyDecoratedDescriptor, _inheritsLoose, _initializerDefineProperty, _assertThisInitialized, _asyncToGenerator, _regeneratorRuntime, cclegacy, _decorator, Label, Button, log, sys, Component, warn, ponzi_controller, ccc_msg, time_utils, component_state, ponzi_config;
+System.register("chunks:///_virtual/button_raisingcapital.ts", ['./rollupPluginModLoBabelHelpers.js', 'cc', './ponzi-controller.ts', './ccc_msg.ts', './time_utils.ts', './component_state.ts', './ponzi_config.ts', './solana-bridge.ts'], function (exports) {
+  var _applyDecoratedDescriptor, _inheritsLoose, _initializerDefineProperty, _assertThisInitialized, _asyncToGenerator, _regeneratorRuntime, cclegacy, _decorator, Label, Button, log, sys, Component, warn, ponzi_controller, ccc_msg, time_utils, component_state, ponzi_config, solana_bridge;
 
   return {
     setters: [function (module) {
@@ -284,6 +284,8 @@ System.register("chunks:///_virtual/button_raisingcapital.ts", ['./rollupPluginM
       component_state = module.component_state;
     }, function (module) {
       ponzi_config = module.ponzi_config;
+    }, function (module) {
+      solana_bridge = module.solana_bridge;
     }],
     execute: function () {
       var _dec, _dec2, _dec3, _class, _class2, _descriptor, _descriptor2;
@@ -375,7 +377,7 @@ System.register("chunks:///_virtual/button_raisingcapital.ts", ['./rollupPluginM
 
         _proto.init = /*#__PURE__*/function () {
           var _init = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee3() {
-            var gameState, playerEntity, raiseCountdown;
+            var gameState, playerEntity, player;
             return _regeneratorRuntime().wrap(function _callee3$(_context3) {
               while (1) switch (_context3.prev = _context3.next) {
                 case 0:
@@ -399,13 +401,13 @@ System.register("chunks:///_virtual/button_raisingcapital.ts", ['./rollupPluginM
                   return _context3.abrupt("return");
 
                 case 6:
-                  raiseCountdown = null;
+                  player = null;
                   _context3.prev = 7;
                   _context3.next = 10;
-                  return window.queryValue == null ? void 0 : window.queryValue(window.env.components.RaiseColddown, playerEntity);
+                  return window.solanaQueryPlayers == null ? void 0 : window.solanaQueryPlayers([solana_bridge.instance.current_player]);
 
                 case 10:
-                  raiseCountdown = _context3.sent;
+                  player = _context3.sent;
                   _context3.next = 16;
                   break;
 
@@ -415,7 +417,7 @@ System.register("chunks:///_virtual/button_raisingcapital.ts", ['./rollupPluginM
                   log("Can not find RaiseColddown component on entity");
 
                 case 16:
-                  if (raiseCountdown) {
+                  if (player) {
                     _context3.next = 18;
                     break;
                   }
@@ -446,15 +448,15 @@ System.register("chunks:///_virtual/button_raisingcapital.ts", ['./rollupPluginM
 
         _proto.updateUI = /*#__PURE__*/function () {
           var _updateUI = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee4() {
-            var playerEntity, raiseCountdown, timeStamp, useableTime;
+            var raiseCountdown, timeStamp, useableTime;
             return _regeneratorRuntime().wrap(function _callee4$(_context4) {
               while (1) switch (_context4.prev = _context4.next) {
                 case 0:
-                  playerEntity = globalThis.ponzi.currentPlayer;
+                  globalThis.ponzi.currentPlayer;
                   raiseCountdown = null;
                   _context4.prev = 2;
                   _context4.next = 5;
-                  return window.queryValue == null ? void 0 : window.queryValue(window.env.components.RaiseColddown, playerEntity);
+                  return window.solanaQueryPlayers == null ? void 0 : window.solanaQueryPlayers([solana_bridge.instance.current_player]);
 
                 case 5:
                   raiseCountdown = _context4.sent;
@@ -2286,7 +2288,7 @@ System.register("chunks:///_virtual/lobby-controller.ts", ['./rollupPluginModLoB
                 case 0:
                   ponzi_controller.instance.sendCCCMsg(ccc_msg.network_block_ui, true);
                   _context2.next = 3;
-                  return window.joinGame == null ? void 0 : window.joinGame();
+                  return window.solanaJoinGame == null ? void 0 : window.solanaJoinGame();
 
                 case 3:
                   ponzi_controller.instance.sendCCCMsg(ccc_msg.network_block_ui, false);
@@ -2455,7 +2457,7 @@ System.register("chunks:///_virtual/lobby-controller.ts", ['./rollupPluginModLoB
 
         _proto.updateLobby = /*#__PURE__*/function () {
           var _updateLobby = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee9() {
-            var gameState, gameObj, isPlayer, playerEntity, timeStamp, gameStartTime, leftSeconds, _timeStamp, _gameStartTime, _leftSeconds;
+            var gameState, gameObj, isPlayer, timeStamp, gameStartTime, leftSeconds, _timeStamp, _gameStartTime, _leftSeconds;
 
             return _regeneratorRuntime().wrap(function _callee9$(_context9) {
               while (1) switch (_context9.prev = _context9.next) {
@@ -2474,21 +2476,20 @@ System.register("chunks:///_virtual/lobby-controller.ts", ['./rollupPluginModLoB
                 case 5:
                   isPlayer = false;
                   _context9.prev = 6;
-                  playerEntity = globalThis.ponzi.currentPlayer;
-                  _context9.next = 10;
-                  return window.queryValue == null ? void 0 : window.queryValue(window.env.components.IsPlayer, playerEntity);
+                  _context9.next = 9;
+                  return window.solanaIsJoined == null ? void 0 : window.solanaIsJoined();
 
-                case 10:
+                case 9:
                   isPlayer = _context9.sent;
-                  _context9.next = 16;
+                  _context9.next = 15;
                   break;
 
-                case 13:
-                  _context9.prev = 13;
+                case 12:
+                  _context9.prev = 12;
                   _context9.t0 = _context9["catch"](6);
                   isPlayer = false;
 
-                case 16:
+                case 15:
                   if (gameState == component_state.game_ingame) {
                     if (isPlayer) {
                       log("ingame+isPlayer");
@@ -2541,11 +2542,11 @@ System.register("chunks:///_virtual/lobby-controller.ts", ['./rollupPluginModLoB
                     }
                   }
 
-                case 17:
+                case 16:
                 case "end":
                   return _context9.stop();
               }
-            }, _callee9, this, [[6, 13]]);
+            }, _callee9, this, [[6, 12]]);
           }));
 
           function updateLobby() {
@@ -4362,6 +4363,8 @@ System.register("chunks:///_virtual/ponzi-controller.ts", ['./rollupPluginModLoB
           this.init();
         };
 
+        _proto.update = function update(dt) {};
+
         _proto.on = function on(msgName, func) {
           this.node.on(msgName, func);
         };
@@ -4611,8 +4614,6 @@ System.register("chunks:///_virtual/ponzi-controller.ts", ['./rollupPluginModLoB
 
           console.log(result); // ["name", "age"]
         };
-
-        _proto.gameInit = function gameInit(game) {};
 
         _proto.gameUpdate = function gameUpdate(oldObj, newObj) {
           this.sendCCCMsg(ccc_msg.on_game_update, {
@@ -5878,8 +5879,8 @@ System.register("chunks:///_virtual/Singleton.ts", ['./rollupPluginModLoBabelHel
   };
 });
 
-System.register("chunks:///_virtual/solana-bridge.ts", ['./rollupPluginModLoBabelHelpers.js', 'cc'], function (exports) {
-  var _inheritsLoose, _createClass, _asyncToGenerator, _regeneratorRuntime, cclegacy, _decorator, error, find, Component, log;
+System.register("chunks:///_virtual/solana-bridge.ts", ['./rollupPluginModLoBabelHelpers.js', 'cc', './component_state.ts'], function (exports) {
+  var _inheritsLoose, _createClass, _asyncToGenerator, _regeneratorRuntime, cclegacy, _decorator, error, find, Component, log, component_state;
 
   return {
     setters: [function (module) {
@@ -5894,6 +5895,8 @@ System.register("chunks:///_virtual/solana-bridge.ts", ['./rollupPluginModLoBabe
       find = module.find;
       Component = module.Component;
       log = module.log;
+    }, function (module) {
+      component_state = module.component_state;
     }],
     execute: function () {
       var _dec, _class, _class2;
@@ -5932,7 +5935,7 @@ System.register("chunks:///_virtual/solana-bridge.ts", ['./rollupPluginModLoBabe
           _this.PlayerGameResults = new Map();
           _this._pharse = 0;
           _this._queryInterval = 3;
-          _this._inited = false;
+          _this.inited = false;
           return _this;
         }
 
@@ -5944,44 +5947,63 @@ System.register("chunks:///_virtual/solana-bridge.ts", ['./rollupPluginModLoBabe
           }
         };
 
-        _proto.start = /*#__PURE__*/function () {
-          var _start = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee() {
-            var i, keypair;
+        _proto.onLoad = /*#__PURE__*/function () {
+          var _onLoad = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee() {
+            var _window, _window2, _window3;
+
+            var gameInfo, playerIds, playersData;
             return _regeneratorRuntime().wrap(function _callee$(_context) {
               while (1) switch (_context.prev = _context.next) {
                 case 0:
                   //Use 0:00 of today as game_id
                   this.game_id = this.getTodayStartTimestamp().toString();
-                  this.current_player = this.game_id + this.getParameterFromURL("id");
-                  this.players = [];
+                  this.current_player = this.getParameterFromURL("id"); // this.players = [];
+                  // for(let i=1;i<11;i++){
+                  //     this.players.push(this.game_id + i);
+                  // }
+                  //InitSDK
 
-                  for (i = 1; i < 11; i++) {
-                    this.players.push(this.game_id + i);
-                  }
+                  _context.next = 4;
+                  return (_window = window) == null ? void 0 : _window.initSDK(this.game_id, this.current_player);
 
-                  _context.next = 6;
-                  return window.createKeypair();
+                case 4:
+                  //Update gameState
+                  globalThis.ponzi.gameState = component_state.game_ingame;
+                  globalThis.ponzi.gamestate_update == null ? void 0 : globalThis.ponzi.gamestate_update(null, component_state.game_ingame); //update GameData
 
-                case 6:
-                  keypair = _context.sent;
-                  log(keypair);
+                  _context.next = 8;
+                  return (_window2 = window) == null ? void 0 : _window2.queryGame();
 
                 case 8:
+                  gameInfo = _context.sent;
+                  globalThis.ponzi.game = gameInfo;
+                  globalThis.ponzi.game_update == null ? void 0 : globalThis.ponzi.game_update(null, gameInfo); //Query all players
+
+                  playerIds = [1, 2];
+                  _context.next = 14;
+                  return (_window3 = window) == null ? void 0 : _window3.solanaQueryPlayers(playerIds);
+
+                case 14:
+                  playersData = _context.sent;
+                  globalThis.ponzi.players = playersData;
+                //todo: add other init update here
+
+                case 16:
                 case "end":
                   return _context.stop();
               }
             }, _callee, this);
           }));
 
-          function start() {
-            return _start.apply(this, arguments);
+          function onLoad() {
+            return _onLoad.apply(this, arguments);
           }
 
-          return start;
+          return onLoad;
         }();
 
         _proto.update = function update(dt) {
-          if (!this._inited) {
+          if (!this.inited) {
             this.init();
             return;
           } //update all components per unit time
@@ -6000,7 +6022,7 @@ System.register("chunks:///_virtual/solana-bridge.ts", ['./rollupPluginModLoBabe
             return _regeneratorRuntime().wrap(function _callee2$(_context2) {
               while (1) switch (_context2.prev = _context2.next) {
                 case 0:
-                  if (!this._inited) {
+                  if (!this.inited) {
                     _context2.next = 2;
                     break;
                   }
@@ -6010,7 +6032,7 @@ System.register("chunks:///_virtual/solana-bridge.ts", ['./rollupPluginModLoBabe
                 case 2:
                   if (this.game_id && this.current_player && this.players && this.players.length > 0) {
                     log("Game inited, game_id:", this.game_id, ";current_player:", this.current_player, ";player count:", this.players.length);
-                    this._inited = true;
+                    this.inited = true;
                   }
 
                 case 3:

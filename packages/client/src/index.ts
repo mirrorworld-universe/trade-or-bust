@@ -34,7 +34,7 @@ const {
 
 globalThis.ponzi = {
   counter:0,
-  currentPlayer:network.playerEntity,
+  currentPlayer:null,
   gameState:null,
   game:null,
   gameMap:null,
@@ -44,100 +44,100 @@ globalThis.ponzi = {
 
 globalThis.env = {
   components:components
-}
+};
 
 // Components expose a stream that triggers when the component is updated.
-components.GameState.update$.subscribe((update) => {
-  const [nextValue, prevValue] = update.value;
-  console.log("GameState updated", update, { nextValue, prevValue });
-  globalThis.ponzi.gameState = nextValue.value;
-  globalThis.ponzi.gamestate_update?.(prevValue?.value, nextValue?.value);
-});
-
-components.Counter.update$.subscribe((update) => {
-    const [nextValue, prevValue] = update.value;
-    console.log("Counter updated", update, { nextValue, prevValue });
-    globalThis.ponzi.counter = nextValue;
-    globalThis.ponzi.counter_update?.(prevValue, nextValue);
-});
-
-components.Game.update$.subscribe((update) => {
-  const [nextValue, prevValue] = update.value;
-  console.log("Game updated", update, { nextValue, prevValue });
-  globalThis.ponzi.game = nextValue;
-  globalThis.ponzi.game_update?.(prevValue, nextValue);
-});
-
-components.Player.update$.subscribe((update)=>{
-  const [nextValue, prevValue] = update.value;
-  console.log("Player updated", update, { nextValue, prevValue });
-  // globalThis.ponzi.player_update?.(prevValue, nextValue);
-  globalThis.ponzi.player_update?.(update);
-});
-
-components.GameMap.update$.subscribe((update)=>{
-  const [nextValue, prevValue] = update.value;
-  console.log("GameMap updated", { nextValue, prevValue });
-  globalThis.ponzi.gameMap = nextValue
-  globalThis.ponzi.gamemap_update?.(prevValue, nextValue);
-});
-
-components.MapItem.update$.subscribe((update)=>{
-  const [nextValue, prevValue] = update.value;
-  // console.log("MapItems updated", { nextValue, prevValue });
-  globalThis.ponzi.mapitems_update?.(prevValue, nextValue);
-});
-
-components.IsPlayer.update$.subscribe((update)=>{
-  const [nextValue, prevValue] = update.value;
-  console.log("IsPlayer updated", update);
-  globalThis.ponzi.isplayer_update?.(update);
-});
-
-components.TransactionList.update$.subscribe((update)=>{
-  const [nextValue, prevValue] = update.value;
-  console.log("TransactionList updated", update);
-  globalThis.ponzi.transactionlist_update?.(update);
-});
-
-components.Log.update$.subscribe((update)=>{
-  const [nextValue, prevValue] = update.value;
-  console.log("Log updated", update);
-});
-
-components.AssetsList.update$.subscribe((update)=>{
-  const [nextValue, prevValue] = update.value;
-  console.log("AssetsList updated", update);
-  globalThis.ponzi.assetslist_update?.(update);
-});
-
-components.RaiseColddown.update$.subscribe((update)=>{
-  const [nextValue, prevValue] = update.value;
-  console.log("RaiseColddown updated", update);
-  globalThis.ponzi.raiseColddown_update?.(update);
-});
-
-//Trade
-// components.UnsolicitedTransaction.update$.subscribe((update)=>{
+// components.GameState.update$.subscribe((update) => {
 //   const [nextValue, prevValue] = update.value;
-//   console.log("UnsolicitedTransaction updated", update);
-//   // globalThis.ponzi.tradelist_update?.(update);
+//   console.log("GameState updated", update, { nextValue, prevValue });
+//   globalThis.ponzi.gameState = nextValue.value;
+//   globalThis.ponzi.gamestate_update?.(prevValue?.value, nextValue?.value);
 // });
-components.PassiveTransaction.update$.subscribe((update)=>{
-  const [nextValue, prevValue] = update.value;
-  console.log("PassiveTransaction updated", update);
-  globalThis.ponzi.passivetransaction_update?.(update);
-});
-components.TradeList.update$.subscribe((update)=>{
-  const [nextValue, prevValue] = update.value;
-  console.log("TradeList updated", update);
-  globalThis.ponzi.tradelist_update?.(update);
-});
-components.PlayerGameResult.update$.subscribe((update)=>{
-  const [nextValue, prevValue] = update.value;
-  console.log("PlayerGameResult updated", update);
-  globalThis.ponzi.playergameresult_update?.(update);
-});
+
+// components.Counter.update$.subscribe((update) => {
+//     const [nextValue, prevValue] = update.value;
+//     console.log("Counter updated", update, { nextValue, prevValue });
+//     globalThis.ponzi.counter = nextValue;
+//     globalThis.ponzi.counter_update?.(prevValue, nextValue);
+// });
+
+// components.Game.update$.subscribe((update) => {
+//   const [nextValue, prevValue] = update.value;
+//   console.log("Game updated", update, { nextValue, prevValue });
+//   globalThis.ponzi.game = nextValue;
+//   globalThis.ponzi.game_update?.(prevValue, nextValue);
+// });
+
+// components.Player.update$.subscribe((update)=>{
+//   const [nextValue, prevValue] = update.value;
+//   console.log("Player updated", update, { nextValue, prevValue });
+//   // globalThis.ponzi.player_update?.(prevValue, nextValue);
+//   globalThis.ponzi.player_update?.(update);
+// });
+
+// components.GameMap.update$.subscribe((update)=>{
+//   const [nextValue, prevValue] = update.value;
+//   console.log("GameMap updated", { nextValue, prevValue });
+//   globalThis.ponzi.gameMap = nextValue
+//   globalThis.ponzi.gamemap_update?.(prevValue, nextValue);
+// });
+
+// components.MapItem.update$.subscribe((update)=>{
+//   const [nextValue, prevValue] = update.value;
+//   // console.log("MapItems updated", { nextValue, prevValue });
+//   globalThis.ponzi.mapitems_update?.(prevValue, nextValue);
+// });
+
+// components.IsPlayer.update$.subscribe((update)=>{
+//   const [nextValue, prevValue] = update.value;
+//   console.log("IsPlayer updated", update);
+//   globalThis.ponzi.isplayer_update?.(update);
+// });
+
+// components.TransactionList.update$.subscribe((update)=>{
+//   const [nextValue, prevValue] = update.value;
+//   console.log("TransactionList updated", update);
+//   globalThis.ponzi.transactionlist_update?.(update);
+// });
+
+// components.Log.update$.subscribe((update)=>{
+//   const [nextValue, prevValue] = update.value;
+//   console.log("Log updated", update);
+// });
+
+// components.AssetsList.update$.subscribe((update)=>{
+//   const [nextValue, prevValue] = update.value;
+//   console.log("AssetsList updated", update);
+//   globalThis.ponzi.assetslist_update?.(update);
+// });
+
+// components.RaiseColddown.update$.subscribe((update)=>{
+//   const [nextValue, prevValue] = update.value;
+//   console.log("RaiseColddown updated", update);
+//   globalThis.ponzi.raiseColddown_update?.(update);
+// });
+
+// //Trade
+// // components.UnsolicitedTransaction.update$.subscribe((update)=>{
+// //   const [nextValue, prevValue] = update.value;
+// //   console.log("UnsolicitedTransaction updated", update);
+// //   // globalThis.ponzi.tradelist_update?.(update);
+// // });
+// components.PassiveTransaction.update$.subscribe((update)=>{
+//   const [nextValue, prevValue] = update.value;
+//   console.log("PassiveTransaction updated", update);
+//   globalThis.ponzi.passivetransaction_update?.(update);
+// });
+// components.TradeList.update$.subscribe((update)=>{
+//   const [nextValue, prevValue] = update.value;
+//   console.log("TradeList updated", update);
+//   globalThis.ponzi.tradelist_update?.(update);
+// });
+// components.PlayerGameResult.update$.subscribe((update)=>{
+//   const [nextValue, prevValue] = update.value;
+//   console.log("PlayerGameResult updated", update);
+//   globalThis.ponzi.playergameresult_update?.(update);
+// });
 
 //get functions
 (window as any).getPlayers = () => {
@@ -232,6 +232,11 @@ components.PlayerGameResult.update$.subscribe((update)=>{
       window.open('https://phantom.app/', '_blank');
   };
   
+
+
+
+
+
   const provider = getProvider(); // see "Detecting the Provider"
   provider.on("connect", () => console.log("connected!"));// Forget user's public key once they disconnect
   provider.on("disconnect", () => {
@@ -329,11 +334,34 @@ var connection:any = null;
   signingAuthorityWalletKeypair = Keypair.fromSecretKey(uint8Array);
   console.log("solana set account success:",signingAuthorityWalletKeypair);
 }
-
-window.initSDK = async function(useTestAccount:boolean){
-  
-  if(useTestAccount){
-    const playerOneSecretKey = "51eqcESEbATa1ATeogwAaHyD2Y4HvN8MYsgxHeGrhpxdeN1Dk3DZnAgzz2Vz1UeMxwkFuW5b7XjaRZzYU5RGbWhh";
+const playerOneSecretKey1 = "51eqcESEbATa1ATeogwAaHyD2Y4HvN8MYsgxHeGrhpxdeN1Dk3DZnAgzz2Vz1UeMxwkFuW5b7XjaRZzYU5RGbWhh";
+const playerOneSecretKey2 = "9LYsKjFgx2QEV41tjaoQdcMXbTWKLLkWszzMJYyWZQxPwRHxp7TcG9zShrT3hDmsKZSYesU4UGUFq2DG76sQqJA";
+   
+window.initSDK = async function(gameUuid:string, useTestAccount:number){
+  if(!gameUuid){
+    console.warn("please specified game uuid in your url");
+    return;
+  }
+  this.gameUuid = gameUuid;
+  if(useTestAccount == 1){
+    const playerOneSecretKey = playerOneSecretKey1;
+    const playerOneKeypair = Keypair.fromSecretKey(base58.decode(playerOneSecretKey))
+    signingAuthorityWalletKeypair = new Keypair();
+    signingAuthorityWalletKeypair = playerOneKeypair;
+    window.playerOneKeypair = playerOneKeypair;
+    console.log("use key: ", playerOneSecretKey);
+    console.log("use key address: ", signingAuthorityWalletKeypair.publicKey.toBase58());
+  }else if(useTestAccount == 2){
+    const playerOneSecretKey = playerOneSecretKey2;
+    const playerOneKeypair = Keypair.fromSecretKey(base58.decode(playerOneSecretKey))
+    signingAuthorityWalletKeypair = new Keypair();
+    signingAuthorityWalletKeypair = playerOneKeypair;
+    window.playerOneKeypair = playerOneKeypair;
+    console.log("use key: ", playerOneSecretKey);
+    console.log("use key address: ", signingAuthorityWalletKeypair.publicKey.toBase58());
+  }else{
+    console.warn("please specified id in your url");
+    const playerOneSecretKey = playerOneSecretKey1;
     const playerOneKeypair = Keypair.fromSecretKey(base58.decode(playerOneSecretKey))
     signingAuthorityWalletKeypair = new Keypair();
     signingAuthorityWalletKeypair = playerOneKeypair;
@@ -412,16 +440,23 @@ window.initSDK = async function(useTestAccount:boolean){
   }
 
   let kp = Keypair.generate();
-  console.log("new kp:",kp);
-  console.log("new key: ", base58.encode(kp.secretKey));
-  console.log("new key address: ", kp.publicKey.toBase58());
   signingAuthorityWalletKeypair = kp;
 
   await connection.requestAirdrop(kp.publicKey, 1 * LAMPORTS_PER_SOL);
   return kp;
 };
 
-(window as any).joinGame = async function(x: number, y: number) {
+(window as any).solanaIsJoined = async () => {
+  if(!window.playerOneKeypair){
+    console.warn("SDK not inited, no player");
+    return false;
+  }
+  const player:PublicKey = window.playerOneKeypair.publicKey;
+  let isJoined = await tradeOrBurstLib.isPlayerJoinGame(gameUuid, player);
+  return isJoined;
+}
+
+(window as any).solanaJoinGame = async function(x: number, y: number) {
   if(!tradeOrBurstLib){
     console.error("tradeOrBurstLib is not inited yet!");
     return;
@@ -430,13 +465,15 @@ window.initSDK = async function(useTestAccount:boolean){
     console.error("need to set account or create account first!");
     return;
   }
+
+
   let player: PublicKey = signingAuthorityWalletKeypair.publicKey;
+  let isJoined = await tradeOrBurstLib.isPlayerJoinGame(gameUuid, player);
+  if(isJoined){
+    console.error("player ",player," is joined the game already.");
+    return;
+  }
   let tx = await tradeOrBurstLib.createJoinGameTransaction(player, player, gameUuid, x, y);
-
-
-  console.log("Started joinGame");
-  console.log("Started joinGame player:",player);
-  console.log("Started joinGame tx:",tx);
 
   await tradeOrBurstLib.addFeePayerAndRecentBlockHashInTransaction(tx, player);
 
@@ -446,33 +483,30 @@ window.initSDK = async function(useTestAccount:boolean){
   console.log("Tx Hash: ", txHash);
 
   await delay(timeDelay);
+};
+
+(window as any).queryGame = async function() {
+  if(!connection){
+    console.error("solana sdk not inited!");
+    return null;
+  }
+  let gameInfo:any = await tradeOrBurstLib.getGameBoardAccountData(gameUuid)
+  console.log("gameinfo:",gameInfo);
+  return gameInfo;
+};
+
+(window as any).solanaQueryPlayers = async function(players: number[]) {
+  let keys = [];
+  players.forEach(function(ele){
+    if(ele == 1){
+      keys.push(playerOneSecretKey1);
+    }else if(ele == 2){
+      keys.push(playerOneSecretKey2);
+    }
+  });
+  let data = await tradeOrBurstLib.queryFromChain(gameUuid, keys);
+  return data;
 }
-
-//example 
-// async function joinGame(player: PublicKey, gameUuid: string, x: number, y: number, signer: Keypair) {
-//   console.log("Started joinGame");
-//   let tx = await tradeOrBurstLib.createJoinGameTransaction(player, player, gameUuid, x, y);
-
-//   await tradeOrBurstLib.addFeePayerAndRecentBlockHashInTransaction(tx, player);
-
-//   tradeOrBurstLib.signTransaction(tx, base58.encode(signer.secretKey));
-
-//   let txHash = await connection.sendRawTransaction(tx.serialize());
-//   console.log("Tx Hash: ", txHash);
-
-//   await delay(timeDelay);
-// }
-
-// async function removeEventListener(tradeOrBurstLib, listeners:any[]) {
-//   console.log("Started removeEventListener");
-
-//   await delay(2000);
-
-//   for(let i=0;i<listeners.length;i++){
-//     let lis:any = listeners[i]
-//     await tradeOrBurstLib.removeEventListener(lis);
-//   }
-// }
 
 function delay(ms: number) {
   return new Promise(resolve => setTimeout(resolve, ms));

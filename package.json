@@ -21,7 +21,7 @@
     "eslint": "8.29.0",
     "rimraf": "^3.0.2",
     "typescript": "5.1.6",
-    "@mirrorworld/solana.tradeorburst": "0.1.2",
+    "@mirrorworld/solana.tradeorburst": "0.1.5",
 
 
     "@coral-xyz/anchor": "^0.28.0",
