@@ -219,7 +219,6 @@ globalThis.env = {
 
 
 (window as any).getPhantom = async () =>{
-  console.error(1212);
   const getProvider = () => {
       if ('phantom' in window) {
         const provider = window.phantom?.solana;
@@ -231,12 +230,6 @@ globalThis.env = {
     
       window.open('https://phantom.app/', '_blank');
   };
-  
-
-
-
-
-
   const provider = getProvider(); // see "Detecting the Provider"
   provider.on("connect", () => console.log("connected!"));// Forget user's public key once they disconnect
   provider.on("disconnect", () => {
@@ -324,7 +317,6 @@ const blockhash = await connection.getRecentBlockhash();
 
 const timeDelay = 2500;
 var tradeOrBurstLib:any = null;
-const gameUuid = "game_5";
 var signingAuthorityWalletKeypair:Keypair = null;
 var connection:any = null;
 
@@ -338,11 +330,13 @@ const playerOneSecretKey1 = "51eqcESEbATa1ATeogwAaHyD2Y4HvN8MYsgxHeGrhpxdeN1Dk3D
 const playerOneSecretKey2 = "9LYsKjFgx2QEV41tjaoQdcMXbTWKLLkWszzMJYyWZQxPwRHxp7TcG9zShrT3hDmsKZSYesU4UGUFq2DG76sQqJA";
    
 window.initSDK = async function(gameUuid:string, useTestAccount:number){
+  console.log("start init sdk");
   if(!gameUuid){
     console.warn("please specified game uuid in your url");
     return;
   }
-  this.gameUuid = gameUuid;
+  console.log("start init sdk gameuuid:",gameUuid);
+  window.gameUuid = gameUuid;
   if(useTestAccount == 1){
     const playerOneSecretKey = playerOneSecretKey1;
     const playerOneKeypair = Keypair.fromSecretKey(base58.decode(playerOneSecretKey))
@@ -368,6 +362,7 @@ window.initSDK = async function(gameUuid:string, useTestAccount:number){
     console.log("use key: ", playerOneSecretKey);
     console.log("use key address: ", signingAuthorityWalletKeypair.publicKey.toBase58());
   }
+  console.log("init sdk parse test account success");
 
   const commitment: Commitment = 'processed';
   connection = new Connection('https://api.devnet.solana.com', {
@@ -447,12 +442,15 @@ window.initSDK = async function(gameUuid:string, useTestAccount:number){
 };
 
 (window as any).solanaIsJoined = async () => {
+  console.log("solanaIsJoined");
   if(!window.playerOneKeypair){
     console.warn("SDK not inited, no player");
     return false;
   }
   const player:PublicKey = window.playerOneKeypair.publicKey;
-  let isJoined = await tradeOrBurstLib.isPlayerJoinGame(gameUuid, player);
+  console.log("solanaIsJoined player ",player);
+  let isJoined = await tradeOrBurstLib.isPlayerJoinGame(window.gameUuid, player);
+  console.log("player ",player," is joined:",isJoined);
   return isJoined;
 }
 
@@ -468,12 +466,12 @@ window.initSDK = async function(gameUuid:string, useTestAccount:number){
 
 
   let player: PublicKey = signingAuthorityWalletKeypair.publicKey;
-  let isJoined = await tradeOrBurstLib.isPlayerJoinGame(gameUuid, player);
+  let isJoined = await tradeOrBurstLib.isPlayerJoinGame(window.gameUuid, player);
   if(isJoined){
     console.error("player ",player," is joined the game already.");
     return;
   }
-  let tx = await tradeOrBurstLib.createJoinGameTransaction(player, player, gameUuid, x, y);
+  let tx = await tradeOrBurstLib.createJoinGameTransaction(player, player, window.gameUuid, x, y);
 
   await tradeOrBurstLib.addFeePayerAndRecentBlockHashInTransaction(tx, player);
 
@@ -482,7 +480,7 @@ window.initSDK = async function(gameUuid:string, useTestAccount:number){
   let txHash = await connection.sendRawTransaction(tx.serialize());
   console.log("Tx Hash: ", txHash);
 
-  await delay(timeDelay);
+  // await delay(timeDelay);
 };
 
 (window as any).queryGame = async function() {
@@ -490,7 +488,7 @@ window.initSDK = async function(gameUuid:string, useTestAccount:number){
     console.error("solana sdk not inited!");
     return null;
   }
-  let gameInfo:any = await tradeOrBurstLib.getGameBoardAccountData(gameUuid)
+  let gameInfo:any = await tradeOrBurstLib.getGameBoardAccountData(window.gameUuid)
   console.log("gameinfo:",gameInfo);
   return gameInfo;
 };
@@ -499,12 +497,16 @@ window.initSDK = async function(gameUuid:string, useTestAccount:number){
   let keys = [];
   players.forEach(function(ele){
     if(ele == 1){
-      keys.push(playerOneSecretKey1);
+      const playerOneSecretKey = playerOneSecretKey1;
+      const playerOneKeypair = Keypair.fromSecretKey(base58.decode(playerOneSecretKey))
+      keys.push(playerOneKeypair.publicKey.toBase58());
     }else if(ele == 2){
-      keys.push(playerOneSecretKey2);
+      const playerOneSecretKey = playerOneSecretKey2;
+      const playerOneKeypair = Keypair.fromSecretKey(base58.decode(playerOneSecretKey))
+      keys.push(playerOneKeypair.publicKey.toBase58());
     }
   });
-  let data = await tradeOrBurstLib.queryFromChain(gameUuid, keys);
+  let data = await tradeOrBurstLib.queryFromChain(window.gameUuid, keys);
   return data;
 }
 

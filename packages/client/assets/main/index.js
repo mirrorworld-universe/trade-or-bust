@@ -2150,8 +2150,8 @@ System.register("chunks:///_virtual/list_utils.ts", ['./rollupPluginModLoBabelHe
   };
 });
 
-System.register("chunks:///_virtual/lobby-controller.ts", ['./rollupPluginModLoBabelHelpers.js', 'cc', './component_state.ts', './ponzi-controller.ts', './ccc_msg.ts', './string_utils.ts'], function (exports) {
-  var _applyDecoratedDescriptor, _inheritsLoose, _initializerDefineProperty, _assertThisInitialized, _asyncToGenerator, _regeneratorRuntime, cclegacy, _decorator, Label, Node, Component, log, sys, warn, component_state, ponzi_controller, ccc_msg, string_utils;
+System.register("chunks:///_virtual/lobby-controller.ts", ['./rollupPluginModLoBabelHelpers.js', 'cc', './component_state.ts', './ponzi-controller.ts', './ccc_msg.ts', './string_utils.ts', './solana-bridge.ts'], function (exports) {
+  var _applyDecoratedDescriptor, _inheritsLoose, _initializerDefineProperty, _assertThisInitialized, _asyncToGenerator, _regeneratorRuntime, cclegacy, _decorator, Label, Node, Component, log, sys, warn, component_state, ponzi_controller, ccc_msg, string_utils, solana_bridge;
 
   return {
     setters: [function (module) {
@@ -2178,6 +2178,8 @@ System.register("chunks:///_virtual/lobby-controller.ts", ['./rollupPluginModLoB
       ccc_msg = module.ccc_msg;
     }, function (module) {
       string_utils = module.string_utils;
+    }, function (module) {
+      solana_bridge = module.solana_bridge;
     }],
     execute: function () {
       var _dec, _dec2, _dec3, _dec4, _dec5, _dec6, _dec7, _dec8, _class, _class2, _descriptor, _descriptor2, _descriptor3, _descriptor4, _descriptor5, _descriptor6, _descriptor7;
@@ -2283,17 +2285,34 @@ System.register("chunks:///_virtual/lobby-controller.ts", ['./rollupPluginModLoB
 
         _proto.onJoinGameClicked = /*#__PURE__*/function () {
           var _onJoinGameClicked = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee2() {
+            var x, y;
             return _regeneratorRuntime().wrap(function _callee2$(_context2) {
               while (1) switch (_context2.prev = _context2.next) {
                 case 0:
                   ponzi_controller.instance.sendCCCMsg(ccc_msg.network_block_ui, true);
-                  _context2.next = 3;
-                  return window.solanaJoinGame == null ? void 0 : window.solanaJoinGame();
+                  x = Math.floor(Math.random() * 6) + 7;
+                  y = Math.floor(Math.random() * 6) + 7;
+                  _context2.next = 5;
+                  return window.solanaJoinGame(x, y);
 
-                case 3:
+                case 5:
+                  //todo: update IsPlayer and sync here
+                  globalThis.ponzi.gameState = component_state.game_ingame;
+                  _context2.next = 8;
+                  return solana_bridge.instance.updateGame();
+
+                case 8:
+                  _context2.next = 10;
+                  return solana_bridge.instance.updatePlayers();
+
+                case 10:
+                  _context2.next = 12;
+                  return solana_bridge.instance.updateGameMap();
+
+                case 12:
                   ponzi_controller.instance.sendCCCMsg(ccc_msg.network_block_ui, false);
 
-                case 4:
+                case 13:
                 case "end":
                   return _context2.stop();
               }
@@ -2477,7 +2496,7 @@ System.register("chunks:///_virtual/lobby-controller.ts", ['./rollupPluginModLoB
                   isPlayer = false;
                   _context9.prev = 6;
                   _context9.next = 9;
-                  return window.solanaIsJoined == null ? void 0 : window.solanaIsJoined();
+                  return window.solanaIsJoined();
 
                 case 9:
                   isPlayer = _context9.sent;
@@ -2490,20 +2509,40 @@ System.register("chunks:///_virtual/lobby-controller.ts", ['./rollupPluginModLoB
                   isPlayer = false;
 
                 case 15:
-                  if (gameState == component_state.game_ingame) {
-                    if (isPlayer) {
-                      log("ingame+isPlayer");
-                      this.showGameNode();
-                      this.btnJoinGame.active = false;
-                      this.btnTriggerGame.active = false;
-                    } else {
-                      this.showLobbyNode();
-                      log("ingame+notPlayer");
-                      this.contentLabel.string = this.NotPlayerButGameIsStart;
-                      this.btnJoinGame.active = true;
-                      this.btnTriggerGame.active = false;
-                    }
-                  } else if (gameState == component_state.game_waiting) {
+                  if (!(gameState == component_state.game_ingame)) {
+                    _context9.next = 32;
+                    break;
+                  }
+
+                  if (!isPlayer) {
+                    _context9.next = 25;
+                    break;
+                  }
+
+                  log("ingame+isPlayer");
+                  _context9.next = 20;
+                  return solana_bridge.instance.updatePlayers();
+
+                case 20:
+                  this.showGameNode();
+                  this.btnJoinGame.active = false;
+                  this.btnTriggerGame.active = false;
+                  _context9.next = 30;
+                  break;
+
+                case 25:
+                  this.showLobbyNode();
+                  log("ingame+notPlayer");
+                  this.contentLabel.string = this.NotPlayerButGameIsStart;
+                  this.btnJoinGame.active = true;
+                  this.btnTriggerGame.active = false;
+
+                case 30:
+                  _context9.next = 33;
+                  break;
+
+                case 32:
+                  if (gameState == component_state.game_waiting) {
                     this.showLobbyNode();
                     timeStamp = sys.now();
                     timeStamp = Number(timeStamp) / 1000;
@@ -2516,7 +2555,7 @@ System.register("chunks:///_virtual/lobby-controller.ts", ['./rollupPluginModLoB
                       this.btnTriggerGame.active = false;
                       _timeStamp = sys.now();
                       _timeStamp = Number(_timeStamp) / 1000;
-                      _gameStartTime = Number(gameObj.startTime);
+                      _gameStartTime = Number(gameObj.gameStartedAtTimestamp);
                       _leftSeconds = Math.floor(_gameStartTime - _timeStamp);
 
                       if (_leftSeconds > 0) {
@@ -2542,7 +2581,7 @@ System.register("chunks:///_virtual/lobby-controller.ts", ['./rollupPluginModLoB
                     }
                   }
 
-                case 16:
+                case 33:
                 case "end":
                   return _context9.stop();
               }
@@ -3051,9 +3090,10 @@ System.register("chunks:///_virtual/map-controller.ts", ['./rollupPluginModLoBab
           var gameState = globalThis.ponzi.gameState;
           if (gameState != component_state.game_ingame) return;
           var map = (_globalThis$ponzi$gam = globalThis.ponzi.gameMap) == null ? void 0 : _globalThis$ponzi$gam.mapArray;
-          if (!map) return;
-          var items = window.getMapItems == null ? void 0 : window.getMapItems();
-          if (!items) return;
+          log("try init map controller", gameState, globalThis.ponzi.gameMap);
+          if (!map) return; // let items = window.getMapItems?.();
+          // if(!items) return;
+
           this.tmpCoorArray = null;
           this.inited = true;
           this.updateMap();
@@ -3140,7 +3180,7 @@ System.register("chunks:///_virtual/map-controller.ts", ['./rollupPluginModLoBab
         ;
 
         _proto.drawPlayers = function drawPlayers() {
-          var players = window.getPlayers == null ? void 0 : window.getPlayers();
+          var players = globalThis.ponzi.players;
 
           if (!players) {
             return;
@@ -3150,46 +3190,30 @@ System.register("chunks:///_virtual/map-controller.ts", ['./rollupPluginModLoBab
 
           for (var key in players) {
             var map = players[key];
+            var hash = map.player;
 
-            for (var _iterator = _createForOfIteratorHelperLoose(map), _step; !(_step = _iterator()).done;) {
-              var _step$value = _step.value,
-                  entity = _step$value[0],
-                  value = _step$value[1]; //   console.log(key, entity, value);
-
-              var hash = string_utils.getHashFromSymbol(entity);
-
-              if (!array[hash]) {
-                array[hash] = new RoleLocalObj();
-              }
-
-              var obj = array[hash];
-              array[hash] = obj;
-
-              if (key == 'x') {
-                var valueNum = Number(value);
-                obj.row = valueNum;
-              } else if (key == 'y') {
-                var _valueNum = Number(value);
-
-                obj.col = _valueNum;
-              } else if (key == 'money') {
-                var _valueNum2 = Number(value);
-
-                obj.money = _valueNum2;
-              }
+            if (!array[hash]) {
+              array[hash] = new RoleLocalObj();
             }
-          } // log("role array:",array);
 
+            var obj = array[hash];
+            array[hash] = obj;
+            obj.row = map.y.toNumber();
+            obj.col = map.x.toNumber();
+            obj.money = map.money.toNumber();
+          }
 
+          log("Try to draw players ,role array:", array);
           var self = this;
           self.playerParent.removeAllChildren();
 
           for (var _key2 in array) {
-            var _value = array[_key2];
+            var value = array[_key2];
             var newNode = instantiate(self.playerModel);
             newNode.setParent(self.playerParent);
             newNode.active = true;
-            var pos = self.tmpCoorArray[_value.row][_value.col];
+            var pos = self.tmpCoorArray[value.row][value.col];
+            log("player pos:", pos);
             newNode.position = new Vec3(pos.x, pos.y, 0);
             var script = newNode.getComponent(player_model);
             script.init(_key2);
@@ -3208,10 +3232,10 @@ System.register("chunks:///_virtual/map-controller.ts", ['./rollupPluginModLoBab
           for (var key in items) {
             var map = items[key];
 
-            for (var _iterator2 = _createForOfIteratorHelperLoose(map), _step2; !(_step2 = _iterator2()).done;) {
-              var _step2$value = _step2.value,
-                  entity = _step2$value[0],
-                  value = _step2$value[1]; //   console.log(key, entity, value);
+            for (var _iterator = _createForOfIteratorHelperLoose(map), _step; !(_step = _iterator()).done;) {
+              var _step$value = _step.value,
+                  entity = _step$value[0],
+                  value = _step$value[1]; //   console.log(key, entity, value);
 
               var index = string_utils.getNumberFromSymbol(entity) - 1;
               var valueNum = string_utils.getNumberFromSymbol(value);
@@ -3268,27 +3292,16 @@ System.register("chunks:///_virtual/map-controller.ts", ['./rollupPluginModLoBab
           var coorMap = this.generateHexCoorMap(); //check player
 
           var nowRoleObj = new RoleLocalObj();
-          var players = window.getPlayers == null ? void 0 : window.getPlayers();
+          var players = globalThis.ponzi.players;
 
           for (var key in players) {
             var map = players[key];
+            var hash = map.player;
 
-            for (var _iterator3 = _createForOfIteratorHelperLoose(map), _step3; !(_step3 = _iterator3()).done;) {
-              var _step3$value = _step3.value,
-                  entity = _step3$value[0],
-                  value = _step3$value[1]; //   console.log(key, entity, value);
-
-              var hash = string_utils.getHashFromSymbol(entity);
-              if (hash != globalThis.ponzi.currentPlayer) continue;
-
-              if (key == 'x') {
-                var valueNum = Number(value);
-                nowRoleObj.row = valueNum;
-              } else if (key == 'y') {
-                var _valueNum3 = Number(value);
-
-                nowRoleObj.col = _valueNum3;
-              }
+            if (hash == globalThis.ponzi.currentPlayer) {
+              nowRoleObj.row = map.y.toNumber();
+              nowRoleObj.col = map.x.toNumber();
+              break;
             }
           }
 
@@ -3333,8 +3346,7 @@ System.register("chunks:///_virtual/map-controller.ts", ['./rollupPluginModLoBab
         };
 
         _proto.isSurround = function isSurround(surround, targetRow, targetCol) {
-          if (!surround) return false;
-          log("cell start");
+          if (!surround) return false; // log("cell start");
 
           for (var i = 0; i < surround.length; i++) {
             var rc = surround[i];
@@ -4176,8 +4188,8 @@ System.register("chunks:///_virtual/pick-money-card.ts", ['./rollupPluginModLoBa
   };
 });
 
-System.register("chunks:///_virtual/player-model.ts", ['./rollupPluginModLoBabelHelpers.js', 'cc', './string_utils.ts'], function (exports) {
-  var _applyDecoratedDescriptor, _inheritsLoose, _initializerDefineProperty, _assertThisInitialized, cclegacy, _decorator, Node, Component, string_utils;
+System.register("chunks:///_virtual/player-model.ts", ['./rollupPluginModLoBabelHelpers.js', 'cc'], function (exports) {
+  var _applyDecoratedDescriptor, _inheritsLoose, _initializerDefineProperty, _assertThisInitialized, cclegacy, _decorator, Node, log, Component;
 
   return {
     setters: [function (module) {
@@ -4189,9 +4201,8 @@ System.register("chunks:///_virtual/player-model.ts", ['./rollupPluginModLoBabel
       cclegacy = module.cclegacy;
       _decorator = module._decorator;
       Node = module.Node;
+      log = module.log;
       Component = module.Component;
-    }, function (module) {
-      string_utils = module.string_utils;
     }],
     execute: function () {
       var _dec, _dec2, _dec3, _class, _class2, _descriptor, _descriptor2;
@@ -4232,13 +4243,16 @@ System.register("chunks:///_virtual/player-model.ts", ['./rollupPluginModLoBabel
         _proto.update = function update(deltaTime) {};
 
         _proto.init = function init(hash) {
+          log("try init player-model...");
           this.playerHash = hash;
           var curPlayerEntity = globalThis.ponzi.currentPlayer;
 
-          if (hash == string_utils.getHashFromSymbol(curPlayerEntity)) {
+          if (hash == curPlayerEntity) {
+            log("this is my player");
             this.sprite.active = true;
             this.spriteEnemy.active = false;
           } else {
+            log("this is not my player");
             this.sprite.active = false;
             this.spriteEnemy.active = true;
           }
@@ -5255,8 +5269,8 @@ System.register("chunks:///_virtual/rank.ts", ['./rollupPluginModLoBabelHelpers.
   };
 });
 
-System.register("chunks:///_virtual/right-player-list-item.ts", ['./rollupPluginModLoBabelHelpers.js', 'cc', './ponzi-controller.ts', './ccc_msg.ts', './rule_utils.ts', './string_utils.ts'], function (exports) {
-  var _applyDecoratedDescriptor, _inheritsLoose, _initializerDefineProperty, _assertThisInitialized, _asyncToGenerator, _regeneratorRuntime, cclegacy, _decorator, Label, Component, log, ponzi_controller, ccc_msg, rule_utils, string_utils;
+System.register("chunks:///_virtual/right-player-list-item.ts", ['./rollupPluginModLoBabelHelpers.js', 'cc', './ponzi-controller.ts', './ccc_msg.ts', './rule_utils.ts'], function (exports) {
+  var _applyDecoratedDescriptor, _inheritsLoose, _initializerDefineProperty, _assertThisInitialized, _asyncToGenerator, _regeneratorRuntime, cclegacy, _decorator, Label, Component, log, ponzi_controller, ccc_msg, rule_utils;
 
   return {
     setters: [function (module) {
@@ -5278,8 +5292,6 @@ System.register("chunks:///_virtual/right-player-list-item.ts", ['./rollupPlugin
       ccc_msg = module.ccc_msg;
     }, function (module) {
       rule_utils = module.rule_utils;
-    }, function (module) {
-      string_utils = module.string_utils;
     }],
     execute: function () {
       var _dec, _dec2, _dec3, _dec4, _dec5, _dec6, _dec7, _dec8, _dec9, _class, _class2, _descriptor, _descriptor2, _descriptor3, _descriptor4, _descriptor5, _descriptor6, _descriptor7, _descriptor8;
@@ -5366,7 +5378,8 @@ System.register("chunks:///_virtual/right-player-list-item.ts", ['./rollupPlugin
 
                 case 3:
                   this._inited = true;
-                  this.labelName.string = string_utils.truncateString(playerEntity); //query self assetsList
+                  this.labelName.string = playerEntity; //string_utils.truncateString(playerEntity);
+                  //query self assetsList
 
                   this.updateUI(); //register lis
 
@@ -5388,27 +5401,54 @@ System.register("chunks:///_virtual/right-player-list-item.ts", ['./rollupPlugin
 
         _proto.updateUI = /*#__PURE__*/function () {
           var _updateUI = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee2() {
-            var assetsList, totalScore;
+            var assetsList, allPlayers, i, p, totalScore;
             return _regeneratorRuntime().wrap(function _callee2$(_context2) {
               while (1) switch (_context2.prev = _context2.next) {
                 case 0:
                   assetsList = null;
                   _context2.prev = 1;
-                  _context2.next = 4;
-                  return window.queryValue == null ? void 0 : window.queryValue(window.env.components.AssetsList, this.itemPlayerEntity);
+                  allPlayers = globalThis.ponzi.players;
+                  i = 0;
 
                 case 4:
-                  assetsList = _context2.sent;
-                  _context2.next = 11;
+                  if (!(i < allPlayers.length)) {
+                    _context2.next = 12;
+                    break;
+                  }
+
+                  p = allPlayers[i];
+
+                  if (!(p.player == this.itemPlayerEntity)) {
+                    _context2.next = 9;
+                    break;
+                  }
+
+                  assetsList = {
+                    gpu: p.gpu,
+                    bitcoin: p.bitcoin,
+                    battery: p.battery,
+                    leiter: p.leiter,
+                    gold: p.gold,
+                    oil: p.oil
+                  };
+                  return _context2.abrupt("break", 12);
+
+                case 9:
+                  i++;
+                  _context2.next = 4;
                   break;
 
-                case 7:
-                  _context2.prev = 7;
+                case 12:
+                  _context2.next = 18;
+                  break;
+
+                case 14:
+                  _context2.prev = 14;
                   _context2.t0 = _context2["catch"](1);
                   log("Can not find AssetsList on entity");
                   return _context2.abrupt("return");
 
-                case 11:
+                case 18:
                   this.labelItem1.string = assetsList.gpu;
                   this.labelItem2.string = assetsList.bitcoin;
                   this.labelItem3.string = assetsList.battery;
@@ -5418,11 +5458,11 @@ System.register("chunks:///_virtual/right-player-list-item.ts", ['./rollupPlugin
                   totalScore = rule_utils.calculateScore(assetsList.gpu) + rule_utils.calculateScore(assetsList.bitcoin) + rule_utils.calculateScore(assetsList.battery) + rule_utils.calculateScore(assetsList.leiter) + rule_utils.calculateScore(assetsList.gold) + rule_utils.calculateScore(assetsList.oil);
                   this.labelPoints.string = totalScore.toString();
 
-                case 19:
+                case 26:
                 case "end":
                   return _context2.stop();
               }
-            }, _callee2, this, [[1, 7]]);
+            }, _callee2, this, [[1, 14]]);
           }));
 
           function updateUI() {
@@ -5509,8 +5549,8 @@ System.register("chunks:///_virtual/right-player-list-item.ts", ['./rollupPlugin
   };
 });
 
-System.register("chunks:///_virtual/right-player-list.ts", ['./rollupPluginModLoBabelHelpers.js', 'cc', './right-player-list-item.ts', './string_utils.ts'], function (exports) {
-  var _applyDecoratedDescriptor, _inheritsLoose, _initializerDefineProperty, _assertThisInitialized, _createForOfIteratorHelperLoose, cclegacy, _decorator, Node, log, instantiate, Component, right_player_list_item, string_utils;
+System.register("chunks:///_virtual/right-player-list.ts", ['./rollupPluginModLoBabelHelpers.js', 'cc', './right-player-list-item.ts'], function (exports) {
+  var _applyDecoratedDescriptor, _inheritsLoose, _initializerDefineProperty, _assertThisInitialized, cclegacy, _decorator, Node, instantiate, Component, right_player_list_item;
 
   return {
     setters: [function (module) {
@@ -5518,18 +5558,14 @@ System.register("chunks:///_virtual/right-player-list.ts", ['./rollupPluginModLo
       _inheritsLoose = module.inheritsLoose;
       _initializerDefineProperty = module.initializerDefineProperty;
       _assertThisInitialized = module.assertThisInitialized;
-      _createForOfIteratorHelperLoose = module.createForOfIteratorHelperLoose;
     }, function (module) {
       cclegacy = module.cclegacy;
       _decorator = module._decorator;
       Node = module.Node;
-      log = module.log;
       instantiate = module.instantiate;
       Component = module.Component;
     }, function (module) {
       right_player_list_item = module.right_player_list_item;
-    }, function (module) {
-      string_utils = module.string_utils;
     }],
     execute: function () {
       var _dec, _dec2, _dec3, _class, _class2, _descriptor, _descriptor2;
@@ -5573,7 +5609,7 @@ System.register("chunks:///_virtual/right-player-list.ts", ['./rollupPluginModLo
         };
 
         _proto.init = function init() {
-          var assetsListArray = window.getAssetsList == null ? void 0 : window.getAssetsList();
+          var assetsListArray = globalThis.ponzi.players;
 
           if (!assetsListArray) {
             return;
@@ -5581,23 +5617,14 @@ System.register("chunks:///_virtual/right-player-list.ts", ['./rollupPluginModLo
 
           var array = [];
 
-          for (var key in assetsListArray) {
-            var map = assetsListArray[key];
+          for (var i = 0; i < assetsListArray.length; i++) {
+            var map = assetsListArray[i];
 
-            for (var _iterator = _createForOfIteratorHelperLoose(map), _step; !(_step = _iterator()).done;) {
-              var _step$value = _step.value,
-                  entity = _step$value[0],
-                  value = _step$value[1];
-              console.log(key, entity, value);
-              var hash = string_utils.getHashFromSymbol(entity);
-
-              if (array.indexOf(hash) === -1) {
-                array.push(hash);
-              }
+            if (array.indexOf(map.player) === -1) {
+              array.push(map.player);
             }
-          }
+          } // log("role array:",array);
 
-          log("role array:", array);
 
           if (array.length === 0) {
             return;
@@ -5606,13 +5633,13 @@ System.register("chunks:///_virtual/right-player-list.ts", ['./rollupPluginModLo
           this._inited = true;
           var self = this; // self.itemParent.removeAllChildren();
 
-          for (var _key2 in array) {
-            var _hash = array[_key2];
+          for (var key in array) {
+            var hash = array[key];
             var newNode = instantiate(self.itemModel);
             newNode.setParent(self.itemParent);
             newNode.active = true;
             var script = newNode.getComponent(right_player_list_item);
-            script.init(_hash);
+            script.init(hash);
           }
         };
 
@@ -5949,46 +5976,29 @@ System.register("chunks:///_virtual/solana-bridge.ts", ['./rollupPluginModLoBabe
 
         _proto.onLoad = /*#__PURE__*/function () {
           var _onLoad = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee() {
-            var _window, _window2, _window3;
+            var _window;
 
-            var gameInfo, playerIds, playersData;
             return _regeneratorRuntime().wrap(function _callee$(_context) {
               while (1) switch (_context.prev = _context.next) {
                 case 0:
                   //Use 0:00 of today as game_id
-                  this.game_id = this.getTodayStartTimestamp().toString();
+                  this.game_id = this.getParameterFromURL("gameid") || this.getTodayStartTimestamp().toString();
                   this.current_player = this.getParameterFromURL("id"); // this.players = [];
                   // for(let i=1;i<11;i++){
                   //     this.players.push(this.game_id + i);
                   // }
-                  //InitSDK
 
-                  _context.next = 4;
+                  log("game_id:", this.game_id, " current player:", this.current_player); //InitSDK
+
+                  log("start init sdk");
+                  _context.next = 6;
                   return (_window = window) == null ? void 0 : _window.initSDK(this.game_id, this.current_player);
 
-                case 4:
-                  //Update gameState
-                  globalThis.ponzi.gameState = component_state.game_ingame;
-                  globalThis.ponzi.gamestate_update == null ? void 0 : globalThis.ponzi.gamestate_update(null, component_state.game_ingame); //update GameData
+                case 6:
+                  //update GameData
+                  this.updateGame();
 
-                  _context.next = 8;
-                  return (_window2 = window) == null ? void 0 : _window2.queryGame();
-
-                case 8:
-                  gameInfo = _context.sent;
-                  globalThis.ponzi.game = gameInfo;
-                  globalThis.ponzi.game_update == null ? void 0 : globalThis.ponzi.game_update(null, gameInfo); //Query all players
-
-                  playerIds = [1, 2];
-                  _context.next = 14;
-                  return (_window3 = window) == null ? void 0 : _window3.solanaQueryPlayers(playerIds);
-
-                case 14:
-                  playersData = _context.sent;
-                  globalThis.ponzi.players = playersData;
-                //todo: add other init update here
-
-                case 16:
+                case 7:
                 case "end":
                   return _context.stop();
               }
@@ -6000,6 +6010,123 @@ System.register("chunks:///_virtual/solana-bridge.ts", ['./rollupPluginModLoBabe
           }
 
           return onLoad;
+        }();
+
+        _proto.updateGame = /*#__PURE__*/function () {
+          var _updateGame = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee2() {
+            var gameInfo, _window2;
+
+            return _regeneratorRuntime().wrap(function _callee2$(_context2) {
+              while (1) switch (_context2.prev = _context2.next) {
+                case 0:
+                  log("start query game");
+                  _context2.prev = 1;
+                  _context2.next = 4;
+                  return (_window2 = window) == null ? void 0 : _window2.queryGame();
+
+                case 4:
+                  gameInfo = _context2.sent;
+                  log(" query game success");
+                  globalThis.ponzi.game = gameInfo;
+                  globalThis.ponzi.game_update == null ? void 0 : globalThis.ponzi.game_update(null, gameInfo); //Update gameState
+
+                  globalThis.ponzi.gameState = component_state.game_ingame;
+                  globalThis.ponzi.gamestate_update == null ? void 0 : globalThis.ponzi.gamestate_update(null, component_state.game_ingame);
+                  _context2.next = 12;
+                  return solana_bridge.instance.updateGameMap();
+
+                case 12:
+                  _context2.next = 20;
+                  break;
+
+                case 14:
+                  _context2.prev = 14;
+                  _context2.t0 = _context2["catch"](1);
+                  log(" query game failed", _context2.t0);
+                  globalThis.ponzi.game = 1; //Update gameState
+
+                  globalThis.ponzi.gameState = component_state.game_waiting;
+                  globalThis.ponzi.gamestate_update == null ? void 0 : globalThis.ponzi.gamestate_update(null, component_state.game_waiting);
+
+                case 20:
+                case "end":
+                  return _context2.stop();
+              }
+            }, _callee2, null, [[1, 14]]);
+          }));
+
+          function updateGame() {
+            return _updateGame.apply(this, arguments);
+          }
+
+          return updateGame;
+        }();
+
+        _proto.updateGameMap = /*#__PURE__*/function () {
+          var _updateGameMap = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee3() {
+            return _regeneratorRuntime().wrap(function _callee3$(_context3) {
+              while (1) switch (_context3.prev = _context3.next) {
+                case 0:
+                  if (!globalThis.ponzi.gameMap) {
+                    _context3.next = 3;
+                    break;
+                  }
+
+                  log("GameMap is already seted");
+                  return _context3.abrupt("return");
+
+                case 3:
+                  globalThis.ponzi.gameMap = {
+                    width: 20,
+                    height: 20,
+                    mapArray: []
+                  };
+
+                case 4:
+                case "end":
+                  return _context3.stop();
+              }
+            }, _callee3);
+          }));
+
+          function updateGameMap() {
+            return _updateGameMap.apply(this, arguments);
+          }
+
+          return updateGameMap;
+        }();
+
+        _proto.updatePlayers = /*#__PURE__*/function () {
+          var _updatePlayers = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee4() {
+            var _window3;
+
+            var playerIds, playersData;
+            return _regeneratorRuntime().wrap(function _callee4$(_context4) {
+              while (1) switch (_context4.prev = _context4.next) {
+                case 0:
+                  //Query all players
+                  log("start query all players' info");
+                  playerIds = [1, 2];
+                  _context4.next = 4;
+                  return (_window3 = window) == null ? void 0 : _window3.solanaQueryPlayers(playerIds);
+
+                case 4:
+                  playersData = _context4.sent;
+                  log("finish query all players' info:", playersData);
+                  globalThis.ponzi.players = playersData;
+
+                case 7:
+                case "end":
+                  return _context4.stop();
+              }
+            }, _callee4);
+          }));
+
+          function updatePlayers() {
+            return _updatePlayers.apply(this, arguments);
+          }
+
+          return updatePlayers;
         }();
 
         _proto.update = function update(dt) {
@@ -6018,16 +6145,16 @@ System.register("chunks:///_virtual/solana-bridge.ts", ['./rollupPluginModLoBabe
         };
 
         _proto.init = /*#__PURE__*/function () {
-          var _init = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee2() {
-            return _regeneratorRuntime().wrap(function _callee2$(_context2) {
-              while (1) switch (_context2.prev = _context2.next) {
+          var _init = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee5() {
+            return _regeneratorRuntime().wrap(function _callee5$(_context5) {
+              while (1) switch (_context5.prev = _context5.next) {
                 case 0:
                   if (!this.inited) {
-                    _context2.next = 2;
+                    _context5.next = 2;
                     break;
                   }
 
-                  return _context2.abrupt("return");
+                  return _context5.abrupt("return");
 
                 case 2:
                   if (this.game_id && this.current_player && this.players && this.players.length > 0) {
@@ -6037,9 +6164,9 @@ System.register("chunks:///_virtual/solana-bridge.ts", ['./rollupPluginModLoBabe
 
                 case 3:
                 case "end":
-                  return _context2.stop();
+                  return _context5.stop();
               }
-            }, _callee2, this);
+            }, _callee5, this);
           }));
 
           function init() {
@@ -6110,7 +6237,7 @@ System.register("chunks:///_virtual/solana-bridge.ts", ['./rollupPluginModLoBabe
           key: "instance",
           get: function get() {
             if (!solana_bridge._instance) {
-              solana_bridge._instance = find("solana_bridge").getComponent(solana_bridge);
+              solana_bridge._instance = find("solana-bridge").getComponent(solana_bridge);
             }
 
             return solana_bridge._instance;
