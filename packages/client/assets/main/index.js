@@ -332,19 +332,10 @@ System.register("chunks:///_virtual/button_raisingcapital.ts", ['./rollupPluginM
             return _regeneratorRuntime().wrap(function _callee$(_context) {
               while (1) switch (_context.prev = _context.next) {
                 case 0:
-                  if (this._inited) {
-                    _context.next = 3;
-                    break;
-                  }
-
-                  _context.next = 3;
-                  return this.init();
-
-                case 3:
                 case "end":
                   return _context.stop();
               }
-            }, _callee, this);
+            }, _callee);
           }));
 
           function update(_x) {
@@ -404,7 +395,7 @@ System.register("chunks:///_virtual/button_raisingcapital.ts", ['./rollupPluginM
                   player = null;
                   _context3.prev = 7;
                   _context3.next = 10;
-                  return window.solanaQueryPlayers == null ? void 0 : window.solanaQueryPlayers([solana_bridge.instance.current_player]);
+                  return window.solanaQueryPlayers([solana_bridge.instance.current_player]);
 
                 case 10:
                   player = _context3.sent;
@@ -452,31 +443,27 @@ System.register("chunks:///_virtual/button_raisingcapital.ts", ['./rollupPluginM
             return _regeneratorRuntime().wrap(function _callee4$(_context4) {
               while (1) switch (_context4.prev = _context4.next) {
                 case 0:
-                  globalThis.ponzi.currentPlayer;
-                  raiseCountdown = null;
-                  _context4.prev = 2;
-                  _context4.next = 5;
-                  return window.solanaQueryPlayers == null ? void 0 : window.solanaQueryPlayers([solana_bridge.instance.current_player]);
+                  return _context4.abrupt("return");
 
-                case 5:
+                case 6:
                   raiseCountdown = _context4.sent;
-                  _context4.next = 11;
+                  _context4.next = 12;
                   break;
 
-                case 8:
-                  _context4.prev = 8;
-                  _context4.t0 = _context4["catch"](2);
+                case 9:
+                  _context4.prev = 9;
+                  _context4.t0 = _context4["catch"](3);
                   log("Can not get raisecolddown component on entity");
 
-                case 11:
+                case 12:
                   if (raiseCountdown) {
-                    _context4.next = 13;
+                    _context4.next = 14;
                     break;
                   }
 
                   return _context4.abrupt("return");
 
-                case 13:
+                case 14:
                   timeStamp = sys.now() / 1000;
                   useableTime = Number(raiseCountdown.end);
                   warn("btn_raise:", timeStamp, useableTime);
@@ -493,11 +480,11 @@ System.register("chunks:///_virtual/button_raisingcapital.ts", ['./rollupPluginM
                     this.startCountDownAnimation();
                   }
 
-                case 17:
+                case 18:
                 case "end":
                   return _context4.stop();
               }
-            }, _callee4, this, [[2, 8]]);
+            }, _callee4, this, [[3, 9]]);
           }));
 
           function updateUI() {
@@ -509,9 +496,19 @@ System.register("chunks:///_virtual/button_raisingcapital.ts", ['./rollupPluginM
 
         _proto._registerListeners = function _registerListeners() {
           var self = this;
-          ponzi_controller.instance.on(ccc_msg.on_raisecolddown_update, function (update) {
-            self.updateUI();
-          });
+          ponzi_controller.instance.on(ccc_msg.on_raisecolddown_update, /*#__PURE__*/_asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee5(update) {
+            return _regeneratorRuntime().wrap(function _callee5$(_context5) {
+              while (1) switch (_context5.prev = _context5.next) {
+                case 0:
+                  _context5.next = 2;
+                  return self.updateUI();
+
+                case 2:
+                case "end":
+                  return _context5.stop();
+              }
+            }, _callee5);
+          })));
         };
 
         _proto.startCountDownAnimation = function startCountDownAnimation() {
@@ -523,10 +520,22 @@ System.register("chunks:///_virtual/button_raisingcapital.ts", ['./rollupPluginM
           this.schedule(this.minuesTimeLabel, 1, repeat, 0);
           clearTimeout(this.timer);
           log("Start a timer within", this.leftTime);
-          this.timer = setTimeout(function () {
-            self.updateUI();
-            self.unschedule(self.minuesTimeLabel);
-          }, this.leftTime * 1000);
+          this.timer = setTimeout( /*#__PURE__*/_asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee6() {
+            return _regeneratorRuntime().wrap(function _callee6$(_context6) {
+              while (1) switch (_context6.prev = _context6.next) {
+                case 0:
+                  _context6.next = 2;
+                  return self.updateUI();
+
+                case 2:
+                  self.unschedule(self.minuesTimeLabel);
+
+                case 3:
+                case "end":
+                  return _context6.stop();
+              }
+            }, _callee6);
+          })), this.leftTime * 1000);
         };
 
         _proto.minuesTimeLabel = function minuesTimeLabel() {
@@ -3470,8 +3479,8 @@ System.register("chunks:///_virtual/map-controller.ts", ['./rollupPluginModLoBab
   };
 });
 
-System.register("chunks:///_virtual/mapblock.ts", ['./rollupPluginModLoBabelHelpers.js', 'cc', './ponzi-controller.ts', './ccc_msg.ts', './data_center.ts', './coor_utils.ts'], function (exports) {
-  var _applyDecoratedDescriptor, _inheritsLoose, _initializerDefineProperty, _assertThisInitialized, _asyncToGenerator, _regeneratorRuntime, cclegacy, _decorator, Label, Node, Component, log, ponzi_controller, ccc_msg, data_center, coor_utils;
+System.register("chunks:///_virtual/mapblock.ts", ['./rollupPluginModLoBabelHelpers.js', 'cc', './ponzi-controller.ts', './ccc_msg.ts', './data_center.ts', './coor_utils.ts', './solana-bridge.ts'], function (exports) {
+  var _applyDecoratedDescriptor, _inheritsLoose, _initializerDefineProperty, _assertThisInitialized, _asyncToGenerator, _regeneratorRuntime, cclegacy, _decorator, Label, Node, Component, log, ponzi_controller, ccc_msg, data_center, coor_utils, solana_bridge;
 
   return {
     setters: [function (module) {
@@ -3496,6 +3505,8 @@ System.register("chunks:///_virtual/mapblock.ts", ['./rollupPluginModLoBabelHelp
       data_center = module.data_center;
     }, function (module) {
       coor_utils = module.coor_utils;
+    }, function (module) {
+      solana_bridge = module.solana_bridge;
     }],
     execute: function () {
       var _dec, _dec2, _dec3, _dec4, _dec5, _class, _class2, _descriptor, _descriptor2, _descriptor3, _descriptor4;
@@ -3571,33 +3582,28 @@ System.register("chunks:///_virtual/mapblock.ts", ['./rollupPluginModLoBabelHelp
                   ponzi_controller.instance.sendCCCMsg(ccc_msg.network_block_ui, true);
                   _context.prev = 3;
                   _context.next = 6;
-                  return window.move == null ? void 0 : window.move(self.mapTile.row, self.mapTile.col);
+                  return solana_bridge.instance.move_player(self.mapTile.col, self.mapTile.row);
 
                 case 6:
-                  self.updateMapWalkRecord(this.mapTile.row, this.mapTile.col); // console.warn("Role walk record save:",self.mapTile);
-                  // self.updateMapWalkRecord(self.mapTile.row,self.mapTile.col);
-                  // ponzi_controller.instance.sendCCCMsg(ccc_msg.on_gamemap_walkrecord_update,null);
-                  // ponzi_controller.instance.sendCCCMsg(ccc_msg.on_mapitem_update,null);
-
-                  _context.next = 12;
+                  _context.next = 11;
                   break;
 
-                case 9:
-                  _context.prev = 9;
+                case 8:
+                  _context.prev = 8;
                   _context.t0 = _context["catch"](3);
                   ponzi_controller.instance.sendCCCMsg(ccc_msg.single_button_dialog, {
                     content: "You can't go there",
                     btnText: "OK"
                   });
 
-                case 12:
+                case 11:
                   ponzi_controller.instance.sendCCCMsg(ccc_msg.network_block_ui, false);
 
-                case 13:
+                case 12:
                 case "end":
                   return _context.stop();
               }
-            }, _callee, this, [[3, 9]]);
+            }, _callee, this, [[3, 8]]);
           }));
 
           function onBlockClicked() {
@@ -5906,8 +5912,8 @@ System.register("chunks:///_virtual/Singleton.ts", ['./rollupPluginModLoBabelHel
   };
 });
 
-System.register("chunks:///_virtual/solana-bridge.ts", ['./rollupPluginModLoBabelHelpers.js', 'cc', './component_state.ts'], function (exports) {
-  var _inheritsLoose, _createClass, _asyncToGenerator, _regeneratorRuntime, cclegacy, _decorator, error, find, Component, log, component_state;
+System.register("chunks:///_virtual/solana-bridge.ts", ['./rollupPluginModLoBabelHelpers.js', 'cc', './component_state.ts', './ponzi-controller.ts', './ccc_msg.ts', './RoleLocalObj.ts'], function (exports) {
+  var _inheritsLoose, _createClass, _asyncToGenerator, _regeneratorRuntime, cclegacy, _decorator, error, find, Component, log, component_state, ponzi_controller, ccc_msg, RoleLocalObj;
 
   return {
     setters: [function (module) {
@@ -5924,6 +5930,12 @@ System.register("chunks:///_virtual/solana-bridge.ts", ['./rollupPluginModLoBabe
       log = module.log;
     }, function (module) {
       component_state = module.component_state;
+    }, function (module) {
+      ponzi_controller = module.ponzi_controller;
+    }, function (module) {
+      ccc_msg = module.ccc_msg;
+    }, function (module) {
+      RoleLocalObj = module.RoleLocalObj;
     }],
     execute: function () {
       var _dec, _class, _class2;
@@ -6113,13 +6125,18 @@ System.register("chunks:///_virtual/solana-bridge.ts", ['./rollupPluginModLoBabe
                 case 4:
                   playersData = _context4.sent;
                   log("finish query all players' info:", playersData);
+                  _context4.next = 8;
+                  return this.delay(4000);
+
+                case 8:
+                  log("wait 4 seconds");
                   globalThis.ponzi.players = playersData;
 
-                case 7:
+                case 10:
                 case "end":
                   return _context4.stop();
               }
-            }, _callee4);
+            }, _callee4, this);
           }));
 
           function updatePlayers() {
@@ -6128,6 +6145,12 @@ System.register("chunks:///_virtual/solana-bridge.ts", ['./rollupPluginModLoBabe
 
           return updatePlayers;
         }();
+
+        _proto.delay = function delay(ms) {
+          return new Promise(function (resolve) {
+            setTimeout(resolve, ms);
+          });
+        };
 
         _proto.update = function update(dt) {
           if (!this.inited) {
@@ -6182,9 +6205,82 @@ System.register("chunks:///_virtual/solana-bridge.ts", ['./rollupPluginModLoBabe
           this.queryFromChain(["player_id_xxx1", "player_id_xxx2", "player_id_xxx3"]); //todo:...
         };
 
-        _proto.move_player = function move_player(player_id, x, y) {//todo: send move to chain
-          //todo: query Player of player_id
-        };
+        _proto.move_player = /*#__PURE__*/function () {
+          var _move_player = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee6(x, y) {
+            var array, key, map, hash, obj, old, oldObj, _key2, _map, _hash, _obj, newa, newObj;
+
+            return _regeneratorRuntime().wrap(function _callee6$(_context6) {
+              while (1) switch (_context6.prev = _context6.next) {
+                case 0:
+                  _context6.next = 2;
+                  return window.solanaMovePlayer(x, y);
+
+                case 2:
+                  array = {};
+
+                  for (key in globalThis.ponzi.players) {
+                    map = globalThis.ponzi.players[key];
+                    hash = map.player;
+
+                    if (!array[hash]) {
+                      array[hash] = new RoleLocalObj();
+                    }
+
+                    obj = array[hash];
+                    array[hash] = obj;
+                    obj.row = map.y.toNumber();
+                    obj.col = map.x.toNumber();
+                    obj.money = map.money.toNumber();
+                  }
+
+                  old = array[globalThis.ponzi.currentPlayer];
+                  oldObj = {
+                    x: old.row,
+                    y: old.col
+                  };
+                  _context6.next = 8;
+                  return this.updatePlayers();
+
+                case 8:
+                  for (_key2 in globalThis.ponzi.players) {
+                    _map = globalThis.ponzi.players[_key2];
+                    _hash = _map.player;
+
+                    if (!array[_hash]) {
+                      array[_hash] = new RoleLocalObj();
+                    }
+
+                    _obj = array[_hash];
+                    array[_hash] = _obj;
+                    _obj.row = _map.y.toNumber();
+                    _obj.col = _map.x.toNumber();
+                    _obj.money = _map.money.toNumber();
+                  }
+
+                  newa = array[globalThis.ponzi.currentPlayer];
+                  newObj = {
+                    x: newa.row,
+                    y: newa.col
+                  };
+                  ponzi_controller.instance.sendCCCMsg(ccc_msg.on_player_update, {
+                    entity: globalThis.ponzi.currentPlayer,
+                    oldObj: oldObj,
+                    newObj: newObj
+                  });
+
+                case 12:
+                case "end":
+                  return _context6.stop();
+              }
+            }, _callee6, this);
+          }));
+
+          function move_player(_x, _x2) {
+            return _move_player.apply(this, arguments);
+          }
+
+          return move_player;
+        }();
 
         _proto.accept_trade = function accept_trade(player_id, trade_id) {//todo: send accept_trade to chain
           //todo: query PassiveTransaction of player_id

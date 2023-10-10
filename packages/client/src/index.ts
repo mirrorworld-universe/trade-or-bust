@@ -329,6 +329,8 @@ var connection:any = null;
 const playerOneSecretKey1 = "51eqcESEbATa1ATeogwAaHyD2Y4HvN8MYsgxHeGrhpxdeN1Dk3DZnAgzz2Vz1UeMxwkFuW5b7XjaRZzYU5RGbWhh";
 const playerOneSecretKey2 = "9LYsKjFgx2QEV41tjaoQdcMXbTWKLLkWszzMJYyWZQxPwRHxp7TcG9zShrT3hDmsKZSYesU4UGUFq2DG76sQqJA";
    
+const playerOneSecretKey3 = "n2snxW72Lo8fYujTA2ALaeT5RWRR8HbZ7axuKz8ZTGUEMkv99g2SnB6yjaKmTqniutk8BHVqCZdr4FQnZyUJeMN";
+const playerTwoSecretKey4 = "3ZcBG7cAJ8mHTAWuiENvWqTGPNnW9nN17JPw2jSpfx5RNrM1zQ1gN1oVwoNX84HxKCU31BQRAq8rLMDSGTtK27ut";
 window.initSDK = async function(gameUuid:string, useTestAccount:number){
   console.log("start init sdk");
   if(!gameUuid){
@@ -343,16 +345,18 @@ window.initSDK = async function(gameUuid:string, useTestAccount:number){
     signingAuthorityWalletKeypair = new Keypair();
     signingAuthorityWalletKeypair = playerOneKeypair;
     window.playerOneKeypair = playerOneKeypair;
+    globalThis.ponzi.currentPlayer = signingAuthorityWalletKeypair.publicKey.toBase58();
     console.log("use key: ", playerOneSecretKey);
-    console.log("use key address: ", signingAuthorityWalletKeypair.publicKey.toBase58());
+    console.log("use key address: ", globalThis.ponzi.currentPlayer);
   }else if(useTestAccount == 2){
     const playerOneSecretKey = playerOneSecretKey2;
     const playerOneKeypair = Keypair.fromSecretKey(base58.decode(playerOneSecretKey))
     signingAuthorityWalletKeypair = new Keypair();
     signingAuthorityWalletKeypair = playerOneKeypair;
     window.playerOneKeypair = playerOneKeypair;
+    globalThis.ponzi.currentPlayer = signingAuthorityWalletKeypair.publicKey.toBase58();
     console.log("use key: ", playerOneSecretKey);
-    console.log("use key address: ", signingAuthorityWalletKeypair.publicKey.toBase58());
+    console.log("use key address: ", globalThis.ponzi.currentPlayer);
   }else{
     console.warn("please specified id in your url");
     const playerOneSecretKey = playerOneSecretKey1;
@@ -508,7 +512,26 @@ window.initSDK = async function(gameUuid:string, useTestAccount:number){
   });
   let data = await tradeOrBurstLib.queryFromChain(window.gameUuid, keys);
   return data;
-}
+};
+
+(window as any).solanaMovePlayer = async function(x: number, y: number) {
+  console.log("Started movePlayer");
+  if(!window.gameUuid){
+    console.error("SDK not inited!");
+    return;
+  }
+  let player:PublicKey = window.playerOneKeypair.publicKey;
+  let tx = await tradeOrBurstLib.createMovePlayerTransaction(player, player, window.gameUuid, x, y);
+
+  await tradeOrBurstLib.addFeePayerAndRecentBlockHashInTransaction(tx, player);
+
+  tradeOrBurstLib.signTransaction(tx, base58.encode(window.playerOneKeypair.secretKey));
+
+  let txHash = await connection.sendRawTransaction(tx.serialize());
+  console.log("Tx Hash: ", txHash);
+
+  // await delay(timeDelay);
+};
 
 function delay(ms: number) {
   return new Promise(resolve => setTimeout(resolve, ms));
