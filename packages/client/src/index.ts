@@ -533,6 +533,46 @@ window.initSDK = async function(gameUuid:string, useTestAccount:number){
   // await delay(timeDelay);
 };
 
+
+
+(window as any).solanaPickFund = async function() {
+  console.log("Started pickFund");
+  if(!window.gameUuid){
+    console.error("SDK not inited!");
+    return;
+  }
+  let player:PublicKey = window.playerOneKeypair.publicKey;
+  let tx = await tradeOrBurstLib.createPickFundTransaction(player, player, window.gameUuid);
+
+  await tradeOrBurstLib.addFeePayerAndRecentBlockHashInTransaction(tx, player);
+
+  tradeOrBurstLib.signTransaction(tx, base58.encode(window.playerOneKeypair.secretKey));
+
+  let txHash = await connection.sendRawTransaction(tx.serialize());
+  console.log("Tx Hash: ", txHash);
+
+  await delay(timeDelay);
+};
+
+(window as any).solanaPickAsset = async function(asset: assetTypeEnum) {
+  console.log("Started pickAsset");
+  if(!window.gameUuid){
+    console.error("SDK not inited!");
+    return;
+  }
+  let player:PublicKey = window.playerOneKeypair.publicKey;
+  let tx = await tradeOrBurstLib.createPickAssetTransaction(player, player, window.gameUuid, asset);
+
+  await tradeOrBurstLib.addFeePayerAndRecentBlockHashInTransaction(tx, player);
+
+  tradeOrBurstLib.signTransaction(tx, base58.encode(window.playerOneKeypair.secretKey));
+
+  let txHash = await connection.sendRawTransaction(tx.serialize());
+  console.log("Tx Hash: ", txHash);
+
+  await delay(timeDelay);
+};
+
 function delay(ms: number) {
   return new Promise(resolve => setTimeout(resolve, ms));
 }
