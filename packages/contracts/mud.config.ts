@@ -35,11 +35,11 @@ export default mudConfig({
   tables: {
     Counter: {
       keySchema: {},
-      schema: "uint32",
+      valueSchema: "uint32",
     },
     Game:{
       keySchema: {},
-      schema:{
+      valueSchema:{
         gameId:'uint256',
         startTime:'uint256',
         endTime:'uint256'
@@ -47,32 +47,32 @@ export default mudConfig({
     },
     GameState:{
       keySchema: {},
-      schema:"uint32",
+      valueSchema:"uint32",
     },
     GameMap: {
       keySchema: {},
-      schema: {
+      valueSchema: {
         width: "uint256",
         height: "uint256",
         mapArray:"bytes"
       }
     },
     MapItem:{
-      schema:{
+      valueSchema:{
         x:'uint256',
         y:'uint256'
       }
     },
     MapItemValue:{
-      schema:'uint32'
+      valueSchema:'uint32'
     },
     IsPlayer:{
       dataStruct:false,
-      schema:'bool'
+      valueSchema:'bool'
     },
     Player:{
       dataStruct:true,
-      schema:{
+      valueSchema:{
         gameId:'uint256',
         state:'uint32',
         money:'uint32',
@@ -82,14 +82,14 @@ export default mudConfig({
     },
     RaiseColddown:{
         dataStruct:true,
-        schema:{
+        valueSchema:{
           start:'uint256',
           end:'uint256',
         }
     },
     AssetsList:{
         dataStruct:true,
-        schema:{
+        valueSchema:{
           gpu:'int8',
           bitcoin:'int8',
           battery:'int8',
@@ -100,29 +100,29 @@ export default mudConfig({
     },
     Log:{
       dataStruct:true,
-      schema:'uint8',
+      valueSchema:'uint8',
     },
     //Partner list
     TransactionList:{
       dataStruct:true,
-      schema:{
+      valueSchema:{
         list:'bytes32[]'
       }
     },
     //trade transaction list
     TradeList:{
       dataStruct:true,
-      schema:{
+      valueSchema:{
         list:'bytes'
       }
     },
     IsTrading:{
       dataStruct:false,
-      schema:'bool'
+      valueSchema:'bool'
     },
     PlayerGameResult:{
       dataStruct:true,
-      schema:{
+      valueSchema:{
         rank:'int32',
         points:'int32',
         gpu:'int8',
@@ -135,7 +135,7 @@ export default mudConfig({
     },
     UnsolicitedTransaction:{
       dataStruct:true,
-      schema:{
+      valueSchema:{
         asset:'uint8',
         money:'uint32',
         to:'bytes32'
@@ -143,7 +143,7 @@ export default mudConfig({
     },
     PassiveTransaction:{
       dataStruct:true,
-      schema:{
+      valueSchema:{
         asset:'uint8',
         money:'uint32',
         from:'bytes32'

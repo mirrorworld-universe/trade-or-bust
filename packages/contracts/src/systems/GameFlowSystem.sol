@@ -5,7 +5,7 @@ import { System } from "@latticexyz/world/src/System.sol";
 import { MapItem,MapItemTableId,RaiseColddown,TransactionList,PlayerGameResult, TradeListData, TradeList, PassiveTransactionData, IsTrading, PassiveTransaction, UnsolicitedTransaction,IsTrading, AssetsListData,AssetsList,Player,Game ,GameData,GameState,PlayerData,PlayerTableId,IsPlayer} from "../codegen/Tables.sol";
 
 import { addressToEntityKey } from "../addressToEntityKey.sol";
-import { query, QueryFragment, QueryType } from "@latticexyz/world/src/modules/keysintable/query.sol";
+import { query, QueryFragment, QueryType } from "@latticexyz/world-modules/src/modules/keysintable/query.sol";
 
 contract GameFlowSystem is System {
 

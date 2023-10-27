@@ -5,7 +5,8 @@ import { System } from "@latticexyz/world/src/System.sol";
 import { PlayerGameResult,TradeList,TransactionList,RaiseColddown, AssetsList, Log,Player,Game ,GameData,GameState,GameMap,MapItem,PlayerData,IsPlayer,GameMapData} from "../codegen/Tables.sol";
 import { addressToEntityKey } from "../addressToEntityKey.sol";
 import { IWorld } from "../../src/codegen/world/IWorld.sol";
-import { getUniqueEntity } from "@latticexyz/world/src/modules/uniqueentity/getUniqueEntity.sol";
+import { getUniqueEntity } from "@latticexyz/world-modules/src/modules/uniqueentity/getUniqueEntity.sol";
+
 
 contract LobbySystem is System {
     function joinGame() public returns (uint32){
@@ -145,7 +146,7 @@ contract LobbySystem is System {
     }
 
     function getRandomNumberInRange(uint256 min, uint256 max) private view returns (uint256) {
-        uint256 randomNumber = uint256(keccak256(abi.encodePacked(block.timestamp, block.difficulty, msg.sender)));
+        uint256 randomNumber = uint256(keccak256(abi.encodePacked(block.timestamp, block.prevrandao, msg.sender)));
         return (randomNumber % (max - min + 1)) + min;
     }
 

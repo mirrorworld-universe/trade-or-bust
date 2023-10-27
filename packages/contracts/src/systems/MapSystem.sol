@@ -5,13 +5,13 @@ import { System } from "@latticexyz/world/src/System.sol";
 import { Log,Player,Game ,GameData,GameState,GameMap,MapItem,MapItemTableId,MapItemData,PlayerData,TransactionList,TransactionListData,PlayerTableId,IsPlayer,GameMapData} from "../codegen/Tables.sol";
 import { addressToEntityKey } from "../addressToEntityKey.sol";
 import { IWorld } from "../../src/codegen/world/IWorld.sol";
-import { getUniqueEntity } from "@latticexyz/world/src/modules/uniqueentity/getUniqueEntity.sol";
-import { getKeysInTable } from "@latticexyz/world/src/modules/keysintable/getKeysInTable.sol";
-import { query, QueryFragment, QueryType } from "@latticexyz/world/src/modules/keysintable/query.sol";
-import { getKeysWithValue } from "@latticexyz/world/src/modules/keyswithvalue/getKeysWithValue.sol";
+import { getUniqueEntity } from "@latticexyz/world-modules/src/modules/uniqueentity/getUniqueEntity.sol";
+import { getKeysInTable } from "@latticexyz/world-modules/src/modules/keysintable/getKeysInTable.sol";
+import { query, QueryFragment, QueryType } from "@latticexyz/world-modules/src/modules/keysintable/query.sol";
+import { getKeysWithValue } from "@latticexyz/world-modules/src/modules/keyswithvalue/getKeysWithValue.sol";
 import { StoreSwitch } from "@latticexyz/store/src/StoreSwitch.sol";
 import { StoreCore } from "@latticexyz/store/src/StoreCore.sol";
-
+import { PackedCounter } from "@latticexyz/store/src/PackedCounter.sol";
 
 contract MapSystem is System {
     function move(uint256 targetX, uint256 targetY) public returns(bool){
@@ -25,7 +25,12 @@ contract MapSystem is System {
         Player.setX(player,targetX);
         Player.setY(player,targetY);
         //Calculate all items to find which he got
-        bytes32[] memory keysWithValue = getKeysWithValue(MapItemTableId, MapItem.encode(targetX, targetY));
+        bytes32[] memory keysWithValue = getKeysWithValue(
+            MapItemTableId, 
+            MapItem.encode(targetX, targetY),
+            PackedCounter.wrap(bytes32(0)),
+            new bytes(0)
+        );
         if(keysWithValue.length != 0){
             for (uint256 i = 0; i < keysWithValue.length; i++) {
                 bytes32 key = keysWithValue[i];

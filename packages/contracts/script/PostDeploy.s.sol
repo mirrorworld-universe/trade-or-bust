@@ -29,7 +29,7 @@ contract PostDeploy is Script {
 
   function initGame(IWorld world) private{
 
-    GameState.set(world, 1);
+    GameState.set(1);
 
     uint gameSec = 48 * 3600;
     uint startWaitSec = 1 * 60;
@@ -37,7 +37,7 @@ contract PostDeploy is Script {
     uint256 startTime = block.timestamp + startWaitSec;
     uint256 endTime = startTime + gameSec;
 
-    Game.set(world, gameId, startTime, endTime);
+    Game.set( gameId, startTime, endTime);
   }
 
   function initGameMap(IWorld world) private{
@@ -81,6 +81,6 @@ contract PostDeploy is Script {
         }
     }
 
-    GameMap.set(world, width, height, terrain);
+    GameMap.set(width, height, terrain);
   }
 }

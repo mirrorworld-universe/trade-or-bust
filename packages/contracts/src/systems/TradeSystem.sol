@@ -193,13 +193,13 @@ contract TradeSystem is System {
         // Check if data is empty
         if (data.length == 0) {
             // If data is empty, create a new list with only the new item
-            TradeListItem[] memory newList = new TradeListItem[](1);
-            newList[0] = newItem;
+            TradeListItem[] memory tradeList = new TradeListItem[](1);
+            tradeList[0] = newItem;
 
             // Encode the new list to bytes
-            bytes memory encodedList = abi.encode(newList);
+            bytes memory list1 = abi.encode(tradeList);
 
-            return encodedList;
+            return list1;
         }
 
 

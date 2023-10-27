@@ -2,8 +2,7 @@
 pragma solidity >=0.8.0;
 
 import "forge-std/Test.sol";
-import { MudTest } from "@latticexyz/store/src/MudTest.sol";
-import { getKeysWithValue } from "@latticexyz/world/src/modules/keyswithvalue/getKeysWithValue.sol";
+import { MudTest } from "@latticexyz/world/test/MudTest.t.sol";
 
 import { IWorld } from "../src/codegen/world/IWorld.sol";
 import { Counter, CounterTableId } from "../src/codegen/Tables.sol";
