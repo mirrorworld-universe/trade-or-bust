@@ -2,7 +2,7 @@
 pragma solidity >=0.8.0;
 
 import { Script } from "forge-std/Script.sol";
-import { console } from "forge-std/console.sol";
+// import { console } from "forge-std/console.sol";
 import { IWorld } from "../src/codegen/world/IWorld.sol";
 import { Counter, Game, GameState, GameMap,GameMapData } from "../src/codegen/Tables.sol";
 
@@ -17,17 +17,17 @@ contract PostDeploy is Script {
     // ------------------ EXAMPLES ------------------
 
     // Call increment on the world via the registered function selector
-    uint32 newValue = world.increment();
-    console.log("Increment via IWorld:", newValue);
+    // uint32 newValue = world.increment();
+    // console.log("Increment via IWorld:", newValue);
 
-    initGame(world);
+    initGame();
 
-    initGameMap(world);
+    initGameMap();
 
     vm.stopBroadcast();
   }
 
-  function initGame(IWorld world) private{
+  function initGame() private{
 
     GameState.set(1);
 
@@ -40,7 +40,7 @@ contract PostDeploy is Script {
     Game.set( gameId, startTime, endTime);
   }
 
-  function initGameMap(IWorld world) private{
+  function initGameMap() private{
     uint O = 0;
     uint N = 1;
     uint R = 2;

@@ -26,16 +26,16 @@ contract CounterTest is MudTest {
     assertTrue(calculateDistance(5,3,7,4,2));
   }
 
-  function testCounter() public {
-    // Expect the counter to be 1 because it was incremented in the PostDeploy script.
-    uint32 counter = Counter.get(world);
-    assertEq(counter, 1);
+  // function testCounter() public {
+  //   // Expect the counter to be 1 because it was incremented in the PostDeploy script.
+  //   uint32 counter = Counter.get();
+  //   assertEq(counter, 1);
 
-    // Expect the counter to be 2 after calling increment.
-    world.increment();
-    counter = Counter.get(world);
-    assertEq(counter, 2);
-  }
+  //   // Expect the counter to be 2 after calling increment.
+  //   world.increment();
+  //   counter = Counter.get();
+  //   assertEq(counter, 2);
+  // }
 
 
     function calculateDistance(uint256 x1, uint256 y1, uint256 x2, uint256 y2, int256 limit) public pure returns (bool) {

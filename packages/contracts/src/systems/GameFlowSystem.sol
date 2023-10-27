@@ -26,7 +26,7 @@ contract GameFlowSystem is System {
         require(gameState == 2,"Game is finished already");
 
         GameState.set(1);
-        bytes32 player = addressToEntityKey(_msgSender());
+        // bytes32 player = addressToEntityKey(_msgSender());
 
         QueryFragment[] memory fragments = new QueryFragment[](1);
         fragments[0] = QueryFragment(QueryType.Has, PlayerTableId, new bytes(0));
@@ -36,7 +36,7 @@ contract GameFlowSystem is System {
         // if(length != 0 && keyTuples[0].length > 0){
         //     length = length * keyTuples[0].length;
         // }
-        uint256 length = 10;
+        // uint256 length = 10;
 
         ScoreObj[] memory scoreObjList = new ScoreObj[](keyTuples.length);
         uint32 index = 0;

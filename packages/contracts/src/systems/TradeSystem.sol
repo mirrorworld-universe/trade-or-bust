@@ -16,7 +16,7 @@ contract TradeSystem is System {
         PlayerData memory pd = Player.get(player);
         require(pd.money >= money, "You don't have enough money to do this trade");
 
-        PlayerData memory tarPd = Player.get(targetPlayer);
+        // PlayerData memory tarPd = Player.get(targetPlayer);
 
         AssetsListData memory ald = AssetsList.get(player);
         AssetsListData memory tarAld = AssetsList.get(player);

@@ -14,92 +14,124 @@ import { StoreCore } from "@latticexyz/store/src/StoreCore.sol";
 import { PackedCounter } from "@latticexyz/store/src/PackedCounter.sol";
 
 contract MapSystem is System {
-    function move(uint256 targetX, uint256 targetY) public returns(bool){
-        bytes32 player = addressToEntityKey(_msgSender());
-        require(IsPlayer.get(player), "Not a player!!!");
+    // function move(uint256 targetX, uint256 targetY) public returns(bool){
+    //     bytes32 player = addressToEntityKey(_msgSender());
+    //     require(IsPlayer.get(player), "Not a player!!!");
         
-        PlayerData memory playerData = Player.get(player);
-        bool fff = isMoveValid(playerData.x, playerData.y, targetX, targetY);
-        require(fff, concatenateStringWithUint("can only move to adjacent spaces",fff?1:2));
+    //     PlayerData memory playerData = Player.get(player);
+    //     bool fff = isMoveValid(playerData.x, playerData.y, targetX, targetY);
+    //     require(fff, concatenateStringWithUint("can only move to adjacent spaces",fff?1:2));
     
-        Player.setX(player,targetX);
-        Player.setY(player,targetY);
-        //Calculate all items to find which he got
-        bytes32[] memory keysWithValue = getKeysWithValue(
-            MapItemTableId, 
-            MapItem.encode(targetX, targetY),
-            PackedCounter.wrap(bytes32(0)),
-            new bytes(0)
-        );
-        if(keysWithValue.length != 0){
-            for (uint256 i = 0; i < keysWithValue.length; i++) {
-                bytes32 key = keysWithValue[i];
-                MapItem.deleteRecord(key);
+    //     Player.setX(player,targetX);
+    //     Player.setY(player,targetY);
+    //     (bytes memory x, PackedCounter counter, bytes memory y) = MapItem.encode(targetX, targetY);
+    //     bytes32[] memory keysWithValue = getKeysWithValue(MapItemTableId, x, counter, y);
+
+    //     if(keysWithValue.length != 0){
+    //         for (uint256 i = 0; i < keysWithValue.length; i++) {
+    //             bytes32 key = keysWithValue[i];
+    //             MapItem.deleteRecord(key);
                 
-                PlayerData memory pd = Player.get(player);
-                Player.setMoney(player,pd.money + 10);
-            }
-        }
+    //             PlayerData memory pd = Player.get(player);
+    //             Player.setMoney(player,pd.money + 10);
+    //         }
+    //     }
 
-        QueryFragment[] memory fragments = new QueryFragment[](1);
-        fragments[0] = QueryFragment(QueryType.Has, PlayerTableId, new bytes(0));
-        bytes32[][] memory keyTuples = query(fragments);
+    //     QueryFragment[] memory fragments = new QueryFragment[](1);
+    //     fragments[0] = QueryFragment(QueryType.Has, PlayerTableId, new bytes(0));
+    //     bytes32[][] memory keyTuples = query(fragments);
 
-        
-        for (uint256 a = 0; a < keyTuples.length; a++) {
-            bytes32[] memory allPlayers = keyTuples[a];
+    //     for (uint256 a = 0; a < keyTuples.length; a++) {
+    //         bytes32[] memory allPlayers = keyTuples[a];
 
-            for (uint256 i = 0; i < allPlayers.length; i++) {
-                bytes32 tmpPlayer = allPlayers[i];
+    //         for (uint256 i = 0; i < allPlayers.length; i++) {
 
-                if(tmpPlayer == player) continue;
-                PlayerData memory pd = Player.get(tmpPlayer);
-                bool withinFriendArea = calculateDistance(targetX,targetY,pd.x,pd.y,2);
+    //             if(allPlayers[i] == player) continue;
+    //             PlayerData memory pd = Player.get(allPlayers[i]);
 
-                // Log.set(player,withinFriendArea?1:2);
+    //             if(calculateDistance(targetX,targetY,pd.x,pd.y,2)){
+    //                 checkAndPushList(allPlayers[i],player);
 
-                if(withinFriendArea){
-                    checkAndPushList(tmpPlayer,player);
-                    // TransactionListData memory ptld = TransactionList.get(tmpPlayer);
-                    // bool knowTmpP = false;
+    //                 TransactionListData memory ptld2 = TransactionList.get(player);
+    //                 bool knowTmpP2 = false;
 
-                    // for (uint256 j = 0; j < ptld.list.length; j++) {
-                    //     bytes32 tradeFriend = ptld.list[j];
+    //                 for (uint256 j = 0; j < ptld2.list.length; j++) {
+    //                     bytes32 tradeFriend = ptld2.list[j];
                         
-                    //     if (tradeFriend == player) {
-                    //         knowTmpP = true;
-                    //         break;
-                    //     }
-                    // }
+    //                     if (tradeFriend == allPlayers[i]) {
+    //                         knowTmpP2 = true;
+    //                         break;
+    //                     }
+    //                 }
 
-                    // if (!knowTmpP) {
-                    //     TransactionList.pushList(tmpPlayer,player);
-                    // }
+    //                 if (!knowTmpP2) {
+    //                     TransactionList.pushList(player,allPlayers[i]);
+    //                 }
+    //             }
+    //         }
+    //     }
 
+    //     return true;
+    // }
+    ///////这是GPT帮我改过的move方法，没有测试过，上面是自己写的
+function move(uint256 targetX, uint256 targetY) public returns (bool) {
+    bytes32 player = addressToEntityKey(_msgSender());
 
-                    // checkAndPushList(player,tmpPlayer);
-                    TransactionListData memory ptld2 = TransactionList.get(player);
-                    bool knowTmpP2 = false;
+    // 检查是否为合法玩家
+    require(IsPlayer.get(player), "Not a player!!!");
 
-                    for (uint256 j = 0; j < ptld2.list.length; j++) {
-                        bytes32 tradeFriend = ptld2.list[j];
-                        
-                        if (tradeFriend == tmpPlayer) {
-                            knowTmpP2 = true;
-                            break;
-                        }
-                    }
+    // 获取玩家数据
+    PlayerData memory playerData = Player.get(player);
 
-                    if (!knowTmpP2) {
-                        TransactionList.pushList(player,tmpPlayer);
-                    }
-                }
-            }
-        }
+    // 检查移动是否有效
+    require(isMoveValid(playerData.x, playerData.y, targetX, targetY), "Invalid move");
 
-        return true;
+    // 更新玩家坐标
+    Player.setX(player, targetX);
+    Player.setY(player, targetY);
+
+    // 获取地图项的键
+    (bytes memory x, PackedCounter counter, bytes memory y) = MapItem.encode(targetX, targetY);
+    bytes32[] memory keysWithValue = getKeysWithValue(MapItemTableId, x, counter, y);
+
+    // 处理地图项和奖励
+    for (uint256 i = 0; i < keysWithValue.length; i++) {
+        bytes32 key = keysWithValue[i];
+        MapItem.deleteRecord(key);
+
+        // 奖励玩家
+        PlayerData memory pd = Player.get(player);
+        Player.setMoney(player, pd.money + 10);
     }
 
+    // 处理其他玩家
+    handleOtherPlayers(targetX, targetY, player);
+
+    return true;
+}
+
+function handleOtherPlayers(uint256 targetX, uint256 targetY, bytes32 currentPlayer) internal {
+    QueryFragment[] memory fragments = new QueryFragment[](1);
+    fragments[0] = QueryFragment(QueryType.Has, PlayerTableId, new bytes(0));
+    bytes32[][] memory keyTuples = query(fragments);
+
+    for (uint256 a = 0; a < keyTuples.length; a++) {
+        bytes32[] memory allPlayers = keyTuples[a];
+
+        for (uint256 i = 0; i < allPlayers.length; i++) {
+            if (allPlayers[i] == currentPlayer) continue;
+
+            PlayerData memory pd = Player.get(allPlayers[i]);
+
+            // 如果玩家在一定距离内，处理交互
+            if (calculateDistance(targetX, targetY, pd.x, pd.y, 2)) {
+                checkAndPushList(allPlayers[i], currentPlayer);
+            }
+        }
+    }
+}
+
+////
     function checkAndPushList(bytes32 seekPlayer, bytes32 findPlayer) private {
 
         TransactionListData memory ptld = TransactionList.get(seekPlayer);
@@ -131,11 +163,8 @@ contract MapSystem is System {
     // }
 
     function calculateDistance(uint256 x1, uint256 y1, uint256 x2, uint256 y2, int256 limit) private pure returns (bool) {
-        int256 deltaX = int256(x2) - int256(x1);
-        int256 deltaY = int256(y2) - int256(y1);
-        
-        int256 absDeltaX = abs(deltaX);
-        int256 absDeltaY = abs(deltaY);
+        int256 absDeltaX = abs(int256(x2) - int256(x1));
+        int256 absDeltaY = abs(int256(y2) - int256(y1));
 
         if (absDeltaX <= limit && absDeltaY <= limit && (absDeltaX + absDeltaY) < limit * 2) {
             return true;
@@ -143,16 +172,6 @@ contract MapSystem is System {
             return false;
         }
     }
-
-
-    // function calculateDistance(uint256 x1, uint256 y1, uint256 x2, uint256 y2) public pure returns (uint256) {
-    //     int256 deltaX = int256(x2) - int256(x1);
-    //     int256 deltaY = int256(y2) - int256(y1);
-
-    //     int256 steps = max(abs(deltaX), abs(deltaY));
-
-    //     return uint256(steps);
-    // }
 
     // 辅助函数：返回较大值
     function max(int256 a, int256 b) private pure returns (int256) {
