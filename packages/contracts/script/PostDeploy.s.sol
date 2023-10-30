@@ -5,15 +5,16 @@ import { Script } from "forge-std/Script.sol";
 // import { console } from "forge-std/console.sol";
 import { IWorld } from "../src/codegen/world/IWorld.sol";
 import { Counter, Game, GameState, GameMap,GameMapData } from "../src/codegen/Tables.sol";
+import { StoreSwitch } from "@latticexyz/store/src/StoreSwitch.sol";
 
 contract PostDeploy is Script {
   function run(address worldAddress) external {
     // Load the private key from the `PRIVATE_KEY` environment variable (in .env)
     uint256 deployerPrivateKey = vm.envUint("PRIVATE_KEY");
-    IWorld world = IWorld(worldAddress);
+    // IWorld world = IWorld(worldAddress);
     // Start broadcasting transactions from the deployer account
     vm.startBroadcast(deployerPrivateKey);
-
+    StoreSwitch.setStoreAddress(worldAddress);
     // ------------------ EXAMPLES ------------------
 
     // Call increment on the world via the registered function selector
@@ -37,7 +38,7 @@ contract PostDeploy is Script {
     uint256 startTime = block.timestamp + startWaitSec;
     uint256 endTime = startTime + gameSec;
 
-    Game.set( gameId, startTime, endTime);
+    Game.set(gameId, startTime, endTime);
   }
 
   function initGameMap() private{
