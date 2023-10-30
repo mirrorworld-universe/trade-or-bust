@@ -25,6 +25,7 @@
     "@latticexyz/store": "2.0.0-next.12",
     "@latticexyz/world": "2.0.0-next.12",
     "@latticexyz/world-modules": "2.0.0-next.12",
+    "@latticexyz/gas-report": "2.0.0-next.12",
     "ethers": "^5.7.2",
     "rimraf": "^3.0.2"
   },

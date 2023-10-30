@@ -7,9 +7,11 @@ import { addressToEntityKey } from "../addressToEntityKey.sol";
 import { IWorld } from "../../src/codegen/world/IWorld.sol";
 import { getUniqueEntity } from "@latticexyz/world-modules/src/modules/uniqueentity/getUniqueEntity.sol";
 
+import { GasReporter } from "@latticexyz/gas-report/src/GasReporter.sol";
 
-contract LobbySystem is System {
+contract LobbySystem is System,GasReporter {
     function joinGame() public returns (uint32){
+        startGasReport("Describe what is being gas-reported on");
         bytes32 player = addressToEntityKey(address(_msgSender()));
         require(!IsPlayer.get(player),"Already is a player!");
 
@@ -34,6 +36,7 @@ contract LobbySystem is System {
         
         TradeList.set(player,'');
 
+        endGasReport();
         return 2;
     }
 
