@@ -202,13 +202,14 @@ components.PlayerGameResult.update$.subscribe((update)=>{
 
 // https://vitejs.dev/guide/env-and-mode.html
 if (import.meta.env.DEV) {
+  console.log("1212312312");
   const { mount: mountDevTools } = await import("@latticexyz/dev-tools");
   mountDevTools({
     config: mudConfig,
     publicClient: network.publicClient,
     walletClient: network.walletClient,
     latestBlock$: network.latestBlock$,
-    blockStorageOperations$: network.blockStorageOperations$,
+    storedBlockLogs$: network.storedBlockLogs$,
     worldAddress: network.worldContract.address,
     worldAbi: network.worldContract.abi,
     write$: network.write$,
