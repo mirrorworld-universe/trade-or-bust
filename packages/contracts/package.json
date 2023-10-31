@@ -24,6 +24,7 @@
     "@latticexyz/schema-type": "2.0.0-next.3",
     "@latticexyz/store": "2.0.0-next.3",
     "@latticexyz/world": "2.0.0-next.3",
+    "@latticexyz/gas-report": "2.0.0-next.3",
     "ethers": "^5.7.2"
   },
   "devDependencies": {

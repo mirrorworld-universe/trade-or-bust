@@ -1,0 +1,8 @@
+[
+  {
+    "file": "src/systems/ExampleTest.sol",
+    "test": "testGas",
+    "name": "Describe what is being gas-reported on",
+    "gasUsed": 1
+  }
+]

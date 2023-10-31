@@ -93,6 +93,9 @@ importers:
       '@latticexyz/cli':
         specifier: 2.0.0-next.3
         version: 2.0.0-next.3(google-protobuf@3.21.2)
+      '@latticexyz/gas-report':
+        specifier: 2.0.0-next.3
+        version: 2.0.0-next.3
       '@latticexyz/schema-type':
         specifier: 2.0.0-next.3
         version: 2.0.0-next.3(typescript@5.1.6)(zod@3.22.2)
@@ -4110,12 +4113,12 @@ packages:
     dev: false
 
   github.com/dapphub/ds-test/e282159d5170298eb2455a6c05280ab5a73a4ef0:
-    resolution: {tarball: https://codeload.github.com/dapphub/ds-test/tar.gz/e282159d5170298eb2455a6c05280ab5a73a4ef0}
+    resolution: {commit: e282159d5170298eb2455a6c05280ab5a73a4ef0, repo: git+ssh://git@github.com/dapphub/ds-test.git, type: git}
     name: ds-test
     version: 1.0.0
 
   github.com/dk1a/memmove/ffd71cd77b1708574ef46a667b23ca3a5cc9fa27:
-    resolution: {tarball: https://codeload.github.com/dk1a/memmove/tar.gz/ffd71cd77b1708574ef46a667b23ca3a5cc9fa27}
+    resolution: {commit: ffd71cd77b1708574ef46a667b23ca3a5cc9fa27, repo: git+ssh://git@github.com/dk1a/memmove.git, type: git}
     name: memmove
     version: 0.1.0
 
