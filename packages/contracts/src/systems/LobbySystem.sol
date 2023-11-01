@@ -13,32 +13,32 @@ import { MudTest } from "@latticexyz/store/src/MudTest.sol";
 
 contract LobbySystem is MudTest,System,GasReporter {
     function joinGame() public returns (uint32){
-        startGasReport("Describe what is being gas-reported on");
+        // startGasReport("Describe what is being gas-reported on");
         // do something here
-        endGasReport();
-        // bytes32 player = addressToEntityKey(address(_msgSender()));
-        // require(!IsPlayer.get(player),"Already is a player!");
+        // endGasReport();
+        bytes32 player = addressToEntityKey(address(_msgSender()));
+        require(!IsPlayer.get(player),"Already is a player!");
 
-        // IsPlayer.set(player,true);
+        IsPlayer.set(player,true);
 
-        // GameData memory gameData = Game.get();
-        // GameMapData memory gameMap = GameMap.get();
-        // uint[][] memory mapArray = bytesToUintArray(gameMap.mapArray,20,20);
-        // uint256[2][] memory coordinations = getBornCoordinates(mapArray,20,20,1);
+        GameData memory gameData = Game.get();
+        GameMapData memory gameMap = GameMap.get();
+        uint[][] memory mapArray = bytesToUintArray(gameMap.mapArray,20,20);
+        uint256[2][] memory coordinations = getBornCoordinates(mapArray,20,20,1);
 
-        // uint32 playerState = 2;
-        // Player.set(player, gameData.gameId, playerState, 50, coordinations[0][0],coordinations[0][1]);
+        uint32 playerState = 2;
+        Player.set(player, gameData.gameId, playerState, 50, coordinations[0][0],coordinations[0][1]);
 
-        // bytes32[] memory list = new bytes32[](0);
-        // TransactionList.set(player, list);
+        bytes32[] memory list = new bytes32[](0);
+        TransactionList.set(player, list);
 
-        // AssetsList.set(player,0,0,0,0,0,0);
+        AssetsList.set(player,0,0,0,0,0,0);
 
-        // RaiseColddown.set(player,0,0);
+        RaiseColddown.set(player,0,0);
 
-        // PlayerGameResult.deleteRecord(player);
+        PlayerGameResult.deleteRecord(player);
         
-        // TradeList.set(player,'');
+        TradeList.set(player,'');
 
         return 2;
     }
