@@ -31,12 +31,12 @@ components.GameState.update$.subscribe((update) => {
   globalThis.ponzi.gamestate_update?.(prevValue?.value, nextValue?.value);
 });
 
-components.Counter.update$.subscribe((update) => {
-    const [nextValue, prevValue] = update.value;
-    console.log("Counter updated", update, { nextValue, prevValue });
-    globalThis.ponzi.counter = nextValue;
-    globalThis.ponzi.counter_update?.(prevValue, nextValue);
-});
+// components.Counter.update$.subscribe((update) => {
+//     const [nextValue, prevValue] = update.value;
+//     console.log("Counter updated", update, { nextValue, prevValue });
+//     globalThis.ponzi.counter = nextValue;
+//     globalThis.ponzi.counter_update?.(prevValue, nextValue);
+// });
 
 components.Game.update$.subscribe((update) => {
   const [nextValue, prevValue] = update.value;
@@ -61,7 +61,7 @@ components.GameMap.update$.subscribe((update)=>{
 
 components.MapItem.update$.subscribe((update)=>{
   const [nextValue, prevValue] = update.value;
-  console.log("MapItems updated", { nextValue, prevValue });
+  // console.log("MapItems updated", { nextValue, prevValue });
   globalThis.ponzi.mapitems_update?.(prevValue, nextValue);
 });
 
