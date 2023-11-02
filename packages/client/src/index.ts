@@ -133,6 +133,10 @@ components.PlayerGameResult.update$.subscribe((update)=>{
   return components.AssetsList.values;
 }
 
+(window as any).getTransactionList = ()=>{
+  return components.TransactionList.values;
+}
+
 //Query
 (window as any).queryValue = async (component, entity) => {
   const data = getComponentValueStrict(component, entity)
