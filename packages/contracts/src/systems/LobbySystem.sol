@@ -8,6 +8,7 @@ import { IWorld } from "../../src/codegen/world/IWorld.sol";
 import { getUniqueEntity } from "@latticexyz/world/src/modules/uniqueentity/getUniqueEntity.sol";
 
 contract LobbySystem is System {
+    //Player join game, become a player
     function joinGame() public returns (uint32){
         bytes32 player = addressToEntityKey(address(_msgSender()));
         require(!IsPlayer.get(player),"Already is a player!");
@@ -22,15 +23,20 @@ contract LobbySystem is System {
         uint32 playerState = 2;
         Player.set(player, gameData.gameId, playerState, 50, coordinations[0][0],coordinations[0][1]);
 
+        //Initialize transaction parter list 
         bytes32[] memory list = new bytes32[](0);
         TransactionList.set(player, list);
 
+        //Initialize player's asset list
         AssetsList.set(player,0,0,0,0,0,0);
 
+        //Initialize player's raise cold down
         RaiseColddown.set(player,0,0);
 
+        //Delete the old game result component from this player 
         PlayerGameResult.deleteRecord(player);
         
+        //Initialize the trades that this player is undering
         TradeList.set(player,'');
 
         return 2;

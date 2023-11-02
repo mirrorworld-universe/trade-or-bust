@@ -55,21 +55,6 @@ contract MapSystem is System {
 
                 if(withinFriendArea){
                     checkAndPushList(tmpPlayer,player);
-                    // TransactionListData memory ptld = TransactionList.get(tmpPlayer);
-                    // bool knowTmpP = false;
-
-                    // for (uint256 j = 0; j < ptld.list.length; j++) {
-                    //     bytes32 tradeFriend = ptld.list[j];
-                        
-                    //     if (tradeFriend == player) {
-                    //         knowTmpP = true;
-                    //         break;
-                    //     }
-                    // }
-
-                    // if (!knowTmpP) {
-                    //     TransactionList.pushList(tmpPlayer,player);
-                    // }
 
 
                     // checkAndPushList(player,tmpPlayer);
