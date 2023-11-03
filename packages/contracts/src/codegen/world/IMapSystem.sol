@@ -5,4 +5,8 @@ pragma solidity >=0.8.0;
 
 interface IMapSystem {
   function move(uint256 targetX, uint256 targetY) external returns (bool);
+
+  function pickCoin() external returns (uint32);
+
+  function findPartner() external returns (uint32);
 }

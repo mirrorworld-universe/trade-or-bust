@@ -64,6 +64,16 @@ export function createSystemCalls(
     return await waitForTransaction(tx);
   };
 
+  const pickCoin = async () => {
+    const tx = await worldContract.write.pickCoin();
+    return await waitForTransaction(tx);
+  };
+
+  const findPartner = async () => {
+    const tx = await worldContract.write.findPartner();
+    return await waitForTransaction(tx);
+  };
+
   return {
     increment,
     joinGame,
@@ -74,6 +84,8 @@ export function createSystemCalls(
     trade,
     acceptTrade,
     rejectTrade,
-    finishGame
+    finishGame,
+    pickCoin,
+    findPartner
   };
 }

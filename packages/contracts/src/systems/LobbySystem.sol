@@ -2,10 +2,12 @@
 pragma solidity >=0.8.0;
 
 import { System } from "@latticexyz/world/src/System.sol";
-import { PlayerGameResult,TradeList,TransactionList,RaiseColddown, AssetsList, Log,Player,Game ,GameData,GameState,GameMap,MapItem,PlayerData,IsPlayer,GameMapData} from "../codegen/Tables.sol";
+import { PlayerGameResult,PlayerTableId,TradeList,TransactionList,RaiseColddown, AssetsList, Log,Player,Game ,GameData,GameState,GameMap,MapItem,PlayerData,IsPlayer,GameMapData} from "../codegen/Tables.sol";
 import { addressToEntityKey } from "../addressToEntityKey.sol";
 import { IWorld } from "../../src/codegen/world/IWorld.sol";
 import { getUniqueEntity } from "@latticexyz/world/src/modules/uniqueentity/getUniqueEntity.sol";
+
+import { query, QueryFragment, QueryType } from "@latticexyz/world/src/modules/keysintable/query.sol";
 
 contract LobbySystem is System {
     //Player join game, become a player
@@ -20,8 +22,12 @@ contract LobbySystem is System {
         uint[][] memory mapArray = bytesToUintArray(gameMap.mapArray,20,20);
         uint256[2][] memory coordinations = getBornCoordinates(mapArray,20,20,1);
 
+        require(!hasPlayerOnBlock(player,coordinations[0][0],coordinations[0][1]),"Fail, born cell has a player already");
+
         uint32 playerState = 2;
         Player.set(player, gameData.gameId, playerState, 50, coordinations[0][0],coordinations[0][1]);
+
+        mapArray[coordinations[0][0]][coordinations[0][1]] = 2;
 
         //Initialize transaction parter list 
         bytes32[] memory list = new bytes32[](0);
@@ -69,6 +75,29 @@ contract LobbySystem is System {
         }
                 
         return 3;
+    }
+
+    function hasPlayerOnBlock(bytes32 player,uint256 targetX,uint256 targetY) private returns(bool){
+        QueryFragment[] memory fragments = new QueryFragment[](1);
+        fragments[0] = QueryFragment(QueryType.Has, PlayerTableId, new bytes(0));
+        bytes32[][] memory keyTuples = query(fragments);
+
+        for (uint256 a = 0; a < keyTuples.length; a++) {
+            bytes32[] memory allPlayers = keyTuples[a];
+
+            for (uint256 i = 0; i < allPlayers.length; i++) {
+                bytes32 tmpPlayer = allPlayers[i];
+
+                if(tmpPlayer == player) continue;
+                PlayerData memory pd = Player.get(tmpPlayer);
+                
+                if(pd.x == targetX && pd.y == targetY){
+                    return true;
+                }
+            }
+        }
+
+        return false;
     }
 
     function bytesToUintArray(bytes memory data, uint32 width, uint32 height) private pure returns (uint[][] memory) {
@@ -131,6 +160,10 @@ contract LobbySystem is System {
         return coordinates;
     }
 
+
+    // uint O = 0;//Blank, no map cell here
+    // uint N = 1;//Normal cell
+    // uint R = 2;//Have a role
     function getBornCoordinates(uint[][] memory mapArray, uint256 width, uint256 height, uint n) private view returns (uint[2][] memory) {
         require(n <= ((12 - 8 + 1) * (12 - 8 + 1)), "Invalid number of coordinates requested."); // 校验所需坐标数量是否合法
 
@@ -141,7 +174,7 @@ contract LobbySystem is System {
             uint row = getRandomNumberInRange(8, 12); // 生成介于 8 和 12 之间的随机行号
             uint col = getRandomNumberInRange(8, 12); // 生成介于 8 和 12 之间的随机列号
 
-            if (mapArray[row][col] == 0) { // 检查要选择的位置是否符合条件，例如等于 0
+            if (mapArray[row][col] == 1) { // 检查要选择的位置是否符合条件，例如等于 0
                 coordinates[selectedCount] = [row, col];
                 selectedCount++;
             }

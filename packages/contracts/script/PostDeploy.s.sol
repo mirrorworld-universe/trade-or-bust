@@ -41,31 +41,31 @@ contract PostDeploy is Script {
   }
 
   function initGameMap(IWorld world) private{
-    uint O = 0;
-    uint N = 1;
-    uint R = 2;
+    uint O = 0;//Blank, no map cell here
+    uint N = 1;//Normal cell
+    uint R = 2;//Have a role
 
     uint[20][20] memory map = [
-        [O, N, N, R, N, N, N, O, O, O, O, O, O, O, O, O, O, O, O, O],
-        [O, N, N, R, N, N, N, O, O, O, O, O, O, O, O, O, O, O, O, O],
-        [O, N, N, R, N, N, N, O, O, O, O, O, O, O, O, O, O, O, O, O],
-        [O, N, N, R, N, N, N, O, O, O, O, O, O, O, O, O, O, O, O, O],
-        [O, N, N, R, N, N, N, O, O, O, O, O, O, O, O, O, O, O, O, O],
-        [O, N, N, R, N, N, N, O, O, O, O, O, O, O, O, O, O, O, O, O],
-        [O, N, N, R, N, N, N, O, O, O, O, O, O, O, O, O, O, O, O, O],
-        [O, N, N, R, N, N, N, O, O, O, O, O, O, O, O, O, O, O, O, O],
-        [O, N, N, R, N, N, N, O, O, O, O, O, O, O, O, O, O, O, O, O],
-        [O, N, N, R, N, N, N, O, O, O, O, O, O, O, O, O, O, O, O, O],
-        [O, N, N, R, N, N, N, O, O, O, O, O, O, O, O, O, O, O, O, O],
-        [O, N, N, R, N, N, N, O, O, O, O, O, O, O, O, O, O, O, O, O],
-        [O, N, N, R, N, N, N, O, O, O, O, O, O, O, O, O, O, O, O, O],
-        [O, N, N, R, N, N, N, O, O, O, O, O, O, O, O, O, O, O, O, O],
-        [O, N, N, R, N, N, N, O, O, O, O, O, O, O, O, O, O, O, O, O],
-        [O, N, N, R, N, N, N, O, O, O, O, O, O, O, O, O, O, O, O, O],
-        [O, N, N, R, N, N, N, O, O, O, O, O, O, O, O, O, O, O, O, O],
-        [O, N, N, R, N, N, N, O, O, O, O, O, O, O, O, O, O, O, O, O],
-        [O, N, N, R, N, N, N, O, O, O, O, O, O, O, O, O, O, O, O, O],
-        [O, N, N, R, N, N, N, O, O, O, O, O, O, O, O, O, O, O, O, O]
+        [N, N, N, N, N, N, N, N, N, N, N, N, N, N, N, N, N, N, N, N],
+        [N, N, N, N, N, N, N, N, N, N, N, N, N, N, N, N, N, N, N, N],
+        [N, N, N, N, N, N, N, N, N, N, N, N, N, N, N, N, N, N, N, N],
+        [N, N, N, N, N, N, N, N, N, N, N, N, N, N, N, N, N, N, N, N],
+        [N, N, N, N, N, N, N, N, N, N, N, N, N, N, N, N, N, N, N, N],
+        [N, N, N, N, N, N, N, N, N, N, N, N, N, N, N, N, N, N, N, N],
+        [N, N, N, N, N, N, N, N, N, N, N, N, N, N, N, N, N, N, N, N],
+        [N, N, N, N, N, N, N, N, N, N, N, N, N, N, N, N, N, N, N, N],
+        [N, N, N, N, N, N, N, N, N, N, N, N, N, N, N, N, N, N, N, N],
+        [N, N, N, N, N, N, N, N, N, N, N, N, N, N, N, N, N, N, N, N],
+        [N, N, N, N, N, N, N, N, N, N, N, N, N, N, N, N, N, N, N, N],
+        [N, N, N, N, N, N, N, N, N, N, N, N, N, N, N, N, N, N, N, N],
+        [N, N, N, N, N, N, N, N, N, N, N, N, N, N, N, N, N, N, N, N],
+        [N, N, N, N, N, N, N, N, N, N, N, N, N, N, N, N, N, N, N, N],
+        [N, N, N, N, N, N, N, N, N, N, N, N, N, N, N, N, N, N, N, N],
+        [N, N, N, N, N, N, N, N, N, N, N, N, N, N, N, N, N, N, N, N],
+        [N, N, N, N, N, N, N, N, N, N, N, N, N, N, N, N, N, N, N, N],
+        [N, N, N, N, N, N, N, N, N, N, N, N, N, N, N, N, N, N, N, N],
+        [N, N, N, N, N, N, N, N, N, N, N, N, N, N, N, N, N, N, N, N],
+        [N, N, N, N, N, N, N, N, N, N, N, N, N, N, N, N, N, N, N, N]
     ];
 
     uint32 height = uint32(map.length);
@@ -73,12 +73,12 @@ contract PostDeploy is Script {
     bytes memory terrain = new bytes(width * height);
 
     for (uint32 y = 0; y < height; y++) {
-    for (uint32 x = 0; x < width; x++) {
-            uint terrainType = map[y][x];
-            if (terrainType == O) continue;
-    
-            terrain[(y * width) + x] = bytes1(uint8(terrainType));
-        }
+      for (uint32 x = 0; x < width; x++) {
+          uint terrainType = map[y][x];
+          if (terrainType == O) continue;
+  
+          terrain[(y * width) + x] = bytes1(uint8(terrainType));
+      }
     }
 
     GameMap.set(world, width, height, terrain);

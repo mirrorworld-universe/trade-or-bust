@@ -5,7 +5,7 @@ import { runQuery ,getComponentValue,getComponentValueStrict, Has, Not  } from "
 
 const {
   components,
-  systemCalls: { increment,joinGame,askStart,move,pickAsset,pickFund,trade,acceptTrade,rejectTrade,finishGame },
+  systemCalls: { increment,joinGame,askStart,move,pickAsset,pickFund,trade,acceptTrade,rejectTrade,finishGame,pickCoin,findPartner },
   network,
 } = await setup();
 
@@ -200,6 +200,18 @@ components.PlayerGameResult.update$.subscribe((update)=>{
 (window as any).finishGame = async () => {
   let data = await finishGame();
   console.log("send finishGame:"+data);
+};
+
+(window as any).pickCoin = async () => {
+  console.log("send pickCoin...");
+  let data = await pickCoin();
+  console.log("send pickCoin data:"+data);
+};
+
+(window as any).searchPartner = async () => {
+  console.log("send searchPartner...");
+  let data = await findPartner();
+  console.log("send findPartner data:"+data);
 };
 
 
