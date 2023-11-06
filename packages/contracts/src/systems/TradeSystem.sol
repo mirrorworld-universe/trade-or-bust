@@ -9,9 +9,10 @@ contract TradeSystem is System {
     function trade(bytes32 targetPlayer, uint8 assetKind, uint32 money) public{
         bytes32 player = addressToEntityKey(_msgSender());
         require(targetPlayer != player,"You can't trade yourself!");
+
         require(IsPlayer.get(player), "Not a player when pick asset.");
 
-        require(!IsTrading.get(player),"This player is trading");
+        require(!IsTrading.get(player),"You are trading now.");
 
         PlayerData memory pd = Player.get(player);
         require(pd.money >= money, "You don't have enough money to do this trade");
@@ -19,7 +20,7 @@ contract TradeSystem is System {
         PlayerData memory tarPd = Player.get(targetPlayer);
 
         AssetsListData memory ald = AssetsList.get(player);
-        AssetsListData memory tarAld = AssetsList.get(player);
+        AssetsListData memory tarAld = AssetsList.get(targetPlayer);
         if(assetKind == 1){//GPU
             require(ald.gpu > 0,"You don't have this asset 1");
             require(tarAld.gpu > 0,"Your trade partner don't have this asset 1");
