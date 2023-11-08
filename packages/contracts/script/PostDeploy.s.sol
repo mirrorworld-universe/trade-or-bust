@@ -88,17 +88,14 @@ function bytesToUint16(bytes32 b) public pure returns (uint16) {
     function getRandomNumbers() public view returns (uint16[] memory) {
         uint16[] memory selectedNumbers = new uint16[](9);
         uint8 count = 0;
-        bool isSingle = true;
+        uint8 duplicatTimes = 0;//解决生成的数字始终一样的问题
 
         //todo 这里的逻辑一打开就会报错
         while (count != 9) {
             uint16 randomNumber = generateRandomNumber(count);
-            if(isSingle){
-              isSingle = false;
-              randomNumber = randomNumber % 9 + 1;
-            }else{
-              isSingle = true;
-              randomNumber = (9 + (randomNumber % 18 + 1)/2);
+            randomNumber = randomNumber % 18 + 1 + duplicatTimes;
+            if(randomNumber > 18){
+              randomNumber = randomNumber - 18;
             }
             
             bool isDuplicate = false;
@@ -106,6 +103,7 @@ function bytesToUint16(bytes32 b) public pure returns (uint16) {
             for (uint8 j = 0; j < count; j++) {
                 if (selectedNumbers[j] == randomNumber) {
                     isDuplicate = true;
+                    duplicatTimes++;
                     break;
                 }
             }

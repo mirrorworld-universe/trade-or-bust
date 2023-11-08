@@ -42,22 +42,22 @@ function bytesToUint16(bytes32 b) public pure returns (uint16) {
     }
     
     
-     function getRandomNumbers() public view returns (uint16[] memory) {
+    function getRandomNumbers() public view returns (uint16[] memory) {
         uint16[] memory selectedNumbers = new uint16[](9);
         uint8 count = 0;
-        uint256 times = 0;
+        uint8 duplicatTimes = 0;
 
         //todo 这里的逻辑一打开就会报错
-        while (count < 9) {
-          times++;
-          require(times < 999,"Loop toooooo many times");
+        while (count != 9) {
             uint16 randomNumber = generateRandomNumber(count);
-            // randomNumber = randomNumber % 18 + 1;
+            randomNumber = randomNumber % 18 + 1 + duplicatTimes;
+            
             bool isDuplicate = false;
             
             for (uint8 j = 0; j < count; j++) {
                 if (selectedNumbers[j] == randomNumber) {
                     isDuplicate = true;
+                    duplicatTimes++;
                     break;
                 }
             }
@@ -70,7 +70,6 @@ function bytesToUint16(bytes32 b) public pure returns (uint16) {
         
         return selectedNumbers;
     }
-
   function testCounter() public {
     // Expect the counter to be 1 because it was incremented in the PostDeploy script.
     uint32 counter = Counter.get(world);
