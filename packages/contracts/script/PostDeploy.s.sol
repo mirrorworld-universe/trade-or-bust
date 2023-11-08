@@ -30,19 +30,9 @@ contract PostDeploy is Script {
   }
   
   function initFundPool(IWorld world) private{
-  // uint8[] memory selectedNumbers = new uint8[](9);
-  // selectedNumbers[0] = 1;
-  // selectedNumbers[1] = 2;
-  // selectedNumbers[2] = 3;
-  // selectedNumbers[3] = 4;
-  // selectedNumbers[4] = 5;
-  // selectedNumbers[5] = 6;
-  // selectedNumbers[6] = 7;
-  // selectedNumbers[7] = 8;
-  // selectedNumbers[8] = 9;
+    
     uint16[] memory newArray = getRandomNumbers();
     FundPool.set(world,10,newArray);
-    // GameMap.set(world, width, height, terrain);
   }
 
 

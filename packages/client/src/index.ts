@@ -185,9 +185,9 @@ components.PlayerGameResult.update$.subscribe((update)=>{
   console.log("send pickAsset:", assetKind);
   await pickAsset(assetKind);
 };
-(window as any).pickFund = async (assetKind) => {
-  console.log("send pickFund:", assetKind);
-  await pickFund();
+(window as any).pickFund = async (cardId) => {
+  console.log("send pickFund:", cardId);
+  await pickFund(cardId);
 };
 (window as any).trade = async (targetPlayer:string,assetKind:number,money:number) => {
   console.log("send trade:", targetPlayer, money, assetKind);

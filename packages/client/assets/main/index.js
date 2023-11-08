@@ -1536,7 +1536,7 @@ System.register("chunks:///_virtual/fond_card.ts", ['./rollupPluginModLoBabelHel
       Component = module.Component;
     }],
     execute: function () {
-      var _dec, _dec2, _dec3, _dec4, _dec5, _dec6, _class, _class2, _descriptor, _descriptor2, _descriptor3, _descriptor4, _descriptor5;
+      var _dec, _dec2, _dec3, _dec4, _dec5, _dec6, _dec7, _class, _class2, _descriptor, _descriptor2, _descriptor3, _descriptor4, _descriptor5, _descriptor6;
 
       cclegacy._RF.push({}, "a39ac4RE2RKH5ziPVHx+KK9", "fond_card", undefined);
 
@@ -1551,6 +1551,8 @@ System.register("chunks:///_virtual/fond_card.ts", ['./rollupPluginModLoBabelHel
       }), _dec5 = property({
         type: Label
       }), _dec6 = property({
+        type: Node
+      }), _dec7 = property({
         type: Node
       }), _dec(_class = (_class2 = /*#__PURE__*/function (_Component) {
         _inheritsLoose(fond_card, _Component);
@@ -1574,6 +1576,10 @@ System.register("chunks:///_virtual/fond_card.ts", ['./rollupPluginModLoBabelHel
 
           _initializerDefineProperty(_this, "chosenTag", _descriptor5, _assertThisInitialized(_this));
 
+          _initializerDefineProperty(_this, "mask", _descriptor6, _assertThisInitialized(_this));
+
+          _this.canPick = void 0;
+          _this.cardId = void 0;
           return _this;
         }
 
@@ -1583,7 +1589,15 @@ System.register("chunks:///_virtual/fond_card.ts", ['./rollupPluginModLoBabelHel
 
         _proto.update = function update(deltaTime) {};
 
-        _proto.init = function init() {};
+        _proto.init = function init(fund, time, rate, canPick) {
+          this.setChosen(false);
+          this.labelFund.string = fund.toString();
+          this.labelTime.string = time + " MIN";
+          this.labelRepay.string = "$" + fund * (rate / 100);
+          this.labelRate.string = (rate / 100.0).toFixed(2).toString();
+          this.canPick = canPick;
+          this.mask.active = !this.canPick;
+        };
 
         _proto.setChosen = function setChosen(isChosen) {
           this.chosenTag.active = isChosen;
@@ -1615,6 +1629,11 @@ System.register("chunks:///_virtual/fond_card.ts", ['./rollupPluginModLoBabelHel
         enumerable: true,
         writable: true,
         initializer: null
+      }), _descriptor6 = _applyDecoratedDescriptor(_class2.prototype, "mask", [_dec7], {
+        configurable: true,
+        enumerable: true,
+        writable: true,
+        initializer: null
       })), _class2)) || _class));
 
       cclegacy._RF.pop();
@@ -1623,25 +1642,34 @@ System.register("chunks:///_virtual/fond_card.ts", ['./rollupPluginModLoBabelHel
 });
 
 System.register("chunks:///_virtual/fundpool.ts", ['./rollupPluginModLoBabelHelpers.js', 'cc'], function (exports) {
-  var _inheritsLoose, _createForOfIteratorHelperLoose, cclegacy, _decorator, Component;
+  var _applyDecoratedDescriptor, _inheritsLoose, _initializerDefineProperty, _assertThisInitialized, _createForOfIteratorHelperLoose, cclegacy, _decorator, Node, log, Component;
 
   return {
     setters: [function (module) {
+      _applyDecoratedDescriptor = module.applyDecoratedDescriptor;
       _inheritsLoose = module.inheritsLoose;
+      _initializerDefineProperty = module.initializerDefineProperty;
+      _assertThisInitialized = module.assertThisInitialized;
       _createForOfIteratorHelperLoose = module.createForOfIteratorHelperLoose;
     }, function (module) {
       cclegacy = module.cclegacy;
       _decorator = module._decorator;
+      Node = module.Node;
+      log = module.log;
       Component = module.Component;
     }],
     execute: function () {
-      var _dec, _class;
+      var _dec, _dec2, _dec3, _class, _class2, _descriptor, _descriptor2;
 
       cclegacy._RF.push({}, "738562U3INPhZMfP7dhbLu6", "fundpool", undefined);
 
       var ccclass = _decorator.ccclass,
           property = _decorator.property;
-      var fundpool = exports('fundpool', (_dec = ccclass('fundpool'), _dec(_class = /*#__PURE__*/function (_Component) {
+      var fundpool = exports('fundpool', (_dec = ccclass('fundpool'), _dec2 = property({
+        type: Node
+      }), _dec3 = property({
+        type: Node
+      }), _dec(_class = (_class2 = /*#__PURE__*/function (_Component) {
         _inheritsLoose(fundpool, _Component);
 
         function fundpool() {
@@ -1652,7 +1680,13 @@ System.register("chunks:///_virtual/fundpool.ts", ['./rollupPluginModLoBabelHelp
           }
 
           _this = _Component.call.apply(_Component, [this].concat(args)) || this;
+
+          _initializerDefineProperty(_this, "cardsParent", _descriptor, _assertThisInitialized(_this));
+
+          _initializerDefineProperty(_this, "cardModel", _descriptor2, _assertThisInitialized(_this));
+
           _this._inited = void 0;
+          _this.cards = [[1, 10, 10, 30], [2, 20, 10, 30], [3, 30, 10, 30], [4, 40, 10, 30], [5, 50, 10, 30], [6, 60, 10, 30], [7, 110, 12, 40], [8, 120, 12, 40], [9, 130, 12, 40], [10, 140, 12, 40], [11, 150, 12, 40], [12, 160, 12, 40], [13, 210, 14, 50], [14, 220, 14, 50], [15, 230, 14, 50], [16, 240, 14, 50], [17, 250, 14, 50], [18, 260, 14, 50]];
           return _this;
         }
 
@@ -1670,6 +1704,8 @@ System.register("chunks:///_virtual/fundpool.ts", ['./rollupPluginModLoBabelHelp
         _proto.init = function init() {
           var _fundpool = window.getFundPool == null ? void 0 : window.getFundPool();
 
+          var arrayBytes;
+
           for (var key in _fundpool) {
             var map = _fundpool[key];
 
@@ -1677,14 +1713,46 @@ System.register("chunks:///_virtual/fundpool.ts", ['./rollupPluginModLoBabelHelp
               var _step$value = _step.value,
                   entity = _step$value[0],
                   value = _step$value[1];
-              console.log(key, entity, value); // let hash:string = string_utils.getHashFromSymbol(entity);
-              // string_utils.addStringToArray(this.lobbyPlayers,hash);
+              console.log(key, entity, value);
+
+              if (key == 'array') {
+                arrayBytes = value;
+                break;
+              }
             }
+          }
+
+          log("get arrayBytes:", arrayBytes);
+          this.updateAllCards(arrayBytes);
+        };
+
+        _proto.updateAllCards = function updateAllCards(cardIds) {
+          this.cardsParent.removeAllChildren();
+          cardIds.sort(function (a, b) {
+            return a - b;
+          });
+
+          for (var i = 0; i < cardIds.length; i++) {
+            var cardId = cardIds[i];
+            var cardInfo = this.cards[cardId - 1];
+            this.createFundCard(cardInfo);
           }
         };
 
+        _proto.createFundCard = function createFundCard(cardInfo) {};
+
         return fundpool;
-      }(Component)) || _class));
+      }(Component), (_descriptor = _applyDecoratedDescriptor(_class2.prototype, "cardsParent", [_dec2], {
+        configurable: true,
+        enumerable: true,
+        writable: true,
+        initializer: null
+      }), _descriptor2 = _applyDecoratedDescriptor(_class2.prototype, "cardModel", [_dec3], {
+        configurable: true,
+        enumerable: true,
+        writable: true,
+        initializer: null
+      })), _class2)) || _class));
 
       cclegacy._RF.pop();
     }
@@ -3404,8 +3472,7 @@ System.register("chunks:///_virtual/map-controller.ts", ['./rollupPluginModLoBab
         };
 
         _proto.isSurround = function isSurround(surround, targetRow, targetCol) {
-          if (!surround) return false;
-          log("cell start");
+          if (!surround) return false; // log("cell start");
 
           for (var i = 0; i < surround.length; i++) {
             var rc = surround[i];
@@ -4063,10 +4130,31 @@ System.register("chunks:///_virtual/pick_asset.ts", ['./rollupPluginModLoBabelHe
           });
           var assetNumber = index + 1;
           this.pickAsset = assetNumber;
-        };
+        } // public async onPickClicked(){
+        //     warn("User wants to pick ",this.pickAsset);
+        //     if(this.pickAsset == 0){
+        //         ponzi_controller.instance.sendCCCMsg(ccc_msg.single_button_dialog,{content:"Please choose an asset first!",btnText:"OK"});
+        //         return;
+        //     }
+        //     //todo: 检测想要的资产是否超过3个
+        //     ponzi_controller.instance.sendCCCMsg(ccc_msg.network_block_ui,true);
+        //     try{
+        //         await window.pickAsset?.(this.pickAsset);
+        //     }catch{
+        //         ponzi_controller.instance.sendCCCMsg(ccc_msg.single_button_dialog,{content:"pick failed",btnText:"OK"});
+        //     }finally{
+        //         ponzi_controller.instance.sendCCCMsg(ccc_msg.network_block_ui,false);
+        //         this.node.active = false;
+        //         let assetId = this.pickAsset;
+        //         let assetExpectedCount = 1;
+        //         ponzi_controller.instance.sendCCCMsg(ccc_msg.show_pick_fund,{assetId,assetExpectedCount});
+        //     }
+        // }
+        ;
 
         _proto.onPickClicked = /*#__PURE__*/function () {
           var _onPickClicked = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee() {
+            var assetCount, assetId, assetExpectedCount;
             return _regeneratorRuntime().wrap(function _callee$(_context) {
               while (1) switch (_context.prev = _context.next) {
                 case 0:
@@ -4084,35 +4172,38 @@ System.register("chunks:///_virtual/pick_asset.ts", ['./rollupPluginModLoBabelHe
                   return _context.abrupt("return");
 
                 case 4:
-                  ponzi_controller.instance.sendCCCMsg(ccc_msg.network_block_ui, true);
-                  _context.prev = 5;
-                  _context.next = 8;
-                  return window.pickAsset == null ? void 0 : window.pickAsset(this.pickAsset);
+                  _context.next = 6;
+                  return this.checkAssetCount(this.pickAsset);
 
-                case 8:
-                  _context.next = 13;
-                  break;
+                case 6:
+                  assetCount = _context.sent;
 
-                case 10:
-                  _context.prev = 10;
-                  _context.t0 = _context["catch"](5);
+                  if (!(assetCount >= 3)) {
+                    _context.next = 10;
+                    break;
+                  }
+
                   ponzi_controller.instance.sendCCCMsg(ccc_msg.single_button_dialog, {
-                    content: "pick failed",
+                    content: "Each kind of asset can have only 3.",
                     btnText: "OK"
                   });
+                  return _context.abrupt("return");
 
-                case 13:
-                  _context.prev = 13;
-                  ponzi_controller.instance.sendCCCMsg(ccc_msg.network_block_ui, false);
+                case 10:
+                  //显示下个窗口
                   this.node.active = false;
-                  ponzi_controller.instance.sendCCCMsg(ccc_msg.show_pick_fund, true);
-                  return _context.finish(13);
+                  assetId = this.pickAsset;
+                  assetExpectedCount = assetCount + 1;
+                  ponzi_controller.instance.sendCCCMsg(ccc_msg.show_pick_fund, {
+                    assetId: assetId,
+                    assetExpectedCount: assetExpectedCount
+                  });
 
-                case 18:
+                case 14:
                 case "end":
                   return _context.stop();
               }
-            }, _callee, this, [[5, 10, 13, 18]]);
+            }, _callee, this);
           }));
 
           function onPickClicked() {
@@ -4120,6 +4211,94 @@ System.register("chunks:///_virtual/pick_asset.ts", ['./rollupPluginModLoBabelHe
           }
 
           return onPickClicked;
+        }();
+
+        _proto.checkAssetCount = /*#__PURE__*/function () {
+          var _checkAssetCount = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee2(assetId) {
+            var me, assetList;
+            return _regeneratorRuntime().wrap(function _callee2$(_context2) {
+              while (1) switch (_context2.prev = _context2.next) {
+                case 0:
+                  _context2.prev = 0;
+                  me = globalThis.ponzi.currentPlayer;
+                  _context2.next = 4;
+                  return window.queryValue == null ? void 0 : window.queryValue(globalThis.env.components.AssetsList, me);
+
+                case 4:
+                  assetList = _context2.sent;
+
+                  if (!(assetId == 1)) {
+                    _context2.next = 9;
+                    break;
+                  }
+
+                  return _context2.abrupt("return", assetList.gpu);
+
+                case 9:
+                  if (!(assetId == 2)) {
+                    _context2.next = 13;
+                    break;
+                  }
+
+                  return _context2.abrupt("return", assetList.bitcoin);
+
+                case 13:
+                  if (!(assetId == 3)) {
+                    _context2.next = 17;
+                    break;
+                  }
+
+                  return _context2.abrupt("return", assetList.battery);
+
+                case 17:
+                  if (!(assetId == 4)) {
+                    _context2.next = 21;
+                    break;
+                  }
+
+                  return _context2.abrupt("return", assetList.leiter);
+
+                case 21:
+                  if (!(assetId == 5)) {
+                    _context2.next = 25;
+                    break;
+                  }
+
+                  return _context2.abrupt("return", assetList.gold);
+
+                case 25:
+                  if (!(assetId == 6)) {
+                    _context2.next = 29;
+                    break;
+                  }
+
+                  return _context2.abrupt("return", assetList.oil);
+
+                case 29:
+                  console.error("Unexpected asset index:", assetId);
+
+                case 30:
+                  _context2.next = 36;
+                  break;
+
+                case 32:
+                  _context2.prev = 32;
+                  _context2.t0 = _context2["catch"](0);
+                  console.error("Can not find assetslist on entity");
+                  return _context2.abrupt("return", 3);
+
+                case 36:
+                case "end":
+                  return _context2.stop();
+              }
+            }, _callee2, null, [[0, 32]]);
+          }));
+
+          function checkAssetCount(_x) {
+            return _checkAssetCount.apply(this, arguments);
+          }
+
+          return checkAssetCount;
         }();
 
         return pick_asset;
@@ -4136,7 +4315,7 @@ System.register("chunks:///_virtual/pick_asset.ts", ['./rollupPluginModLoBabelHe
 });
 
 System.register("chunks:///_virtual/pick-money-card.ts", ['./rollupPluginModLoBabelHelpers.js', 'cc', './fond_card.ts', './ponzi-controller.ts', './ccc_msg.ts'], function (exports) {
-  var _applyDecoratedDescriptor, _inheritsLoose, _initializerDefineProperty, _assertThisInitialized, _asyncToGenerator, _regeneratorRuntime, cclegacy, _decorator, Node, log, Component, fond_card, ponzi_controller, ccc_msg;
+  var _applyDecoratedDescriptor, _inheritsLoose, _initializerDefineProperty, _assertThisInitialized, _createForOfIteratorHelperLoose, _asyncToGenerator, _regeneratorRuntime, cclegacy, _decorator, Node, log, instantiate, Component, fond_card, ponzi_controller, ccc_msg;
 
   return {
     setters: [function (module) {
@@ -4144,6 +4323,7 @@ System.register("chunks:///_virtual/pick-money-card.ts", ['./rollupPluginModLoBa
       _inheritsLoose = module.inheritsLoose;
       _initializerDefineProperty = module.initializerDefineProperty;
       _assertThisInitialized = module.assertThisInitialized;
+      _createForOfIteratorHelperLoose = module.createForOfIteratorHelperLoose;
       _asyncToGenerator = module.asyncToGenerator;
       _regeneratorRuntime = module.regeneratorRuntime;
     }, function (module) {
@@ -4151,6 +4331,7 @@ System.register("chunks:///_virtual/pick-money-card.ts", ['./rollupPluginModLoBa
       _decorator = module._decorator;
       Node = module.Node;
       log = module.log;
+      instantiate = module.instantiate;
       Component = module.Component;
     }, function (module) {
       fond_card = module.fond_card;
@@ -4160,13 +4341,15 @@ System.register("chunks:///_virtual/pick-money-card.ts", ['./rollupPluginModLoBa
       ccc_msg = module.ccc_msg;
     }],
     execute: function () {
-      var _dec, _dec2, _class, _class2, _descriptor;
+      var _dec, _dec2, _dec3, _class, _class2, _descriptor, _descriptor2;
 
       cclegacy._RF.push({}, "4574bQ+J7JAPZCXsSAL518i", "pick-money-card", undefined);
 
       var ccclass = _decorator.ccclass,
           property = _decorator.property;
       var pick_money_card = exports('pick_money_card', (_dec = ccclass('pick_money_card'), _dec2 = property({
+        type: Node
+      }), _dec3 = property({
         type: Node
       }), _dec(_class = (_class2 = /*#__PURE__*/function (_Component) {
         _inheritsLoose(pick_money_card, _Component);
@@ -4182,24 +4365,93 @@ System.register("chunks:///_virtual/pick-money-card.ts", ['./rollupPluginModLoBa
 
           _initializerDefineProperty(_this, "cardParent", _descriptor, _assertThisInitialized(_this));
 
+          _initializerDefineProperty(_this, "cardModel", _descriptor2, _assertThisInitialized(_this));
+
+          _this.assetLevel = void 0; //1,2,3
+
+          _this.assetId = 0; //1,2,3,4,5,6
+
+          _this.cardId = 0;
+          _this.cards = [[1, 10, 10, 30], [2, 20, 10, 30], [3, 30, 10, 30], [4, 40, 10, 30], [5, 50, 10, 30], [6, 60, 10, 30], [7, 110, 12, 40], [8, 120, 12, 40], [9, 130, 12, 40], [10, 140, 12, 40], [11, 150, 12, 40], [12, 160, 12, 40], [13, 210, 14, 50], [14, 220, 14, 50], [15, 230, 14, 50], [16, 240, 14, 50], [17, 250, 14, 50], [18, 260, 14, 50]];
           return _this;
         }
 
         var _proto = pick_money_card.prototype;
 
-        _proto.start = function start() {
-          var children = this.cardParent.children;
-          children.forEach(function (ele) {
-            var script = ele.getComponent(fond_card);
-            script.setChosen(false);
-          });
+        _proto.start = function start() {// let children:Node[] = this.cardParent.children;
+          // children.forEach((ele:Node)=>{
+          //     let script:fond_card = ele.getComponent(fond_card);
+          //     script.setChosen(false);
+          // });
         };
 
-        _proto.update = function update(deltaTime) {};
+        _proto.update = function update(deltaTime) {// if(!this._inited && window.getFundPool?.()){
+          //     this._inited = true;
+          //     this.init();
+          // }
+        } // private _inited:boolean;
+        ;
+
+        _proto.init = function init() {
+          var fundpool = window.getFundPool == null ? void 0 : window.getFundPool();
+          var arrayBytes;
+
+          for (var key in fundpool) {
+            var map = fundpool[key];
+
+            for (var _iterator = _createForOfIteratorHelperLoose(map), _step; !(_step = _iterator()).done;) {
+              var _step$value = _step.value,
+                  entity = _step$value[0],
+                  value = _step$value[1];
+              console.log(key, entity, value);
+
+              if (key == 'array') {
+                arrayBytes = value;
+                break;
+              }
+            }
+          }
+
+          log("get arrayBytes:", arrayBytes);
+          this.updateAllCards(arrayBytes);
+        };
+
+        _proto.updateAllCards = function updateAllCards(cardIds) {
+          this.cardParent.removeAllChildren();
+          cardIds.sort(function (a, b) {
+            return a - b;
+          });
+
+          for (var i = 0; i < cardIds.length; i++) {
+            var cardId = cardIds[i];
+            var cardInfo = this.cards[cardId - 1];
+            this.createFundCard(cardInfo, Math.floor(i / 3) == this.assetLevel);
+          }
+        };
+
+        _proto.createFundCard = function createFundCard(cardInfo, canPick) {
+          var newNode = instantiate(this.cardModel);
+          newNode.active = true;
+          newNode.parent = this.cardParent;
+          var card = newNode.getComponent(fond_card);
+          card.init(cardInfo[1], cardInfo[2], cardInfo[3], canPick);
+          card.cardId = cardInfo[0];
+        };
 
         _proto.onItemClicked = function onItemClicked(event) {
           var itemNode = event.target.parent;
-          log("click item:", itemNode.name);
+          var script = itemNode.getComponent(fond_card);
+
+          if (!script.canPick) {
+            ponzi_controller.instance.sendCCCMsg(ccc_msg.single_button_dialog, {
+              content: "Can not choose this card.",
+              btnText: "OK"
+            });
+            return;
+          }
+
+          this.cardId = script.cardId;
+          log("click card id:", this.cardId);
           var children = this.cardParent.children;
           children.forEach(function (ele) {
             var script = ele.getComponent(fond_card);
@@ -4212,19 +4464,50 @@ System.register("chunks:///_virtual/pick-money-card.ts", ['./rollupPluginModLoBa
             return _regeneratorRuntime().wrap(function _callee$(_context) {
               while (1) switch (_context.prev = _context.next) {
                 case 0:
-                  ponzi_controller.instance.sendCCCMsg(ccc_msg.network_block_ui, true);
-                  _context.next = 3;
-                  return window.pickFund == null ? void 0 : window.pickFund();
+                  if (!(this.assetId == 0)) {
+                    _context.next = 3;
+                    break;
+                  }
+
+                  ponzi_controller.instance.sendCCCMsg(ccc_msg.single_button_dialog, {
+                    content: "Please choose an asset first!",
+                    btnText: "OK"
+                  });
+                  return _context.abrupt("return");
 
                 case 3:
+                  ponzi_controller.instance.sendCCCMsg(ccc_msg.network_block_ui, true);
+                  _context.prev = 4;
+                  _context.next = 7;
+                  return window.pickAsset == null ? void 0 : window.pickAsset(this.assetId);
+
+                case 7:
+                  _context.next = 9;
+                  return window.pickFund == null ? void 0 : window.pickFund(this.cardId);
+
+                case 9:
+                  _context.next = 14;
+                  break;
+
+                case 11:
+                  _context.prev = 11;
+                  _context.t0 = _context["catch"](4);
+                  ponzi_controller.instance.sendCCCMsg(ccc_msg.single_button_dialog, {
+                    content: "pick failed",
+                    btnText: "OK"
+                  });
+
+                case 14:
+                  _context.prev = 14;
                   ponzi_controller.instance.sendCCCMsg(ccc_msg.network_block_ui, false);
                   this.node.active = false;
+                  return _context.finish(14);
 
-                case 5:
+                case 18:
                 case "end":
                   return _context.stop();
               }
-            }, _callee, this);
+            }, _callee, this, [[4, 11, 14, 18]]);
           }));
 
           function onButtonClicked() {
@@ -4235,12 +4518,17 @@ System.register("chunks:///_virtual/pick-money-card.ts", ['./rollupPluginModLoBa
         }();
 
         return pick_money_card;
-      }(Component), _descriptor = _applyDecoratedDescriptor(_class2.prototype, "cardParent", [_dec2], {
+      }(Component), (_descriptor = _applyDecoratedDescriptor(_class2.prototype, "cardParent", [_dec2], {
         configurable: true,
         enumerable: true,
         writable: true,
         initializer: null
-      }), _class2)) || _class));
+      }), _descriptor2 = _applyDecoratedDescriptor(_class2.prototype, "cardModel", [_dec3], {
+        configurable: true,
+        enumerable: true,
+        writable: true,
+        initializer: null
+      })), _class2)) || _class));
 
       cclegacy._RF.pop();
     }
@@ -5125,7 +5413,12 @@ System.register("chunks:///_virtual/popupui_manager.ts", ['./rollupPluginModLoBa
             self.popupWindow(self.pickAsset.node);
             self.pickAsset.reset();
           });
-          ponzi_controller.instance.on(ccc_msg.show_pick_fund, function () {
+          ponzi_controller.instance.on(ccc_msg.show_pick_fund, function (data) {
+            var assetId = data.assetId,
+                assetExpectedCount = data.assetExpectedCount;
+            self.pickFund.assetLevel = assetExpectedCount;
+            self.pickFund.assetId = assetId;
+            self.pickFund.init();
             self.popupWindow(self.pickFund.node);
           });
           ponzi_controller.instance.on(ccc_msg.show_rules, function () {

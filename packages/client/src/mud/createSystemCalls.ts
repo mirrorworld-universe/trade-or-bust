@@ -39,8 +39,8 @@ export function createSystemCalls(
     return getComponentValue(AssetsList, singletonEntity);
   };
 
-  const pickFund = async () => {
-    const tx = await worldContract.write.pickFund();
+  const pickFund = async (cardId:number) => {
+    const tx = await worldContract.write.pickFund([cardId]);
     await waitForTransaction(tx);
   };
 
