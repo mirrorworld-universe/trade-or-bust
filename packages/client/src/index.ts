@@ -59,6 +59,12 @@ components.GameMap.update$.subscribe((update)=>{
   globalThis.ponzi.gamemap_update?.(prevValue, nextValue);
 });
 
+components.FundPool.update$.subscribe((update)=>{
+  const [nextValue, prevValue] = update.value;
+  console.log("FundPool updated", update);
+  globalThis.ponzi.fundpool_update?.(update);
+});
+
 components.MapItem.update$.subscribe((update)=>{
   const [nextValue, prevValue] = update.value;
   // console.log("MapItems updated", { nextValue, prevValue });
@@ -95,11 +101,6 @@ components.RaiseColddown.update$.subscribe((update)=>{
 });
 
 //Trade
-// components.UnsolicitedTransaction.update$.subscribe((update)=>{
-//   const [nextValue, prevValue] = update.value;
-//   console.log("UnsolicitedTransaction updated", update);
-//   // globalThis.ponzi.tradelist_update?.(update);
-// });
 components.PassiveTransaction.update$.subscribe((update)=>{
   const [nextValue, prevValue] = update.value;
   console.log("PassiveTransaction updated", update);
@@ -135,6 +136,10 @@ components.PlayerGameResult.update$.subscribe((update)=>{
 
 (window as any).getTransactionList = ()=>{
   return components.TransactionList.values;
+}
+
+(window as any).getFundPool = ()=>{
+  return components.FundPool.values;
 }
 
 //Query

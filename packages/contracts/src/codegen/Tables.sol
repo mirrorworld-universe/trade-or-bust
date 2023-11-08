@@ -7,6 +7,7 @@ import { Counter, CounterTableId } from "./tables/Counter.sol";
 import { Game, GameData, GameTableId } from "./tables/Game.sol";
 import { GameState, GameStateTableId } from "./tables/GameState.sol";
 import { GameMap, GameMapData, GameMapTableId } from "./tables/GameMap.sol";
+import { FundPool, FundPoolData, FundPoolTableId } from "./tables/FundPool.sol";
 import { MapItem, MapItemData, MapItemTableId } from "./tables/MapItem.sol";
 import { MapItemValue, MapItemValueTableId } from "./tables/MapItemValue.sol";
 import { IsPlayer, IsPlayerTableId } from "./tables/IsPlayer.sol";

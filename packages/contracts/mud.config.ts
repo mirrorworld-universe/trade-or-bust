@@ -57,6 +57,13 @@ export default mudConfig({
         mapArray:"bytes"
       }
     },
+    FundPool:{
+      keySchema:{},
+      schema:{
+        placeHolder:"uint256",
+        array:"uint16[]"
+      }
+    },
     MapItem:{
       schema:{
         x:'uint256',

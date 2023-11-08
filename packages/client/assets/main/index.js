@@ -1622,6 +1622,75 @@ System.register("chunks:///_virtual/fond_card.ts", ['./rollupPluginModLoBabelHel
   };
 });
 
+System.register("chunks:///_virtual/fundpool.ts", ['./rollupPluginModLoBabelHelpers.js', 'cc'], function (exports) {
+  var _inheritsLoose, _createForOfIteratorHelperLoose, cclegacy, _decorator, Component;
+
+  return {
+    setters: [function (module) {
+      _inheritsLoose = module.inheritsLoose;
+      _createForOfIteratorHelperLoose = module.createForOfIteratorHelperLoose;
+    }, function (module) {
+      cclegacy = module.cclegacy;
+      _decorator = module._decorator;
+      Component = module.Component;
+    }],
+    execute: function () {
+      var _dec, _class;
+
+      cclegacy._RF.push({}, "738562U3INPhZMfP7dhbLu6", "fundpool", undefined);
+
+      var ccclass = _decorator.ccclass,
+          property = _decorator.property;
+      var fundpool = exports('fundpool', (_dec = ccclass('fundpool'), _dec(_class = /*#__PURE__*/function (_Component) {
+        _inheritsLoose(fundpool, _Component);
+
+        function fundpool() {
+          var _this;
+
+          for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
+            args[_key] = arguments[_key];
+          }
+
+          _this = _Component.call.apply(_Component, [this].concat(args)) || this;
+          _this._inited = void 0;
+          return _this;
+        }
+
+        var _proto = fundpool.prototype;
+
+        _proto.start = function start() {};
+
+        _proto.update = function update(deltaTime) {
+          if (!this._inited && window.getFundPool != null && window.getFundPool()) {
+            this._inited = true;
+            this.init();
+          }
+        };
+
+        _proto.init = function init() {
+          var _fundpool = window.getFundPool == null ? void 0 : window.getFundPool();
+
+          for (var key in _fundpool) {
+            var map = _fundpool[key];
+
+            for (var _iterator = _createForOfIteratorHelperLoose(map), _step; !(_step = _iterator()).done;) {
+              var _step$value = _step.value,
+                  entity = _step$value[0],
+                  value = _step$value[1];
+              console.log(key, entity, value); // let hash:string = string_utils.getHashFromSymbol(entity);
+              // string_utils.addStringToArray(this.lobbyPlayers,hash);
+            }
+          }
+        };
+
+        return fundpool;
+      }(Component)) || _class));
+
+      cclegacy._RF.pop();
+    }
+  };
+});
+
 System.register("chunks:///_virtual/game_countdown.ts", ['./rollupPluginModLoBabelHelpers.js', 'cc', './time_utils.ts', './ponzi_config.ts', './component_state.ts', './ponzi-controller.ts', './ccc_msg.ts'], function (exports) {
   var _applyDecoratedDescriptor, _inheritsLoose, _initializerDefineProperty, _assertThisInitialized, cclegacy, _decorator, Label, sys, Component, time_utils, ponzi_config, component_state, ponzi_controller, ccc_msg;
 
@@ -2925,9 +2994,9 @@ System.register("chunks:///_virtual/lobby-playerlist.ts", ['./rollupPluginModLoB
   };
 });
 
-System.register("chunks:///_virtual/main", ['./debug-view-runtime-control.ts', './Singleton.ts', './lobby-controller.ts', './counter-label.ts', './ccc_msg.ts', './component_state.ts', './ponzi_config.ts', './GameData.ts', './JsCaller.ts', './MUDListener.ts', './PlayerData.ts', './data_center.ts', './ponzi-controller.ts', './ponzi-model.ts', './FakeMessageCenter.ts', './test.ts', './TradeListItem.ts', './bytes_utils.ts', './coor_utils.ts', './list_utils.ts', './object_utils.ts', './rule_utils.ts', './string_utils.ts', './time_utils.ts', './HexMapTile.ts', './RoleLocalObj.ts', './RowCol.ts', './UnsolicitedTransactionObj.ts', './temp_data.ts', './fake.ts', './game_ui_controller.ts', './lobby-playerlist-model.ts', './lobby-playerlist.ts', './map-controller.ts', './mapblock.ts', './pick-money-card.ts', './player-model.ts', './account.ts', './assets.ts', './pick_asset.ts', './rank.ts', './single-button-pop.ts', './trade-ask.ts', './trade_input_price.ts', './popupui_manager.ts', './trade.ts', './button_raisingcapital.ts', './changing_ellipses.ts', './fond_card.ts', './game_countdown.ts', './item_asset.ts', './mapitem.ts', './pick_asset_item.ts', './popeffect.ts', './popup_node.ts', './right-player-list-item.ts', './right-player-list.ts', './rules.ts', './title-money.ts', './toggle.ts', './trade-asset-item.ts', './trade_parter_item.ts'], function () {
+System.register("chunks:///_virtual/main", ['./debug-view-runtime-control.ts', './Singleton.ts', './lobby-controller.ts', './counter-label.ts', './ccc_msg.ts', './component_state.ts', './ponzi_config.ts', './GameData.ts', './JsCaller.ts', './MUDListener.ts', './PlayerData.ts', './data_center.ts', './ponzi-controller.ts', './ponzi-model.ts', './FakeMessageCenter.ts', './test.ts', './TradeListItem.ts', './bytes_utils.ts', './coor_utils.ts', './list_utils.ts', './object_utils.ts', './rule_utils.ts', './string_utils.ts', './time_utils.ts', './HexMapTile.ts', './RoleLocalObj.ts', './RowCol.ts', './UnsolicitedTransactionObj.ts', './temp_data.ts', './fake.ts', './fundpool.ts', './game_ui_controller.ts', './lobby-playerlist-model.ts', './lobby-playerlist.ts', './map-controller.ts', './mapblock.ts', './pick-money-card.ts', './player-model.ts', './account.ts', './assets.ts', './pick_asset.ts', './rank.ts', './single-button-pop.ts', './trade-ask.ts', './trade_input_price.ts', './popupui_manager.ts', './trade.ts', './button_raisingcapital.ts', './changing_ellipses.ts', './fond_card.ts', './game_countdown.ts', './item_asset.ts', './mapitem.ts', './pick_asset_item.ts', './popeffect.ts', './popup_node.ts', './right-player-list-item.ts', './right-player-list.ts', './rules.ts', './title-money.ts', './toggle.ts', './trade-asset-item.ts', './trade_parter_item.ts'], function () {
   return {
-    setters: [null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null],
+    setters: [null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null],
     execute: function () {}
   };
 });
@@ -4435,18 +4504,29 @@ System.register("chunks:///_virtual/ponzi-controller.ts", ['./rollupPluginModLoB
           globalThis.ponzi.playergameresult_update = function (update) {
             self.onPlayerGameResultUpdate(update);
           };
+
+          globalThis.ponzi.fundpool_update = function (update) {
+            self.onFundPoolUpdate(update);
+          };
         };
 
         _proto.sendCCCMsg = function sendCCCMsg(msgName, msgData) {
           this.node.emit(msgName, msgData);
         };
 
-        _proto.onPlayerGameResultUpdate = function onPlayerGameResultUpdate(update) {
-          log("onPlayerGameResultUpdate", update);
-          if (update.entity != globalThis.ponzi.currentPlayer) return;
+        _proto.onFundPoolUpdate = function onFundPoolUpdate(update) {
+          console.log("onFundPoolUpdate runs!");
           var _update$value2 = update.value,
               nextValue = _update$value2[0],
               prevValue = _update$value2[1];
+        };
+
+        _proto.onPlayerGameResultUpdate = function onPlayerGameResultUpdate(update) {
+          log("onPlayerGameResultUpdate", update);
+          if (update.entity != globalThis.ponzi.currentPlayer) return;
+          var _update$value3 = update.value,
+              nextValue = _update$value3[0],
+              prevValue = _update$value3[1];
 
           if (!nextValue) {
             var _show = false;
@@ -4475,9 +4555,9 @@ System.register("chunks:///_virtual/ponzi-controller.ts", ['./rollupPluginModLoB
 
         _proto.onPassiveTransactionUpdate = function onPassiveTransactionUpdate(update) {
           if (update.entity != globalThis.ponzi.currentPlayer) return;
-          var _update$value3 = update.value,
-              nextValue = _update$value3[0],
-              prevValue = _update$value3[1];
+          var _update$value4 = update.value,
+              nextValue = _update$value4[0],
+              prevValue = _update$value4[1];
           if (!nextValue) return;
           var obj = nextValue;
           var presenterName = obj.from;
@@ -4493,9 +4573,9 @@ System.register("chunks:///_virtual/ponzi-controller.ts", ['./rollupPluginModLoB
         _proto.onTradeListUpdate = function onTradeListUpdate(update) {
           var me = globalThis.ponzi.currentPlayer;
           if (update.entity != me) return;
-          var _update$value4 = update.value,
-              nextValue = _update$value4[0],
-              prevValue = _update$value4[1];
+          var _update$value5 = update.value,
+              nextValue = _update$value5[0],
+              prevValue = _update$value5[1];
 
           if (!nextValue) {
             log("TradeList components reset");
@@ -4577,9 +4657,9 @@ System.register("chunks:///_virtual/ponzi-controller.ts", ['./rollupPluginModLoB
 
         _proto.transactionListUpdate = function transactionListUpdate(update) {
           var entity = update.entity;
-          var _update$value5 = update.value,
-              nextValue = _update$value5[0],
-              prevValue = _update$value5[1];
+          var _update$value6 = update.value,
+              nextValue = _update$value6[0],
+              prevValue = _update$value6[1];
 
           if (!nextValue) {
             log("TransactionList component clear");
@@ -6793,30 +6873,29 @@ System.register("chunks:///_virtual/trade-ask.ts", ['./rollupPluginModLoBabelHel
                   return window.rejectTrade == null ? void 0 : window.rejectTrade();
 
                 case 4:
-                  _context2.next = 9;
+                  //只有在反买成功时才关闭窗口
+                  this.node.active = false;
+                  _context2.next = 10;
                   break;
 
-                case 6:
-                  _context2.prev = 6;
+                case 7:
+                  _context2.prev = 7;
                   _context2.t0 = _context2["catch"](1);
                   ponzi_controller.instance.sendCCCMsg(ccc_msg.single_button_dialog, {
                     content: "Accept failed",
                     btnText: "OK"
                   });
 
-                case 9:
-                  _context2.prev = 9;
+                case 10:
+                  _context2.prev = 10;
                   ponzi_controller.instance.sendCCCMsg(ccc_msg.network_block_ui, false);
-                  return _context2.finish(9);
-
-                case 12:
-                  this.node.active = false;
+                  return _context2.finish(10);
 
                 case 13:
                 case "end":
                   return _context2.stop();
               }
-            }, _callee2, this, [[1, 6, 9, 12]]);
+            }, _callee2, this, [[1, 7, 10, 13]]);
           }));
 
           function onBtnRejectClicked() {
