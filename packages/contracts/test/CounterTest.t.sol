@@ -22,32 +22,37 @@ contract CounterTest is MudTest {
     assembly {
       codeSize := extcodesize(addr)
     }
-    generateRandomNumber(0);
+    getRandomNumbers();
     // assertTrue(codeSize > 0);
     // assertTrue(isMoveValid(0,5,1,4));
     // assertTrue(calculateDistance(5,3,7,4,2));
   }
-  function bytesToUint(bytes32 b) public pure returns (uint256) {
-      uint256 number;
-      for (uint256 i = 0; i < b.length; i++) {
-          number = number + uint8(b[i]) * (2**(8 * (b.length - (i + 1))));
-      }
-      return number;
-  }
-function generateRandomNumber(uint seed) public view returns (uint) {
-    bytes32 hash = keccak256(abi.encodePacked(block.timestamp, block.difficulty, seed));
-    return bytesToUint(hash);
-}
-    function getRandomNumbers() public view returns (uint8[] memory) {
-        uint8[] memory selectedNumbers = new uint8[](9);
-        uint8 count = 0;
 
-        uint256 loopCount = 0;
-        while (count != 9) {
-          loopCount++;
-          require(loopCount < 999,"Loop tooooooo many times.");
-            bytes32 randomHash = keccak256(abi.encodePacked(block.timestamp, block.difficulty, count));
-            uint8 randomNumber = uint8(randomHash[0]) % 18 + 1;
+function bytesToUint16(bytes32 b) public pure returns (uint16) {
+    uint16 number;
+    for (uint256 i = 0; i < b.length; i++) {
+        number = number + uint16(uint8(b[i])) * uint16(2**(8 * (b.length - (i + 1))));
+    }
+    return number;
+}
+    
+    function generateRandomNumber(uint8 seed) public view returns (uint16) {
+        bytes32 hash = keccak256(abi.encodePacked(block.timestamp, block.difficulty, seed));
+        return bytesToUint16(hash);
+    }
+    
+    
+     function getRandomNumbers() public view returns (uint16[] memory) {
+        uint16[] memory selectedNumbers = new uint16[](9);
+        uint8 count = 0;
+        uint256 times = 0;
+
+        //todo 这里的逻辑一打开就会报错
+        while (count < 9) {
+          times++;
+          require(times < 999,"Loop toooooo many times");
+            uint16 randomNumber = generateRandomNumber(count);
+            // randomNumber = randomNumber % 18 + 1;
             bool isDuplicate = false;
             
             for (uint8 j = 0; j < count; j++) {

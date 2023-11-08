@@ -46,29 +46,29 @@ contract PostDeploy is Script {
   }
 
 
-  function bytesToUintArray(bytes memory data, uint32 length) private pure returns (uint8[] memory) {
-        require(data.length == length, "Invalid data length");
+  // function bytesToUintArray(bytes memory data, uint32 length) private pure returns (uint8[] memory) {
+  //       require(data.length == length, "Invalid data length");
 
-        uint8[] memory result = new uint8[](length);
+  //       uint8[] memory result = new uint8[](length);
         
-        for (uint32 x = 0; x < length; x++) {
-            uint8 terrainType = uint8(data[x]);
-            result[x] = terrainType;
-        }
+  //       for (uint32 x = 0; x < length; x++) {
+  //           uint8 terrainType = uint8(data[x]);
+  //           result[x] = terrainType;
+  //       }
         
-        return result;
-    }
+  //       return result;
+  //   }
 
-    function uint256ArrayToBytes(uint256[] memory array) public pure returns (bytes memory) {
-        bytes memory result = new bytes(array.length * 32); // 每个uint256需要32字节
-        for (uint256 i = 0; i < array.length; i++) {
-            bytes32 value = bytes32(array[i]);
-            for (uint256 j = 0; j < 32; j++) {
-                result[i * 32 + j] = value[j];
-            }
-        }
-        return result;
-    }
+    // function uint256ArrayToBytes(uint256[] memory array) public pure returns (bytes memory) {
+    //     bytes memory result = new bytes(array.length * 32); // 每个uint256需要32字节
+    //     for (uint256 i = 0; i < array.length; i++) {
+    //         bytes32 value = bytes32(array[i]);
+    //         for (uint256 j = 0; j < 32; j++) {
+    //             result[i * 32 + j] = value[j];
+    //         }
+    //     }
+    //     return result;
+    // }
     
     
 function bytesToUint16(bytes32 b) public pure returns (uint16) {
@@ -88,11 +88,19 @@ function bytesToUint16(bytes32 b) public pure returns (uint16) {
     function getRandomNumbers() public view returns (uint16[] memory) {
         uint16[] memory selectedNumbers = new uint16[](9);
         uint8 count = 0;
+        bool isSingle = true;
 
         //todo 这里的逻辑一打开就会报错
         while (count != 9) {
-            uint16 random = generateRandomNumber(count);
-            uint16 randomNumber = random % 18 + 1;
+            uint16 randomNumber = generateRandomNumber(count);
+            if(isSingle){
+              isSingle = false;
+              randomNumber = randomNumber % 9 + 1;
+            }else{
+              isSingle = true;
+              randomNumber = (9 + (randomNumber % 18 + 1)/2);
+            }
+            
             bool isDuplicate = false;
             
             for (uint8 j = 0; j < count; j++) {
