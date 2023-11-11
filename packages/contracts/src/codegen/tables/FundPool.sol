@@ -22,7 +22,7 @@ bytes32 constant FundPoolTableId = _tableId;
 
 struct FundPoolData {
   uint256 placeHolder;
-  uint16[] array;
+  uint16[9] array;
 }
 
 library FundPool {
@@ -95,33 +95,33 @@ library FundPool {
   }
 
   /** Get array */
-  function getArray() internal view returns (uint16[] memory array) {
+  function getArray() internal view returns (uint16[9] memory array) {
     bytes32[] memory _keyTuple = new bytes32[](0);
 
     bytes memory _blob = StoreSwitch.getField(_tableId, _keyTuple, 1, getValueSchema());
-    return (SliceLib.getSubslice(_blob, 0, _blob.length).decodeArray_uint16());
+    return toStaticArray_uint16_9(SliceLib.getSubslice(_blob, 0, _blob.length).decodeArray_uint16());
   }
 
   /** Get array (using the specified store) */
-  function getArray(IStore _store) internal view returns (uint16[] memory array) {
+  function getArray(IStore _store) internal view returns (uint16[9] memory array) {
     bytes32[] memory _keyTuple = new bytes32[](0);
 
     bytes memory _blob = _store.getField(_tableId, _keyTuple, 1, getValueSchema());
-    return (SliceLib.getSubslice(_blob, 0, _blob.length).decodeArray_uint16());
+    return toStaticArray_uint16_9(SliceLib.getSubslice(_blob, 0, _blob.length).decodeArray_uint16());
   }
 
   /** Set array */
-  function setArray(uint16[] memory array) internal {
+  function setArray(uint16[9] memory array) internal {
     bytes32[] memory _keyTuple = new bytes32[](0);
 
-    StoreSwitch.setField(_tableId, _keyTuple, 1, EncodeArray.encode((array)), getValueSchema());
+    StoreSwitch.setField(_tableId, _keyTuple, 1, EncodeArray.encode(fromStaticArray_uint16_9(array)), getValueSchema());
   }
 
   /** Set array (using the specified store) */
-  function setArray(IStore _store, uint16[] memory array) internal {
+  function setArray(IStore _store, uint16[9] memory array) internal {
     bytes32[] memory _keyTuple = new bytes32[](0);
 
-    _store.setField(_tableId, _keyTuple, 1, EncodeArray.encode((array)), getValueSchema());
+    _store.setField(_tableId, _keyTuple, 1, EncodeArray.encode(fromStaticArray_uint16_9(array)), getValueSchema());
   }
 
   /** Get the length of array */
@@ -246,7 +246,7 @@ library FundPool {
   }
 
   /** Set the full data using individual values */
-  function set(uint256 placeHolder, uint16[] memory array) internal {
+  function set(uint256 placeHolder, uint16[9] memory array) internal {
     bytes memory _data = encode(placeHolder, array);
 
     bytes32[] memory _keyTuple = new bytes32[](0);
@@ -255,7 +255,7 @@ library FundPool {
   }
 
   /** Set the full data using individual values (using the specified store) */
-  function set(IStore _store, uint256 placeHolder, uint16[] memory array) internal {
+  function set(IStore _store, uint256 placeHolder, uint16[9] memory array) internal {
     bytes memory _data = encode(placeHolder, array);
 
     bytes32[] memory _keyTuple = new bytes32[](0);
@@ -291,19 +291,19 @@ library FundPool {
       unchecked {
         _end = 64 + _encodedLengths.atIndex(0);
       }
-      _table.array = (SliceLib.getSubslice(_blob, _start, _end).decodeArray_uint16());
+      _table.array = toStaticArray_uint16_9(SliceLib.getSubslice(_blob, _start, _end).decodeArray_uint16());
     }
   }
 
   /** Tightly pack full data using this table's schema */
-  function encode(uint256 placeHolder, uint16[] memory array) internal pure returns (bytes memory) {
+  function encode(uint256 placeHolder, uint16[9] memory array) internal pure returns (bytes memory) {
     PackedCounter _encodedLengths;
     // Lengths are effectively checked during copy by 2**40 bytes exceeding gas limits
     unchecked {
       _encodedLengths = PackedCounterLib.pack(array.length * 2);
     }
 
-    return abi.encodePacked(placeHolder, _encodedLengths.unwrap(), EncodeArray.encode((array)));
+    return abi.encodePacked(placeHolder, _encodedLengths.unwrap(), EncodeArray.encode(fromStaticArray_uint16_9(array)));
   }
 
   /** Encode keys as a bytes32 array using this table's schema */
@@ -326,4 +326,22 @@ library FundPool {
 
     _store.deleteRecord(_tableId, _keyTuple, getValueSchema());
   }
+}
+
+function toStaticArray_uint16_9(uint16[] memory _value) pure returns (uint16[9] memory _result) {
+  // in memory static arrays are just dynamic arrays without the length byte
+  assembly {
+    _result := add(_value, 0x20)
+  }
+}
+
+function fromStaticArray_uint16_9(uint16[9] memory _value) pure returns (uint16[] memory _result) {
+  _result = new uint16[](9);
+  uint256 fromPointer;
+  uint256 toPointer;
+  assembly {
+    fromPointer := _value
+    toPointer := add(_result, 0x20)
+  }
+  Memory.copy(fromPointer, toPointer, 288);
 }

@@ -641,6 +641,7 @@ System.register("chunks:///_virtual/ccc_msg.ts", ['cc'], function (exports) {
       ccc_msg.on_mapitem_update = "on_mapitem_update";
       ccc_msg.on_isplayer_update = "on_isplayer_update";
       ccc_msg.network_block_ui = "network_block_ui";
+      ccc_msg.show_paydebt_button = "show_paydebt_button";
       ccc_msg.single_button_dialog = "single_button_dialog";
       ccc_msg.show_pick_asset = "show_pick_asset";
       ccc_msg.show_pick_fund = "show_pick_fund";
@@ -1440,6 +1441,8 @@ System.register("chunks:///_virtual/fake.ts", ['./rollupPluginModLoBabelHelpers.
             var playerEntity = globalThis.ponzi.currentPlayer;
             script.init(string_utils.truncateString(playerEntity));
           }
+
+          return window;
         };
 
         _proto.showWindow = function showWindow(node) {
@@ -1868,8 +1871,8 @@ System.register("chunks:///_virtual/game_countdown.ts", ['./rollupPluginModLoBab
   };
 });
 
-System.register("chunks:///_virtual/game_ui_controller.ts", ['./rollupPluginModLoBabelHelpers.js', 'cc', './ponzi-controller.ts', './ccc_msg.ts', './fake.ts'], function (exports) {
-  var _applyDecoratedDescriptor, _inheritsLoose, _initializerDefineProperty, _assertThisInitialized, _asyncToGenerator, _regeneratorRuntime, cclegacy, _decorator, sys, warn, Component, ponzi_controller, ccc_msg, fake;
+System.register("chunks:///_virtual/game_ui_controller.ts", ['./rollupPluginModLoBabelHelpers.js', 'cc', './ponzi-controller.ts', './ccc_msg.ts', './fake.ts', './paytime.ts'], function (exports) {
+  var _applyDecoratedDescriptor, _inheritsLoose, _initializerDefineProperty, _assertThisInitialized, _asyncToGenerator, _regeneratorRuntime, cclegacy, _decorator, sys, warn, Component, ponzi_controller, ccc_msg, fake, paytime;
 
   return {
     setters: [function (module) {
@@ -1891,6 +1894,8 @@ System.register("chunks:///_virtual/game_ui_controller.ts", ['./rollupPluginModL
       ccc_msg = module.ccc_msg;
     }, function (module) {
       fake = module.fake;
+    }, function (module) {
+      paytime = module.paytime;
     }],
     execute: function () {
       var _dec, _dec2, _class, _class2, _descriptor;
@@ -2018,42 +2023,85 @@ System.register("chunks:///_virtual/game_ui_controller.ts", ['./rollupPluginModL
           return onSearchPartnerClicked;
         }();
 
+        _proto.onPayDebtClicked = /*#__PURE__*/function () {
+          var _onPayDebtClicked = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee3() {
+            return _regeneratorRuntime().wrap(function _callee3$(_context3) {
+              while (1) switch (_context3.prev = _context3.next) {
+                case 0:
+                  console.log("onPayDebtClicked clicked");
+                  ponzi_controller.instance.sendCCCMsg(ccc_msg.network_block_ui, true);
+                  _context3.prev = 2;
+                  _context3.next = 5;
+                  return window.payDebt == null ? void 0 : window.payDebt();
+
+                case 5:
+                  ponzi_controller.instance.sendCCCMsg(ccc_msg.show_paydebt_button, false);
+                  _context3.next = 11;
+                  break;
+
+                case 8:
+                  _context3.prev = 8;
+                  _context3.t0 = _context3["catch"](2);
+                  ponzi_controller.instance.sendCCCMsg(ccc_msg.single_button_dialog, {
+                    content: "Unknown error.",
+                    btnText: "OK"
+                  });
+
+                case 11:
+                  _context3.prev = 11;
+                  ponzi_controller.instance.sendCCCMsg(ccc_msg.network_block_ui, false);
+                  return _context3.finish(11);
+
+                case 14:
+                case "end":
+                  return _context3.stop();
+              }
+            }, _callee3, null, [[2, 8, 11, 14]]);
+          }));
+
+          function onPayDebtClicked() {
+            return _onPayDebtClicked.apply(this, arguments);
+          }
+
+          return onPayDebtClicked;
+        }();
+
         _proto.onCovertTradeClicked = function onCovertTradeClicked() {
           ponzi_controller.instance.sendCCCMsg(ccc_msg.show_trade, true);
         };
 
         _proto.onGameFinishClicked = /*#__PURE__*/function () {
-          var _onGameFinishClicked = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee3() {
-            return _regeneratorRuntime().wrap(function _callee3$(_context3) {
-              while (1) switch (_context3.prev = _context3.next) {
+          var _onGameFinishClicked = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee4() {
+            return _regeneratorRuntime().wrap(function _callee4$(_context4) {
+              while (1) switch (_context4.prev = _context4.next) {
                 case 0:
                   ponzi_controller.instance.sendCCCMsg(ccc_msg.network_block_ui, true);
-                  _context3.prev = 1;
-                  _context3.next = 4;
+                  _context4.prev = 1;
+                  _context4.next = 4;
                   return window.finishGame == null ? void 0 : window.finishGame();
 
                 case 4:
-                  _context3.next = 9;
+                  _context4.next = 9;
                   break;
 
                 case 6:
-                  _context3.prev = 6;
-                  _context3.t0 = _context3["catch"](1);
+                  _context4.prev = 6;
+                  _context4.t0 = _context4["catch"](1);
                   ponzi_controller.instance.sendCCCMsg(ccc_msg.single_button_dialog, {
                     content: "The end game encountered a problem.",
                     btnText: "OK"
                   });
 
                 case 9:
-                  _context3.prev = 9;
+                  _context4.prev = 9;
                   ponzi_controller.instance.sendCCCMsg(ccc_msg.network_block_ui, false);
-                  return _context3.finish(9);
+                  return _context4.finish(9);
 
                 case 12:
                 case "end":
-                  return _context3.stop();
+                  return _context4.stop();
               }
-            }, _callee3, null, [[1, 6, 9, 12]]);
+            }, _callee4, null, [[1, 6, 9, 12]]);
           }));
 
           function onGameFinishClicked() {
@@ -2072,11 +2120,15 @@ System.register("chunks:///_virtual/game_ui_controller.ts", ['./rollupPluginModL
           } else if (name == "partners") {
             this.fakeMgr.showFakeWindow(button, 4);
           } else if (name == "repay") {
-            this.fakeMgr.showFakeWindow(button, 3);
+            var node = this.fakeMgr.showFakeWindow(button, 3);
           } else if (name == "fund") {
             this.fakeMgr.showFakeWindow(button, 2);
           } else if (name == "assets") {
-            this.fakeMgr.showFakeWindow(button, 1);
+            var _node = this.fakeMgr.showFakeWindow(button, 1);
+
+            var repay = _node.getComponent(paytime);
+
+            repay.show();
           } else {
             warn("Unknown title button name:", name);
           }
@@ -3062,9 +3114,9 @@ System.register("chunks:///_virtual/lobby-playerlist.ts", ['./rollupPluginModLoB
   };
 });
 
-System.register("chunks:///_virtual/main", ['./debug-view-runtime-control.ts', './Singleton.ts', './lobby-controller.ts', './counter-label.ts', './ccc_msg.ts', './component_state.ts', './ponzi_config.ts', './GameData.ts', './JsCaller.ts', './MUDListener.ts', './PlayerData.ts', './data_center.ts', './ponzi-controller.ts', './ponzi-model.ts', './FakeMessageCenter.ts', './test.ts', './TradeListItem.ts', './bytes_utils.ts', './coor_utils.ts', './list_utils.ts', './object_utils.ts', './rule_utils.ts', './string_utils.ts', './time_utils.ts', './HexMapTile.ts', './RoleLocalObj.ts', './RowCol.ts', './UnsolicitedTransactionObj.ts', './temp_data.ts', './fake.ts', './fundpool.ts', './game_ui_controller.ts', './lobby-playerlist-model.ts', './lobby-playerlist.ts', './map-controller.ts', './mapblock.ts', './pick-money-card.ts', './player-model.ts', './account.ts', './assets.ts', './pick_asset.ts', './rank.ts', './single-button-pop.ts', './trade-ask.ts', './trade_input_price.ts', './popupui_manager.ts', './trade.ts', './button_raisingcapital.ts', './changing_ellipses.ts', './fond_card.ts', './game_countdown.ts', './item_asset.ts', './mapitem.ts', './pick_asset_item.ts', './popeffect.ts', './popup_node.ts', './right-player-list-item.ts', './right-player-list.ts', './rules.ts', './title-money.ts', './toggle.ts', './trade-asset-item.ts', './trade_parter_item.ts'], function () {
+System.register("chunks:///_virtual/main", ['./debug-view-runtime-control.ts', './Singleton.ts', './lobby-controller.ts', './counter-label.ts', './ccc_msg.ts', './component_state.ts', './ponzi_config.ts', './GameData.ts', './JsCaller.ts', './MUDListener.ts', './PlayerData.ts', './data_center.ts', './ponzi-controller.ts', './ponzi-model.ts', './FakeMessageCenter.ts', './test.ts', './TradeListItem.ts', './bytes_utils.ts', './coor_utils.ts', './list_utils.ts', './object_utils.ts', './rule_utils.ts', './string_utils.ts', './time_utils.ts', './HexMapTile.ts', './RoleLocalObj.ts', './RowCol.ts', './UnsolicitedTransactionObj.ts', './temp_data.ts', './fake.ts', './fundpool.ts', './game_ui_controller.ts', './lobby-playerlist-model.ts', './lobby-playerlist.ts', './map-controller.ts', './mapblock.ts', './pick-money-card.ts', './player-model.ts', './account.ts', './assets.ts', './paytime.ts', './paytime_item.ts', './pick_asset.ts', './rank.ts', './single-button-pop.ts', './trade-ask.ts', './trade_input_price.ts', './popupui_manager.ts', './trade.ts', './button_raisingcapital.ts', './changing_ellipses.ts', './fond_card.ts', './game_countdown.ts', './item_asset.ts', './mapitem.ts', './pick_asset_item.ts', './popeffect.ts', './popup_node.ts', './right-player-list-item.ts', './right-player-list.ts', './rules.ts', './title-money.ts', './toggle.ts', './trade-asset-item.ts', './trade_parter_item.ts'], function () {
   return {
-    setters: [null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null],
+    setters: [null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null],
     execute: function () {}
   };
 });
@@ -3712,7 +3764,7 @@ System.register("chunks:///_virtual/mapblock.ts", ['./rollupPluginModLoBabelHelp
                   _context.prev = 9;
                   _context.t0 = _context["catch"](3);
                   ponzi_controller.instance.sendCCCMsg(ccc_msg.single_button_dialog, {
-                    content: "You can't go there",
+                    content: "You can't go there " + _context.t0,
                     btnText: "OK"
                   });
 
@@ -3978,6 +4030,286 @@ System.register("chunks:///_virtual/object_utils.ts", ['cc'], function (exports)
 
         return object_utils;
       }());
+
+      cclegacy._RF.pop();
+    }
+  };
+});
+
+System.register("chunks:///_virtual/paytime_item.ts", ['./rollupPluginModLoBabelHelpers.js', 'cc', './ponzi_config.ts', './time_utils.ts'], function (exports) {
+  var _applyDecoratedDescriptor, _inheritsLoose, _initializerDefineProperty, _assertThisInitialized, cclegacy, _decorator, Label, sys, Component, ponzi_config, time_utils;
+
+  return {
+    setters: [function (module) {
+      _applyDecoratedDescriptor = module.applyDecoratedDescriptor;
+      _inheritsLoose = module.inheritsLoose;
+      _initializerDefineProperty = module.initializerDefineProperty;
+      _assertThisInitialized = module.assertThisInitialized;
+    }, function (module) {
+      cclegacy = module.cclegacy;
+      _decorator = module._decorator;
+      Label = module.Label;
+      sys = module.sys;
+      Component = module.Component;
+    }, function (module) {
+      ponzi_config = module.ponzi_config;
+    }, function (module) {
+      time_utils = module.time_utils;
+    }],
+    execute: function () {
+      var _dec, _dec2, _dec3, _class, _class2, _descriptor, _descriptor2;
+
+      cclegacy._RF.push({}, "a3baeJzuIVC2JuGB3jWgxXD", "paytime_item", undefined);
+
+      var ccclass = _decorator.ccclass,
+          property = _decorator.property;
+      var paytime_item = exports('paytime_item', (_dec = ccclass('paytime_item'), _dec2 = property({
+        type: Label
+      }), _dec3 = property({
+        type: Label
+      }), _dec(_class = (_class2 = /*#__PURE__*/function (_Component) {
+        _inheritsLoose(paytime_item, _Component);
+
+        function paytime_item() {
+          var _this;
+
+          for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
+            args[_key] = arguments[_key];
+          }
+
+          _this = _Component.call.apply(_Component, [this].concat(args)) || this;
+
+          _initializerDefineProperty(_this, "labelCount", _descriptor, _assertThisInitialized(_this));
+
+          _initializerDefineProperty(_this, "labelTime", _descriptor2, _assertThisInitialized(_this));
+
+          _this.startTime = void 0;
+          _this.endTime = void 0;
+          return _this;
+        }
+
+        var _proto = paytime_item.prototype;
+
+        _proto.init = function init(id, payCount, payTime, ownTime) {
+          var self = this;
+          this.startTime = Number(ownTime);
+          this.endTime = this.startTime + Number(payTime) * 60;
+          var nowTime = sys.now() / 1000;
+          var leftTime = this.endTime - nowTime;
+          this.labelCount.string = payCount.toString();
+
+          if (leftTime > 0) {
+            var repeat = this.endTime - 1; // 调用schedule方法，传入回调函数，间隔时间为1秒，重复次数为repeat，延迟时间为0
+
+            this.unschedule(this.minuesTimeLabel);
+            this.schedule(this.minuesTimeLabel, 1, repeat, 0);
+            this.scheduleOnce(function () {
+              self.labelTime.string = "out of time";
+            }, leftTime);
+          } else {
+            self.labelTime.string = "out of time";
+          }
+        };
+
+        _proto.start = function start() {};
+
+        _proto.update = function update(deltaTime) {};
+
+        _proto.minuesTimeLabel = function minuesTimeLabel() {
+          var nowTime = sys.now() / 1000;
+          var endTime = this.endTime;
+          var startTime = this.startTime;
+          this.labelTime.string = time_utils.calculateRemainingTimeOnlyMinutes(nowTime, endTime, startTime, ponzi_config.fakeBlockTime);
+        };
+
+        return paytime_item;
+      }(Component), (_descriptor = _applyDecoratedDescriptor(_class2.prototype, "labelCount", [_dec2], {
+        configurable: true,
+        enumerable: true,
+        writable: true,
+        initializer: null
+      }), _descriptor2 = _applyDecoratedDescriptor(_class2.prototype, "labelTime", [_dec3], {
+        configurable: true,
+        enumerable: true,
+        writable: true,
+        initializer: null
+      })), _class2)) || _class));
+
+      cclegacy._RF.pop();
+    }
+  };
+});
+
+System.register("chunks:///_virtual/paytime.ts", ['./rollupPluginModLoBabelHelpers.js', 'cc', './paytime_item.ts'], function (exports) {
+  var _applyDecoratedDescriptor, _inheritsLoose, _initializerDefineProperty, _assertThisInitialized, _asyncToGenerator, _regeneratorRuntime, cclegacy, _decorator, Node, instantiate, Component, paytime_item;
+
+  return {
+    setters: [function (module) {
+      _applyDecoratedDescriptor = module.applyDecoratedDescriptor;
+      _inheritsLoose = module.inheritsLoose;
+      _initializerDefineProperty = module.initializerDefineProperty;
+      _assertThisInitialized = module.assertThisInitialized;
+      _asyncToGenerator = module.asyncToGenerator;
+      _regeneratorRuntime = module.regeneratorRuntime;
+    }, function (module) {
+      cclegacy = module.cclegacy;
+      _decorator = module._decorator;
+      Node = module.Node;
+      instantiate = module.instantiate;
+      Component = module.Component;
+    }, function (module) {
+      paytime_item = module.paytime_item;
+    }],
+    execute: function () {
+      var _dec, _dec2, _dec3, _dec4, _class, _class2, _descriptor, _descriptor2, _descriptor3;
+
+      cclegacy._RF.push({}, "7c707Gd27RBPblwFDlYHZXz", "paytime", undefined);
+
+      var ccclass = _decorator.ccclass,
+          property = _decorator.property;
+      var paytime = exports('paytime', (_dec = ccclass('paytime'), _dec2 = property({
+        type: Node
+      }), _dec3 = property({
+        type: Node
+      }), _dec4 = property({
+        type: Node
+      }), _dec(_class = (_class2 = /*#__PURE__*/function (_Component) {
+        _inheritsLoose(paytime, _Component);
+
+        function paytime() {
+          var _this;
+
+          for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
+            args[_key] = arguments[_key];
+          }
+
+          _this = _Component.call.apply(_Component, [this].concat(args)) || this;
+
+          _initializerDefineProperty(_this, "itemParent", _descriptor, _assertThisInitialized(_this));
+
+          _initializerDefineProperty(_this, "itemModel", _descriptor2, _assertThisInitialized(_this));
+
+          _initializerDefineProperty(_this, "waitingNotice", _descriptor3, _assertThisInitialized(_this));
+
+          return _this;
+        }
+
+        var _proto = paytime.prototype;
+
+        _proto.start = function start() {};
+
+        _proto.update = function update(deltaTime) {};
+
+        _proto.show = /*#__PURE__*/function () {
+          var _show = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee() {
+            var me, ownedCards, result, index, array, toArray, i, n, _i, card;
+
+            return _regeneratorRuntime().wrap(function _callee$(_context) {
+              while (1) switch (_context.prev = _context.next) {
+                case 0:
+                  this.itemParent.removeAllChildren();
+                  this.waitingNotice.active = true;
+                  this.itemParent.active = false;
+                  _context.prev = 3;
+                  me = globalThis.ponzi.currentPlayer;
+                  _context.next = 7;
+                  return window.queryValue == null ? void 0 : window.queryValue(globalThis.env.components.OwnedCards, me);
+
+                case 7:
+                  ownedCards = _context.sent;
+                  console.error("paytime start query...", ownedCards); // 定义一个空的二维数组
+
+                  result = []; // 定义一个变量来记录当前的索引
+
+                  index = 0;
+                // 使用一个循环来遍历数组
+
+                case 11:
+                  if (!(index < ownedCards.array.length)) {
+                    _context.next = 21;
+                    break;
+                  }
+
+                  if (!(Number(ownedCards.array[index]) == 0)) {
+                    _context.next = 14;
+                    break;
+                  }
+
+                  return _context.abrupt("break", 21);
+
+                case 14:
+                  // 否则，就将当前元素和后面的四个元素组成一个子数组，并添加到结果数组中
+                  array = ownedCards.array.slice(index, index + 5);
+                  toArray = [];
+
+                  for (i = 0; i < 5; i++) {
+                    n = array[i];
+                    toArray.push(Number(n));
+                  }
+
+                  result.push(toArray); // 更新索引，增加5
+
+                  index += 5;
+                  _context.next = 11;
+                  break;
+
+                case 21:
+                  console.log("convered card infos is:", result);
+
+                  for (_i = 0; _i < result.length; _i++) {
+                    card = result[_i];
+                    this.createItem(card[0], card[1] * card[3] / 100, card[2], card[4]);
+                  }
+
+                  this.waitingNotice.active = false;
+                  this.itemParent.active = true;
+                  _context.next = 30;
+                  break;
+
+                case 27:
+                  _context.prev = 27;
+                  _context.t0 = _context["catch"](3);
+                  console.error("query OwnedCards error!", _context.t0);
+
+                case 30:
+                case "end":
+                  return _context.stop();
+              }
+            }, _callee, this, [[3, 27]]);
+          }));
+
+          function show() {
+            return _show.apply(this, arguments);
+          }
+
+          return show;
+        }();
+
+        _proto.createItem = function createItem(id, payCount, payTime, ownTime) {
+          var newNode = instantiate(this.itemModel);
+          newNode.active = true;
+          newNode.parent = this.itemParent;
+          var script = newNode.getComponent(paytime_item);
+          script.init(id, payCount, payTime, ownTime);
+        };
+
+        return paytime;
+      }(Component), (_descriptor = _applyDecoratedDescriptor(_class2.prototype, "itemParent", [_dec2], {
+        configurable: true,
+        enumerable: true,
+        writable: true,
+        initializer: null
+      }), _descriptor2 = _applyDecoratedDescriptor(_class2.prototype, "itemModel", [_dec3], {
+        configurable: true,
+        enumerable: true,
+        writable: true,
+        initializer: null
+      }), _descriptor3 = _applyDecoratedDescriptor(_class2.prototype, "waitingNotice", [_dec4], {
+        configurable: true,
+        enumerable: true,
+        writable: true,
+        initializer: null
+      })), _class2)) || _class));
 
       cclegacy._RF.pop();
     }
@@ -4425,7 +4757,7 @@ System.register("chunks:///_virtual/pick-money-card.ts", ['./rollupPluginModLoBa
           for (var i = 0; i < cardIds.length; i++) {
             var cardId = cardIds[i];
             var cardInfo = this.cards[cardId - 1];
-            this.createFundCard(cardInfo, Math.floor(i / 3) == this.assetLevel);
+            this.createFundCard(cardInfo, Math.floor(i / 3) + 1 == this.assetLevel);
           }
         };
 
@@ -4796,25 +5128,42 @@ System.register("chunks:///_virtual/ponzi-controller.ts", ['./rollupPluginModLoB
           globalThis.ponzi.fundpool_update = function (update) {
             self.onFundPoolUpdate(update);
           };
+
+          globalThis.ponzi.hasdebt_update = function (update) {
+            self.onHasDebt(update);
+          };
         };
 
         _proto.sendCCCMsg = function sendCCCMsg(msgName, msgData) {
           this.node.emit(msgName, msgData);
         };
 
-        _proto.onFundPoolUpdate = function onFundPoolUpdate(update) {
-          console.log("onFundPoolUpdate runs!");
+        _proto.onHasDebt = function onHasDebt(update) {
+          console.log("onHasDebt runs!");
           var _update$value2 = update.value,
               nextValue = _update$value2[0],
               prevValue = _update$value2[1];
+
+          if (!prevValue && nextValue) {
+            ponzi_controller.instance.sendCCCMsg(ccc_msg.show_paydebt_button, true);
+          } else if (prevValue && !nextValue) {
+            ponzi_controller.instance.sendCCCMsg(ccc_msg.show_paydebt_button, false);
+          }
+        };
+
+        _proto.onFundPoolUpdate = function onFundPoolUpdate(update) {
+          console.log("onFundPoolUpdate runs!");
+          var _update$value3 = update.value,
+              nextValue = _update$value3[0],
+              prevValue = _update$value3[1];
         };
 
         _proto.onPlayerGameResultUpdate = function onPlayerGameResultUpdate(update) {
           log("onPlayerGameResultUpdate", update);
           if (update.entity != globalThis.ponzi.currentPlayer) return;
-          var _update$value3 = update.value,
-              nextValue = _update$value3[0],
-              prevValue = _update$value3[1];
+          var _update$value4 = update.value,
+              nextValue = _update$value4[0],
+              prevValue = _update$value4[1];
 
           if (!nextValue) {
             var _show = false;
@@ -4843,9 +5192,9 @@ System.register("chunks:///_virtual/ponzi-controller.ts", ['./rollupPluginModLoB
 
         _proto.onPassiveTransactionUpdate = function onPassiveTransactionUpdate(update) {
           if (update.entity != globalThis.ponzi.currentPlayer) return;
-          var _update$value4 = update.value,
-              nextValue = _update$value4[0],
-              prevValue = _update$value4[1];
+          var _update$value5 = update.value,
+              nextValue = _update$value5[0],
+              prevValue = _update$value5[1];
           if (!nextValue) return;
           var obj = nextValue;
           var presenterName = obj.from;
@@ -4861,9 +5210,9 @@ System.register("chunks:///_virtual/ponzi-controller.ts", ['./rollupPluginModLoB
         _proto.onTradeListUpdate = function onTradeListUpdate(update) {
           var me = globalThis.ponzi.currentPlayer;
           if (update.entity != me) return;
-          var _update$value5 = update.value,
-              nextValue = _update$value5[0],
-              prevValue = _update$value5[1];
+          var _update$value6 = update.value,
+              nextValue = _update$value6[0],
+              prevValue = _update$value6[1];
 
           if (!nextValue) {
             log("TradeList components reset");
@@ -4945,9 +5294,9 @@ System.register("chunks:///_virtual/ponzi-controller.ts", ['./rollupPluginModLoB
 
         _proto.transactionListUpdate = function transactionListUpdate(update) {
           var entity = update.entity;
-          var _update$value6 = update.value,
-              nextValue = _update$value6[0],
-              prevValue = _update$value6[1];
+          var _update$value7 = update.value,
+              nextValue = _update$value7[0],
+              prevValue = _update$value7[1];
 
           if (!nextValue) {
             log("TransactionList component clear");
@@ -5331,7 +5680,7 @@ System.register("chunks:///_virtual/popupui_manager.ts", ['./rollupPluginModLoBa
       popeffect = module.popeffect;
     }],
     execute: function () {
-      var _dec, _dec2, _dec3, _dec4, _dec5, _dec6, _dec7, _dec8, _dec9, _dec10, _class, _class2, _descriptor, _descriptor2, _descriptor3, _descriptor4, _descriptor5, _descriptor6, _descriptor7, _descriptor8, _descriptor9;
+      var _dec, _dec2, _dec3, _dec4, _dec5, _dec6, _dec7, _dec8, _dec9, _dec10, _dec11, _class, _class2, _descriptor, _descriptor2, _descriptor3, _descriptor4, _descriptor5, _descriptor6, _descriptor7, _descriptor8, _descriptor9, _descriptor10;
 
       cclegacy._RF.push({}, "454a77xJxBFcYkhgV356qng", "popupui_manager", undefined);
 
@@ -5355,6 +5704,8 @@ System.register("chunks:///_virtual/popupui_manager.ts", ['./rollupPluginModLoBa
         type: trade_input_price
       }), _dec10 = property({
         type: rank
+      }), _dec11 = property({
+        type: Node
       }), _dec(_class = (_class2 = /*#__PURE__*/function (_Component) {
         _inheritsLoose(popupui_manager, _Component);
 
@@ -5385,6 +5736,8 @@ System.register("chunks:///_virtual/popupui_manager.ts", ['./rollupPluginModLoBa
 
           _initializerDefineProperty(_this, "rank", _descriptor9, _assertThisInitialized(_this));
 
+          _initializerDefineProperty(_this, "btnPayDebt", _descriptor10, _assertThisInitialized(_this));
+
           return _this;
         }
 
@@ -5399,6 +5752,11 @@ System.register("chunks:///_virtual/popupui_manager.ts", ['./rollupPluginModLoBa
           self.tradeAsk.node.active = false;
           self.tradeInput.node.active = false;
           self.rank.node.active = false;
+          self.btnPayDebt.active = false;
+          ponzi_controller.instance.on(ccc_msg.show_paydebt_button, function (show) {
+            log("ui manager receive show_paydebt_button:", show);
+            self.btnPayDebt.active = show;
+          });
           ponzi_controller.instance.on(ccc_msg.network_block_ui, function (show) {
             log("ui manager receive network_block_ui:", show);
             self.networkBlock.active = show;
@@ -5507,6 +5865,11 @@ System.register("chunks:///_virtual/popupui_manager.ts", ['./rollupPluginModLoBa
         writable: true,
         initializer: null
       }), _descriptor9 = _applyDecoratedDescriptor(_class2.prototype, "rank", [_dec10], {
+        configurable: true,
+        enumerable: true,
+        writable: true,
+        initializer: null
+      }), _descriptor10 = _applyDecoratedDescriptor(_class2.prototype, "btnPayDebt", [_dec11], {
         configurable: true,
         enumerable: true,
         writable: true,

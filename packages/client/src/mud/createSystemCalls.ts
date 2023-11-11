@@ -29,8 +29,7 @@ export function createSystemCalls(
   const move = async (x:number,y:number) => {
     // const tx = await worldSend("move", [x, y]);
     const tx = await worldContract.write.move([x,y]);
-    await waitForTransaction(tx);
-    return getComponentValue(Player, singletonEntity);
+    return await waitForTransaction(tx);
   };
 
   const pickAsset = async (assetType:number) => {
@@ -74,6 +73,11 @@ export function createSystemCalls(
     return await waitForTransaction(tx);
   };
 
+  const pay = async () => {
+    const tx = await worldContract.write.pay();
+    return await waitForTransaction(tx);
+  };
+
   return {
     increment,
     joinGame,
@@ -86,6 +90,7 @@ export function createSystemCalls(
     rejectTrade,
     finishGame,
     pickCoin,
-    findPartner
+    findPartner,
+    pay
   };
 }

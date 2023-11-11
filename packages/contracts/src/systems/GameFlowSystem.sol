@@ -2,7 +2,7 @@
 pragma solidity >=0.8.0;
 
 import { System } from "@latticexyz/world/src/System.sol";
-import { MapItem,MapItemTableId,RaiseColddown,TransactionList,PlayerGameResult, TradeListData, TradeList, PassiveTransactionData, IsTrading, PassiveTransaction, UnsolicitedTransaction,IsTrading, AssetsListData,AssetsList,Player,Game ,GameData,GameState,PlayerData,PlayerTableId,IsPlayer} from "../codegen/Tables.sol";
+import { OwnedCards,HasDebt,Debt,MapItem,MapItemTableId,RaiseColddown,TransactionList,PlayerGameResult, TradeListData, TradeList, PassiveTransactionData, IsTrading, PassiveTransaction, UnsolicitedTransaction,IsTrading, AssetsListData,AssetsList,Player,Game ,GameData,GameState,PlayerData,PlayerTableId,IsPlayer} from "../codegen/Tables.sol";
 
 import { addressToEntityKey } from "../addressToEntityKey.sol";
 import { query, QueryFragment, QueryType } from "@latticexyz/world/src/modules/keysintable/query.sol";
@@ -40,16 +40,29 @@ contract GameFlowSystem is System {
             for (uint256 i = 0; i < assetsLists.length; i++) {
                 bytes32 tmpPlayer = assetsLists[i];
                 if(!isBytes32NonZero(tmpPlayer)) continue;
+                bool bankrupt = false;
+                if(HasDebt.get(tmpPlayer)){
+                    uint32 debt = getDebt(tmpPlayer);
+                    if(Player.getMoney(tmpPlayer) < debt){
+                        bankrupt = true;
+                    }
+                }
 
                 AssetsListData memory alData = AssetsList.get(tmpPlayer);
 
-                int8 score1 = calculateScore(alData.gpu);
-                int8 score2 = calculateScore(alData.bitcoin);
-                int8 score3 = calculateScore(alData.battery);
-                int8 score4 = calculateScore(alData.leiter);
-                int8 score5 = calculateScore(alData.gold);
-                int8 score6 = calculateScore(alData.oil);
-                int32 totalScore = score1 + score2 + score3 + score4 + score5 + score6; 
+                int32 totalScore = 0;
+                if(bankrupt){
+                    totalScore = 0;
+                }else{
+                    int8 score1 = calculateScore(alData.gpu);
+                    int8 score2 = calculateScore(alData.bitcoin);
+                    int8 score3 = calculateScore(alData.battery);
+                    int8 score4 = calculateScore(alData.leiter);
+                    int8 score5 = calculateScore(alData.gold);
+                    int8 score6 = calculateScore(alData.oil);
+                    totalScore = score1 + score2 + score3 + score4 + score5 + score6; 
+                }
+                
                 ScoreObj memory newItem = ScoreObj(tmpPlayer,totalScore,alData.gpu,alData.bitcoin,alData.battery,alData.leiter,alData.gold,alData.oil);
                 
                 assert(index < scoreObjList.length);
@@ -105,6 +118,8 @@ contract GameFlowSystem is System {
                 RaiseColddown.deleteRecord(tmpPlayer);
 
                 //
+                HasDebt.deleteRecord(tmpPlayer);
+                Debt.deleteRecord(tmpPlayer);
             }
         }
     }
@@ -172,6 +187,28 @@ contract GameFlowSystem is System {
         return scores;
     }
 
+    function getDebt(bytes32 player) private view returns (uint32) {
+        uint256[] memory ownedCards = OwnedCards.get(player);
+        uint32 debt = 0;
+        require(ownedCards.length % 5 == 0, "Invalid array length");
 
+        for (uint i = 0; i < ownedCards.length; i += 5) {
+            // Check if the first element of the group is 0
+            if (ownedCards[i] == 0) {
+                // If it's 0, break the loop as the subsequent elements are all 0
+                break;
+            }
+
+            // Update the fourth element of each group to 9999
+            if(ownedCards[i + 4] + ownedCards[i + 2] * 60 < block.timestamp){
+                uint256 payTimes = (block.timestamp - ownedCards[i + 4]) / ownedCards[i + 2] * 60;
+                uint256 input = payTimes * (ownedCards[i + 1] * ownedCards[i + 3] / 100);
+                require(input <= type(uint32).max, "Value exceeds uint32 range");
+                debt += uint32(input);
+            }
+        }
+
+        return debt;
+    }
     
 }

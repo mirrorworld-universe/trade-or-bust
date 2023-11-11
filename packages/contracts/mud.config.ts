@@ -57,11 +57,17 @@ export default mudConfig({
         mapArray:"bytes"
       }
     },
+    FundCards:{
+      keySchema:{},
+      schema:{
+        allCard:"uint16[72]"
+      }
+    },
     FundPool:{
       keySchema:{},
       schema:{
         placeHolder:"uint256",
-        array:"uint16[]"
+        array:"uint16[9]"
       }
     },
     MapItem:{
@@ -105,9 +111,20 @@ export default mudConfig({
           oil:'int8'
         }
     },
+    OwnedCards:{
+        schema:{
+          array:"uint256[]"
+        }
+    },
+    HasDebt:{
+      schema:"bool"
+    },
+    Debt:{
+      schema:"uint32"
+    },
     Log:{
       dataStruct:true,
-      schema:'uint8',
+      schema:'uint32',
     },
     //Partner list
     TransactionList:{

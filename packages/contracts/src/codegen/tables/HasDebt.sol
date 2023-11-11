@@ -17,14 +17,10 @@ import { EncodeArray } from "@latticexyz/store/src/tightcoder/EncodeArray.sol";
 import { Schema, SchemaLib } from "@latticexyz/store/src/Schema.sol";
 import { PackedCounter, PackedCounterLib } from "@latticexyz/store/src/PackedCounter.sol";
 
-bytes32 constant _tableId = bytes32(abi.encodePacked(bytes16(""), bytes16("Log")));
-bytes32 constant LogTableId = _tableId;
+bytes32 constant _tableId = bytes32(abi.encodePacked(bytes16(""), bytes16("HasDebt")));
+bytes32 constant HasDebtTableId = _tableId;
 
-struct LogData {
-  uint32 value;
-}
-
-library Log {
+library HasDebt {
   /** Get the table's key schema */
   function getKeySchema() internal pure returns (Schema) {
     SchemaType[] memory _schema = new SchemaType[](1);
@@ -36,7 +32,7 @@ library Log {
   /** Get the table's value schema */
   function getValueSchema() internal pure returns (Schema) {
     SchemaType[] memory _schema = new SchemaType[](1);
-    _schema[0] = SchemaType.UINT32;
+    _schema[0] = SchemaType.BOOL;
 
     return SchemaLib.encode(_schema);
   }
@@ -64,25 +60,25 @@ library Log {
   }
 
   /** Get value */
-  function getValue(bytes32 key) internal view returns (uint32 value) {
+  function get(bytes32 key) internal view returns (bool value) {
     bytes32[] memory _keyTuple = new bytes32[](1);
     _keyTuple[0] = key;
 
     bytes memory _blob = StoreSwitch.getField(_tableId, _keyTuple, 0, getValueSchema());
-    return (uint32(Bytes.slice4(_blob, 0)));
+    return (_toBool(uint8(Bytes.slice1(_blob, 0))));
   }
 
   /** Get value (using the specified store) */
-  function getValue(IStore _store, bytes32 key) internal view returns (uint32 value) {
+  function get(IStore _store, bytes32 key) internal view returns (bool value) {
     bytes32[] memory _keyTuple = new bytes32[](1);
     _keyTuple[0] = key;
 
     bytes memory _blob = _store.getField(_tableId, _keyTuple, 0, getValueSchema());
-    return (uint32(Bytes.slice4(_blob, 0)));
+    return (_toBool(uint8(Bytes.slice1(_blob, 0))));
   }
 
   /** Set value */
-  function setValue(bytes32 key, uint32 value) internal {
+  function set(bytes32 key, bool value) internal {
     bytes32[] memory _keyTuple = new bytes32[](1);
     _keyTuple[0] = key;
 
@@ -90,68 +86,15 @@ library Log {
   }
 
   /** Set value (using the specified store) */
-  function setValue(IStore _store, bytes32 key, uint32 value) internal {
+  function set(IStore _store, bytes32 key, bool value) internal {
     bytes32[] memory _keyTuple = new bytes32[](1);
     _keyTuple[0] = key;
 
     _store.setField(_tableId, _keyTuple, 0, abi.encodePacked((value)), getValueSchema());
   }
 
-  /** Get the full data */
-  function get(bytes32 key) internal view returns (LogData memory _table) {
-    bytes32[] memory _keyTuple = new bytes32[](1);
-    _keyTuple[0] = key;
-
-    bytes memory _blob = StoreSwitch.getRecord(_tableId, _keyTuple, getValueSchema());
-    return decode(_blob);
-  }
-
-  /** Get the full data (using the specified store) */
-  function get(IStore _store, bytes32 key) internal view returns (LogData memory _table) {
-    bytes32[] memory _keyTuple = new bytes32[](1);
-    _keyTuple[0] = key;
-
-    bytes memory _blob = _store.getRecord(_tableId, _keyTuple, getValueSchema());
-    return decode(_blob);
-  }
-
-  /** Set the full data using individual values */
-  function set(bytes32 key, uint32 value) internal {
-    bytes memory _data = encode(value);
-
-    bytes32[] memory _keyTuple = new bytes32[](1);
-    _keyTuple[0] = key;
-
-    StoreSwitch.setRecord(_tableId, _keyTuple, _data, getValueSchema());
-  }
-
-  /** Set the full data using individual values (using the specified store) */
-  function set(IStore _store, bytes32 key, uint32 value) internal {
-    bytes memory _data = encode(value);
-
-    bytes32[] memory _keyTuple = new bytes32[](1);
-    _keyTuple[0] = key;
-
-    _store.setRecord(_tableId, _keyTuple, _data, getValueSchema());
-  }
-
-  /** Set the full data using the data struct */
-  function set(bytes32 key, LogData memory _table) internal {
-    set(key, _table.value);
-  }
-
-  /** Set the full data using the data struct (using the specified store) */
-  function set(IStore _store, bytes32 key, LogData memory _table) internal {
-    set(_store, key, _table.value);
-  }
-
-  /** Decode the tightly packed blob using this table's schema */
-  function decode(bytes memory _blob) internal pure returns (LogData memory _table) {
-    _table.value = (uint32(Bytes.slice4(_blob, 0)));
-  }
-
   /** Tightly pack full data using this table's schema */
-  function encode(uint32 value) internal pure returns (bytes memory) {
+  function encode(bool value) internal pure returns (bytes memory) {
     return abi.encodePacked(value);
   }
 
@@ -177,5 +120,11 @@ library Log {
     _keyTuple[0] = key;
 
     _store.deleteRecord(_tableId, _keyTuple, getValueSchema());
+  }
+}
+
+function _toBool(uint8 value) pure returns (bool result) {
+  assembly {
+    result := value
   }
 }

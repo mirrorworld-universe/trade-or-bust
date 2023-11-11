@@ -2,7 +2,7 @@
 pragma solidity >=0.8.0;
 
 import { System } from "@latticexyz/world/src/System.sol";
-import { TradeListData, TradeList, PassiveTransactionData, IsTrading, PassiveTransaction, UnsolicitedTransaction,IsTrading, AssetsListData,AssetsList,Player,Game ,GameData,GameState,PlayerData,PlayerTableId,IsPlayer} from "../codegen/Tables.sol";
+import { Debt,HasDebt,OwnedCards,TradeListData, TradeList, PassiveTransactionData, IsTrading, PassiveTransaction, UnsolicitedTransaction,IsTrading, AssetsListData,AssetsList,Player,Game ,GameData,GameState,PlayerData,PlayerTableId,IsPlayer} from "../codegen/Tables.sol";
 import { addressToEntityKey } from "../addressToEntityKey.sol";
 
 contract TradeSystem is System {
@@ -16,6 +16,13 @@ contract TradeSystem is System {
 
         PlayerData memory pd = Player.get(player);
         require(pd.money >= money, "You don't have enough money to do this trade");
+
+        require(!HasDebt.get(player),"You have to pay your debt first.");
+        uint32 debt = getTradeDebt(player);
+        if(debt > 0){
+            HasDebt.set(player,true);
+            Debt.set(player,debt);
+        }
 
         PlayerData memory tarPd = Player.get(targetPlayer);
 
@@ -64,6 +71,13 @@ contract TradeSystem is System {
 
         require(IsTrading.get(player),"This player is not in a trading");
 
+        require(!HasDebt.get(player),"You have to pay your debt first.");
+        uint32 debt = getTradeDebt(player);
+        if(debt > 0){
+            HasDebt.set(player,true);
+            Debt.set(player,debt);
+        }
+
         PassiveTransactionData memory pTranData = PassiveTransaction.get(player);
         uint8 assetKind = pTranData.asset;
         bytes32 from = pTranData.from;
@@ -109,6 +123,12 @@ contract TradeSystem is System {
 
         require(IsTrading.get(player),"This player is not in a trading");
 
+        require(!HasDebt.get(player),"You have to pay your debt first.");
+        uint32 debt = getTradeDebt(player);
+        if(debt > 0){
+            HasDebt.set(player,true);
+            Debt.set(player,debt);
+        }
 
         PassiveTransactionData memory pTranData = PassiveTransaction.get(player);
         bytes32 from = pTranData.from;
@@ -219,6 +239,30 @@ contract TradeSystem is System {
         bytes memory encodedList = abi.encode(newList);
 
         return encodedList;
+    }
+
+    function getTradeDebt(bytes32 player) private view returns (uint32) {
+        uint256[] memory ownedCards = OwnedCards.get(player);
+        uint32 debt = 0;
+        require(ownedCards.length % 5 == 0, "Invalid array length");
+
+        for (uint i = 0; i < ownedCards.length; i += 5) {
+            // Check if the first element of the group is 0
+            if (ownedCards[i] == 0) {
+                // If it's 0, break the loop as the subsequent elements are all 0
+                break;
+            }
+
+            // Update the fourth element of each group to 9999
+            if(ownedCards[i + 4] + ownedCards[i + 2] * 60 < block.timestamp){
+                uint256 payTimes = (block.timestamp - ownedCards[i + 4]) / ownedCards[i + 2] * 60;
+                uint256 input = payTimes * (ownedCards[i + 1] * ownedCards[i + 3] / 100);
+                require(input <= type(uint32).max, "Value exceeds uint32 range");
+                debt += uint32(input);
+            }
+        }
+
+        return debt;
     }
 
     struct TradeListItem {

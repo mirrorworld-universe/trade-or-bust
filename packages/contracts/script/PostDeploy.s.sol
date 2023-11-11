@@ -4,7 +4,7 @@ pragma solidity >=0.8.0;
 import { Script } from "forge-std/Script.sol";
 import { console } from "forge-std/console.sol";
 import { IWorld } from "../src/codegen/world/IWorld.sol";
-import { Counter, Game,FundPool, GameState, GameMap,GameMapData } from "../src/codegen/Tables.sol";
+import { Counter, FundCards,Game,FundPool, GameState, GameMap,GameMapData } from "../src/codegen/Tables.sol";
 
 contract PostDeploy is Script {
   function run(address worldAddress) external {
@@ -24,6 +24,7 @@ contract PostDeploy is Script {
 
     initGameMap(world);
 
+    initFundCards(world);
     initFundPool(world);
 
     vm.stopBroadcast();
@@ -31,35 +32,54 @@ contract PostDeploy is Script {
   
   function initFundPool(IWorld world) private{
     
-    uint16[] memory newArray = getRandomNumbers();
+    uint16[9] memory newArray = getRandomNumbers();
     FundPool.set(world,10,newArray);
   }
+    // [1,10,10,30],
+    // [2,20,10,30],
+    // [3,30,10,30],
+    // [4,40,10,30],
+    // [5,50,10,30],
+    // [6,60,10,30],
 
+    // [7,110,12,40],
+    // [8,120,12,40],
+    // [9,130,12,40],
+    // [10,140,12,40],
+    // [11,150,12,40],
+    // [12,160,12,40],
 
-  // function bytesToUintArray(bytes memory data, uint32 length) private pure returns (uint8[] memory) {
-  //       require(data.length == length, "Invalid data length");
+    // [13,210,14,50],
+    // [14,220,14,50],
+    // [15,230,14,50],
+    // [16,240,14,50],
+    // [17,250,14,50],
+    // [18,260,14,50]
+  function initFundCards(IWorld world) private{
+    uint16[72] memory allCardIn4 = [
+      1,10,1,30,
+      2,20,1,30,
+      3,30,1,30,
+      4,40,1,30,
+      5,50,1,30,
+      6,60,1,30,
 
-  //       uint8[] memory result = new uint8[](length);
-        
-  //       for (uint32 x = 0; x < length; x++) {
-  //           uint8 terrainType = uint8(data[x]);
-  //           result[x] = terrainType;
-  //       }
-        
-  //       return result;
-  //   }
+      7,110,12,40,
+      8,120,12,40,
+      9,130,12,40,
+      10,140,12,40,
+      11,150,12,40,
+      12,160,12,40,
 
-    // function uint256ArrayToBytes(uint256[] memory array) public pure returns (bytes memory) {
-    //     bytes memory result = new bytes(array.length * 32); // 每个uint256需要32字节
-    //     for (uint256 i = 0; i < array.length; i++) {
-    //         bytes32 value = bytes32(array[i]);
-    //         for (uint256 j = 0; j < 32; j++) {
-    //             result[i * 32 + j] = value[j];
-    //         }
-    //     }
-    //     return result;
-    // }
-    
+      13,210,14,50,
+      14,220,14,50,
+      15,230,14,50,
+      16,240,14,50,
+      17,250,14,50,
+      18,260,14,50
+    ];
+    FundCards.set(world,allCardIn4);
+  }
     
 function bytesToUint16(bytes32 b) public pure returns (uint16) {
     uint16 number;
@@ -75,8 +95,11 @@ function bytesToUint16(bytes32 b) public pure returns (uint16) {
     }
     
 
-    function getRandomNumbers() public view returns (uint16[] memory) {
-        uint16[] memory selectedNumbers = new uint16[](9);
+    function getRandomNumbers() public view returns (uint16[9] memory) {
+        uint16[9] memory selectedNumbers;
+        for(uint8 i=0;i<9;i++){
+          selectedNumbers[i] = 0;
+        }
         uint8 count = 0;
         uint8 duplicatTimes = 0;//解决生成的数字始终一样的问题
 

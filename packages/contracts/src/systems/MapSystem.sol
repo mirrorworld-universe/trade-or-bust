@@ -2,7 +2,7 @@
 pragma solidity >=0.8.0;
 
 import { System } from "@latticexyz/world/src/System.sol";
-import { Log,Player,Game ,GameData,GameState,GameMap,MapItem,MapItemTableId,MapItemData,PlayerData,TransactionList,TransactionListData,PlayerTableId,IsPlayer,GameMapData} from "../codegen/Tables.sol";
+import { HasDebt, Debt, OwnedCards, Log,Player,Game ,GameData,GameState,GameMap,MapItem,MapItemTableId,MapItemData,PlayerData,TransactionList,TransactionListData,PlayerTableId,IsPlayer,GameMapData} from "../codegen/Tables.sol";
 import { addressToEntityKey } from "../addressToEntityKey.sol";
 import { getUniqueEntity } from "@latticexyz/world/src/modules/uniqueentity/getUniqueEntity.sol";
 import { getKeysInTable } from "@latticexyz/world/src/modules/keysintable/getKeysInTable.sol";
@@ -13,6 +13,11 @@ import { StoreCore } from "@latticexyz/store/src/StoreCore.sol";
 
 
 contract MapSystem is System {
+
+
+    function checkPay(bytes32 player) private returns(bool){
+        
+    }
     // uint O = 0;//Blank, no map cell here
     // uint N = 1;//Normal cell
     // uint R = 2;//Have a role
@@ -31,66 +36,21 @@ contract MapSystem is System {
         // mapArray[playerData.x][playerData.y] = 1;
         // mapArray[targetX][targetY] = 2;
 
+        require(!HasDebt.get(player),"You have debt now.");
 
+        uint32 debt = getDebt(player);
+        Log.set(player,debt);
+        if(debt > 0){
+            HasDebt.set(player,true);
+            Debt.set(player,debt);
+        }
+        // require(debt == 0,"You have debt, please pay it first.");
 
         //Check if a player on this block
         bool hasPlayer = hasPlayerOnBlock(player,targetX,targetY);
         require(!hasPlayer,"has player on this block");
         Player.setX(player,targetX);
         Player.setY(player,targetY);
-        //Auto pick coin
-        //Calculate all items to find which he got
-        // bytes32[] memory keysWithValue = getKeysWithValue(MapItemTableId, MapItem.encode(targetX, targetY));
-        // if(keysWithValue.length != 0){
-        //     for (uint256 i = 0; i < keysWithValue.length; i++) {
-        //         bytes32 key = keysWithValue[i];
-        //         MapItem.deleteRecord(key);
-                
-        //         PlayerData memory pd = Player.get(player);
-        //         Player.setMoney(player,pd.money + 10);
-        //     }
-        // }
-
-        
-
-        // //Auto add friend
-        // QueryFragment[] memory fragments = new QueryFragment[](1);
-        // fragments[0] = QueryFragment(QueryType.Has, PlayerTableId, new bytes(0));
-        // bytes32[][] memory keyTuples = query(fragments);
-
-        
-        // for (uint256 a = 0; a < keyTuples.length; a++) {
-        //     bytes32[] memory allPlayers = keyTuples[a];
-
-        //     for (uint256 i = 0; i < allPlayers.length; i++) {
-        //         bytes32 tmpPlayer = allPlayers[i];
-
-        //         if(tmpPlayer == player) continue;
-        //         PlayerData memory pd = Player.get(tmpPlayer);
-        //         bool withinFriendArea = calculateDistance(targetX,targetY,pd.x,pd.y,2);
-
-        //         if(withinFriendArea){
-        //             checkAndPushList(tmpPlayer,player);
-
-        //             // checkAndPushList(player,tmpPlayer);
-        //             TransactionListData memory ptld2 = TransactionList.get(player);
-        //             bool knowTmpP2 = false;
-
-        //             for (uint256 j = 0; j < ptld2.list.length; j++) {
-        //                 bytes32 tradeFriend = ptld2.list[j];
-                        
-        //                 if (tradeFriend == tmpPlayer) {
-        //                     knowTmpP2 = true;
-        //                     break;
-        //                 }
-        //             }
-
-        //             if (!knowTmpP2) {
-        //                 TransactionList.pushList(player,tmpPlayer);
-        //             }
-        //         }
-        //     }
-        // }
 
         return true;
     }
@@ -336,5 +296,29 @@ contract MapSystem is System {
         }
         
         return result;
+    }
+
+    function getDebt(bytes32 player) private view returns (uint32) {
+        uint256[] memory ownedCards = OwnedCards.get(player);
+        uint32 debt = 0;
+        require(ownedCards.length % 5 == 0, "Invalid array length");
+
+        for (uint i = 0; i < ownedCards.length; i += 5) {
+            // Check if the first element of the group is 0
+            if (ownedCards[i] == 0) {
+                // If it's 0, break the loop as the subsequent elements are all 0
+                break;
+            }
+
+            // Update the fourth element of each group to 9999
+            if(ownedCards[i + 4] + ownedCards[i + 2] * 60 < block.timestamp){
+                uint256 payTimes = (block.timestamp - ownedCards[i + 4]) / ownedCards[i + 2] * 60;
+                uint256 input = payTimes * (ownedCards[i + 1] * ownedCards[i + 3] / 100);
+                require(input <= type(uint32).max, "Value exceeds uint32 range");
+                debt += uint32(input);
+            }
+        }
+
+        return debt;
     }
 }

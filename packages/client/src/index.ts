@@ -5,7 +5,7 @@ import { runQuery ,getComponentValue,getComponentValueStrict, Has, Not  } from "
 
 const {
   components,
-  systemCalls: { increment,joinGame,askStart,move,pickAsset,pickFund,trade,acceptTrade,rejectTrade,finishGame,pickCoin,findPartner },
+  systemCalls: { pay,increment,joinGame,askStart,move,pickAsset,pickFund,trade,acceptTrade,rejectTrade,finishGame,pickCoin,findPartner },
   network,
 } = await setup();
 
@@ -77,6 +77,12 @@ components.IsPlayer.update$.subscribe((update)=>{
   globalThis.ponzi.isplayer_update?.(update);
 });
 
+components.OwnedCards.update$.subscribe((update)=>{
+  const [nextValue, prevValue] = update.value;
+  console.log("OwnedCards updated", update);
+  // globalThis.ponzi.isplayer_update?.(update);
+});
+
 components.TransactionList.update$.subscribe((update)=>{
   const [nextValue, prevValue] = update.value;
   console.log("TransactionList updated", update);
@@ -115,6 +121,11 @@ components.PlayerGameResult.update$.subscribe((update)=>{
   const [nextValue, prevValue] = update.value;
   console.log("PlayerGameResult updated", update);
   globalThis.ponzi.playergameresult_update?.(update);
+});
+components.HasDebt.update$.subscribe((update)=>{
+  const [nextValue, prevValue] = update.value;
+  console.log("HasDebt updated", update);
+  globalThis.ponzi.hasdebt_update?.(update);
 });
 
 //get functions
@@ -216,6 +227,11 @@ components.PlayerGameResult.update$.subscribe((update)=>{
 (window as any).searchPartner = async () => {
   console.log("send searchPartner...");
   let data = await findPartner();
+  console.log("send findPartner data:"+data);
+};
+(window as any).payDebt = async () => {
+  console.log("send pay...");
+  let data = await pay();
   console.log("send findPartner data:"+data);
 };
 
