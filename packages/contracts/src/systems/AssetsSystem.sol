@@ -2,7 +2,7 @@
 pragma solidity >=0.8.0;
 
 import { System } from "@latticexyz/world/src/System.sol";
-import { HasDebt,PlayerGameResult, Debt, OwnedCards,FundCards,FundPool,RaiseColddownData,RaiseColddown, AssetsListData,AssetsList, Log,Player,Game ,GameData,GameState,GameMap,MapItem,MapItemTableId,MapItemData,PlayerData,TransactionList,TransactionListData,PlayerTableId,IsPlayer,GameMapData} from "../codegen/Tables.sol";
+import { IsFinishGame,HasDebt,PlayerGameResult, Debt, OwnedCards,FundCards,FundPool,RaiseColddownData,RaiseColddown, AssetsListData,AssetsList, Log,Player,Game ,GameData,GameState,GameMap,MapItem,MapItemTableId,MapItemData,PlayerData,TransactionList,TransactionListData,PlayerTableId,IsPlayer,GameMapData} from "../codegen/Tables.sol";
 import { addressToEntityKey } from "../addressToEntityKey.sol";
 
 contract AssetsSystem is System {
@@ -37,12 +37,23 @@ contract AssetsSystem is System {
         HasDebt.deleteRecord(player);
         Debt.deleteRecord(player);
 
-        uint32 leftMoney = Player.getMoney(player) - debt;
-        if(leftMoney < 0){
+        if(Player.getMoney(player) < debt){
             setPlayerResult(player);
         }else{
+            uint32 leftMoney = Player.getMoney(player) - debt;
             Player.setMoney(player,leftMoney);
-            uint256[] memory ownedCards = updateFourthElement(player);
+            // uint256[] memory ownedCards = updateFourthElement(player);
+
+            uint256[] memory ownedCards = OwnedCards.get(player);
+            require(ownedCards.length % 5 == 0, "Invalid array length");
+
+            for (uint256 i = 0; i < ownedCards.length; i += 5) {
+                if (ownedCards[i] == 0) {
+                    break;
+                }
+                ownedCards[i + 4] = block.timestamp;
+            }
+
             OwnedCards.set(player, ownedCards);
         }
     }
@@ -52,6 +63,7 @@ contract AssetsSystem is System {
         bytes32 player = addressToEntityKey(_msgSender());
         require(IsPlayer.get(player), "Not a player when pick fund.");
 
+        require(!IsFinishGame.get(player),"You are already eliminated.");
         uint16[72] memory allCards = FundCards.get();
         
         bool cardIdExsists = false;
@@ -97,6 +109,7 @@ contract AssetsSystem is System {
         bytes32 player = addressToEntityKey(_msgSender());
         require(IsPlayer.get(player), "Not a player when pick asset.");
 
+        require(!IsFinishGame.get(player),"You are already eliminated.");
         RaiseColddownData memory rcd = RaiseColddown.get(player);
         uint256 time = rcd.end;
         require(block.timestamp >= time,"Raise colddown is not finish yet.");
@@ -134,6 +147,7 @@ contract AssetsSystem is System {
         int8 score6 = calculateScore(alData.oil);
         int32 totalScore = score1 + score2 + score3 + score4 + score5 + score6; 
 
+        IsFinishGame.set(player,true);
         PlayerGameResult.set(player,0,totalScore,score1,score2,score3,score4,score5,score6);
     }
 
@@ -191,10 +205,14 @@ contract AssetsSystem is System {
             }
 
             // Update the fourth element of each group to 9999
-            if(ownedCards[i + 3] < block.timestamp){
-                uint256 payTimes = (block.timestamp - ownedCards[i + 4]) / ownedCards[i + 2] * 60;
+            uint256 timeInterval = ownedCards[i + 2] * 60;
+            if(ownedCards[i + 4] + timeInterval < block.timestamp){
+                uint256 timeDiff = (block.timestamp - ownedCards[i + 4]);
+                uint256 payTimes = timeDiff / timeInterval;
+                // Log.set(player,payTimes);
                 uint256 input = payTimes * (ownedCards[i + 1] * ownedCards[i + 3] / 100);
-                require(input <= type(uint32).max, "Value exceeds uint32 range");
+                // Log.set(player,input);
+
                 debt += uint32(input);
             }
         }
@@ -202,7 +220,7 @@ contract AssetsSystem is System {
         return debt;
     }
 
-    function updateFourthElement(bytes32 player) private view returns (uint[] memory) {
+    function updateFourthElement(bytes32 player) private view returns (uint256[] memory) {
         uint256[] memory ownedCards = OwnedCards.get(player);
         require(ownedCards.length % 5 == 0, "Invalid array length");
 

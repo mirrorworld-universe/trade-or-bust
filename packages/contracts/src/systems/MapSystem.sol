@@ -2,7 +2,7 @@
 pragma solidity >=0.8.0;
 
 import { System } from "@latticexyz/world/src/System.sol";
-import { HasDebt, Debt, OwnedCards, Log,Player,Game ,GameData,GameState,GameMap,MapItem,MapItemTableId,MapItemData,PlayerData,TransactionList,TransactionListData,PlayerTableId,IsPlayer,GameMapData} from "../codegen/Tables.sol";
+import { IsFinishGame,HasDebt, Debt, OwnedCards, Log,Player,Game ,GameData,GameState,GameMap,MapItem,MapItemTableId,MapItemData,PlayerData,TransactionList,TransactionListData,PlayerTableId,IsPlayer,GameMapData} from "../codegen/Tables.sol";
 import { addressToEntityKey } from "../addressToEntityKey.sol";
 import { getUniqueEntity } from "@latticexyz/world/src/modules/uniqueentity/getUniqueEntity.sol";
 import { getKeysInTable } from "@latticexyz/world/src/modules/keysintable/getKeysInTable.sol";
@@ -14,17 +14,11 @@ import { StoreCore } from "@latticexyz/store/src/StoreCore.sol";
 
 contract MapSystem is System {
 
-
-    function checkPay(bytes32 player) private returns(bool){
-        
-    }
-    // uint O = 0;//Blank, no map cell here
-    // uint N = 1;//Normal cell
-    // uint R = 2;//Have a role
-    // uint C = 3;//Have a coin on it
     function move(uint256 targetX, uint256 targetY) public returns(bool){
         bytes32 player = addressToEntityKey(_msgSender());
         require(IsPlayer.get(player), "Not a player!!!");
+
+        require(!IsFinishGame.get(player),"You are already eliminated.");
         
         PlayerData memory playerData = Player.get(player);
         // GameMapData memory gameMap = GameMap.get();
@@ -299,7 +293,7 @@ contract MapSystem is System {
     }
 
     function getDebt(bytes32 player) private view returns (uint32) {
-        uint256[] memory ownedCards = OwnedCards.get(player);
+         uint256[] memory ownedCards = OwnedCards.get(player);
         uint32 debt = 0;
         require(ownedCards.length % 5 == 0, "Invalid array length");
 
@@ -311,10 +305,14 @@ contract MapSystem is System {
             }
 
             // Update the fourth element of each group to 9999
-            if(ownedCards[i + 4] + ownedCards[i + 2] * 60 < block.timestamp){
-                uint256 payTimes = (block.timestamp - ownedCards[i + 4]) / ownedCards[i + 2] * 60;
+            uint256 timeInterval = ownedCards[i + 2] * 60;
+            if(ownedCards[i + 4] + timeInterval < block.timestamp){
+                uint256 timeDiff = (block.timestamp - ownedCards[i + 4]);
+                uint256 payTimes = timeDiff / timeInterval;
+                // Log.set(player,payTimes);
                 uint256 input = payTimes * (ownedCards[i + 1] * ownedCards[i + 3] / 100);
-                require(input <= type(uint32).max, "Value exceeds uint32 range");
+                // Log.set(player,input);
+
                 debt += uint32(input);
             }
         }

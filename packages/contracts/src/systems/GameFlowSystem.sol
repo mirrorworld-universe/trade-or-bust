@@ -2,7 +2,7 @@
 pragma solidity >=0.8.0;
 
 import { System } from "@latticexyz/world/src/System.sol";
-import { OwnedCards,HasDebt,Debt,MapItem,MapItemTableId,RaiseColddown,TransactionList,PlayerGameResult, TradeListData, TradeList, PassiveTransactionData, IsTrading, PassiveTransaction, UnsolicitedTransaction,IsTrading, AssetsListData,AssetsList,Player,Game ,GameData,GameState,PlayerData,PlayerTableId,IsPlayer} from "../codegen/Tables.sol";
+import { IsFinishGame,OwnedCards,HasDebt,Debt,MapItem,MapItemTableId,RaiseColddown,TransactionList,PlayerGameResult, TradeListData, TradeList, PassiveTransactionData, IsTrading, PassiveTransaction, UnsolicitedTransaction,IsTrading, AssetsListData,AssetsList,Player,Game ,GameData,GameState,PlayerData,PlayerTableId,IsPlayer} from "../codegen/Tables.sol";
 
 import { addressToEntityKey } from "../addressToEntityKey.sol";
 import { query, QueryFragment, QueryType } from "@latticexyz/world/src/modules/keysintable/query.sol";
@@ -19,11 +19,17 @@ contract GameFlowSystem is System {
         int8 leiter;
         int8 gold;
         int8 oil;
+        bool bankrupt;
     }
 
   function finishGame() public{
+        // bytes32 player = addressToEntityKey(address(_msgSender()));
+        // require(!IsPlayer.get(player),"Already is a player!");
+
         uint32 gameState = GameState.get();
         require(gameState == 2,"Game is finished already");
+
+        // require(!IsFinishGame.get(player),"You are already eliminated.");
 
         GameState.set(1);
 
@@ -39,7 +45,7 @@ contract GameFlowSystem is System {
 
             for (uint256 i = 0; i < assetsLists.length; i++) {
                 bytes32 tmpPlayer = assetsLists[i];
-                if(!isBytes32NonZero(tmpPlayer)) continue;
+                // if(!isBytes32NonZero(tmpPlayer)) continue;
                 bool bankrupt = false;
                 if(HasDebt.get(tmpPlayer)){
                     uint32 debt = getDebt(tmpPlayer);
@@ -50,20 +56,15 @@ contract GameFlowSystem is System {
 
                 AssetsListData memory alData = AssetsList.get(tmpPlayer);
 
-                int32 totalScore = 0;
-                if(bankrupt){
-                    totalScore = 0;
-                }else{
-                    int8 score1 = calculateScore(alData.gpu);
-                    int8 score2 = calculateScore(alData.bitcoin);
-                    int8 score3 = calculateScore(alData.battery);
-                    int8 score4 = calculateScore(alData.leiter);
-                    int8 score5 = calculateScore(alData.gold);
-                    int8 score6 = calculateScore(alData.oil);
-                    totalScore = score1 + score2 + score3 + score4 + score5 + score6; 
-                }
+                int8 score1 = calculateScore(alData.gpu);
+                int8 score2 = calculateScore(alData.bitcoin);
+                int8 score3 = calculateScore(alData.battery);
+                int8 score4 = calculateScore(alData.leiter);
+                int8 score5 = calculateScore(alData.gold);
+                int8 score6 = calculateScore(alData.oil);
+                int32 totalScore = score1 + score2 + score3 + score4 + score5 + score6; 
                 
-                ScoreObj memory newItem = ScoreObj(tmpPlayer,totalScore,alData.gpu,alData.bitcoin,alData.battery,alData.leiter,alData.gold,alData.oil);
+                ScoreObj memory newItem = ScoreObj(tmpPlayer,totalScore,alData.gpu,alData.bitcoin,alData.battery,alData.leiter,alData.gold,alData.oil,bankrupt);
                 
                 assert(index < scoreObjList.length);
                 scoreObjList[index] = newItem;
@@ -71,12 +72,14 @@ contract GameFlowSystem is System {
             }
         }
 
-        scoreObjList = sortScores(scoreObjList);
+        // scoreObjList = sortScores(scoreObjList);
 
         for (uint256 a = 0; a < scoreObjList.length; a++) {
             ScoreObj memory obj = scoreObjList[a];
             bytes32 p = obj.player;
-            int32 rank = convertIntToUint(a);
+            if(IsFinishGame.get(p)) continue;
+
+            int32 rank = obj.bankrupt ? convertIntToUint(0) :convertIntToUint(a + 1);
             int32 totalScore = obj.totalScore;
             int8 gpu = obj.gpu;
             int8 bitcoin = obj.bitcoin;
@@ -85,6 +88,7 @@ contract GameFlowSystem is System {
             int8 gold = obj.gold;
             int8 oil = obj.oil;
 
+            // IsFinishGame.set(p,true);
             PlayerGameResult.set(p,rank,totalScore,gpu,bitcoin,battery,leiter,gold,oil);
         }
 
@@ -188,7 +192,7 @@ contract GameFlowSystem is System {
     }
 
     function getDebt(bytes32 player) private view returns (uint32) {
-        uint256[] memory ownedCards = OwnedCards.get(player);
+         uint256[] memory ownedCards = OwnedCards.get(player);
         uint32 debt = 0;
         require(ownedCards.length % 5 == 0, "Invalid array length");
 
@@ -200,10 +204,14 @@ contract GameFlowSystem is System {
             }
 
             // Update the fourth element of each group to 9999
-            if(ownedCards[i + 4] + ownedCards[i + 2] * 60 < block.timestamp){
-                uint256 payTimes = (block.timestamp - ownedCards[i + 4]) / ownedCards[i + 2] * 60;
+            uint256 timeInterval = ownedCards[i + 2] * 60;
+            if(ownedCards[i + 4] + timeInterval < block.timestamp){
+                uint256 timeDiff = (block.timestamp - ownedCards[i + 4]);
+                uint256 payTimes = timeDiff / timeInterval;
+                // Log.set(player,payTimes);
                 uint256 input = payTimes * (ownedCards[i + 1] * ownedCards[i + 3] / 100);
-                require(input <= type(uint32).max, "Value exceeds uint32 range");
+                // Log.set(player,input);
+
                 debt += uint32(input);
             }
         }

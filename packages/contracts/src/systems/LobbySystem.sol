@@ -2,7 +2,7 @@
 pragma solidity >=0.8.0;
 
 import { System } from "@latticexyz/world/src/System.sol";
-import { OwnedCards,PlayerGameResult,PlayerTableId,TradeList,TransactionList,RaiseColddown, AssetsList, Log,Player,Game ,GameData,GameState,GameMap,MapItem,PlayerData,IsPlayer,GameMapData} from "../codegen/Tables.sol";
+import { IsFinishGame,OwnedCards,PlayerGameResult,PlayerTableId,TradeList,TransactionList,RaiseColddown, AssetsList, Log,Player,Game ,GameData,GameState,GameMap,MapItem,PlayerData,IsPlayer,GameMapData} from "../codegen/Tables.sol";
 import { addressToEntityKey } from "../addressToEntityKey.sol";
 import { IWorld } from "../../src/codegen/world/IWorld.sol";
 import { getUniqueEntity } from "@latticexyz/world/src/modules/uniqueentity/getUniqueEntity.sol";
@@ -41,6 +41,7 @@ contract LobbySystem is System {
 
         //Delete the old game result component from this player 
         PlayerGameResult.deleteRecord(player);
+        IsFinishGame.deleteRecord(player);
         
         //Initialize the trades that this player is undering
         TradeList.set(player,'');

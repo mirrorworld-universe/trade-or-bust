@@ -2,13 +2,17 @@
 pragma solidity >=0.8.0;
 
 import { System } from "@latticexyz/world/src/System.sol";
-import { Debt,HasDebt,OwnedCards,TradeListData, TradeList, PassiveTransactionData, IsTrading, PassiveTransaction, UnsolicitedTransaction,IsTrading, AssetsListData,AssetsList,Player,Game ,GameData,GameState,PlayerData,PlayerTableId,IsPlayer} from "../codegen/Tables.sol";
+import { IsFinishGame,Debt,HasDebt,OwnedCards,TradeListData, TradeList, PassiveTransactionData, IsTrading, PassiveTransaction, UnsolicitedTransaction,IsTrading, AssetsListData,AssetsList,Player,Game ,GameData,GameState,PlayerData,PlayerTableId,IsPlayer} from "../codegen/Tables.sol";
 import { addressToEntityKey } from "../addressToEntityKey.sol";
 
 contract TradeSystem is System {
     function trade(bytes32 targetPlayer, uint8 assetKind, uint32 money) public{
         bytes32 player = addressToEntityKey(_msgSender());
         require(targetPlayer != player,"You can't trade yourself!");
+
+        require(!IsFinishGame.get(player),"You are already eliminated.");
+
+        require(!IsFinishGame.get(targetPlayer),"Your trade partner is already eliminated.");
 
         require(IsPlayer.get(player), "Not a player when pick asset.");
 
@@ -242,7 +246,7 @@ contract TradeSystem is System {
     }
 
     function getTradeDebt(bytes32 player) private view returns (uint32) {
-        uint256[] memory ownedCards = OwnedCards.get(player);
+         uint256[] memory ownedCards = OwnedCards.get(player);
         uint32 debt = 0;
         require(ownedCards.length % 5 == 0, "Invalid array length");
 
@@ -254,10 +258,14 @@ contract TradeSystem is System {
             }
 
             // Update the fourth element of each group to 9999
-            if(ownedCards[i + 4] + ownedCards[i + 2] * 60 < block.timestamp){
-                uint256 payTimes = (block.timestamp - ownedCards[i + 4]) / ownedCards[i + 2] * 60;
+            uint256 timeInterval = ownedCards[i + 2] * 60;
+            if(ownedCards[i + 4] + timeInterval < block.timestamp){
+                uint256 timeDiff = (block.timestamp - ownedCards[i + 4]);
+                uint256 payTimes = timeDiff / timeInterval;
+                // Log.set(player,payTimes);
                 uint256 input = payTimes * (ownedCards[i + 1] * ownedCards[i + 3] / 100);
-                require(input <= type(uint32).max, "Value exceeds uint32 range");
+                // Log.set(player,input);
+
                 debt += uint32(input);
             }
         }

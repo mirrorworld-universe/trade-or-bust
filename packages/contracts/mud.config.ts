@@ -124,7 +124,7 @@ export default mudConfig({
     },
     Log:{
       dataStruct:true,
-      schema:'uint32',
+      schema:'uint256',
     },
     //Partner list
     TransactionList:{
@@ -156,6 +156,9 @@ export default mudConfig({
         gold:'int8',
         oil:'int8',
       }
+    },
+    IsFinishGame:{
+      schema:"bool"
     },
     UnsolicitedTransaction:{
       dataStruct:true,

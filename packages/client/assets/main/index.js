@@ -5182,12 +5182,50 @@ System.register("chunks:///_virtual/ponzi-controller.ts", ['./rollupPluginModLoB
           var leiter = data.leiter;
           var gold = data.gold;
           var oil = data.oil;
+          var tmpArray = [gpu, bitcoin, battery, leiter, gold, oil];
+          var mostAsset = this.findMax(tmpArray);
           var show = true;
           ponzi_controller.instance.sendCCCMsg(ccc_msg.show_rank, {
             show: show,
             rank: rank,
-            points: points
+            points: points,
+            mostAsset: mostAsset
           });
+        };
+
+        _proto.findMax = function findMax(data) {
+          // 确保数据非空
+          if (data.length === 0) {
+            return "No data provided";
+          } // 使用 Math.max.apply 来找到最大值
+
+
+          var max = Math.max.apply(null, data); // 找到最大值的索引
+
+          var index = data.indexOf(max); // 根据索引返回相应的字符串
+
+          switch (index) {
+            case 0:
+              return "GPU";
+
+            case 1:
+              return "Bitcoin";
+
+            case 2:
+              return "Battery";
+
+            case 3:
+              return "Leiter";
+
+            case 4:
+              return "Gold";
+
+            case 5:
+              return "Oil";
+
+            default:
+              return "Unknown";
+          }
         };
 
         _proto.onPassiveTransactionUpdate = function onPassiveTransactionUpdate(update) {
@@ -5800,10 +5838,14 @@ System.register("chunks:///_virtual/popupui_manager.ts", ['./rollupPluginModLoBa
             var show = obj.show;
             var rank = obj.rank;
             var points = obj.points;
+            var mostAsset = obj.mostAsset;
+            var interestPaied = obj.interestPaied;
+            var borrowed = obj.borrowed;
+            var tradeTimes = obj.tradeTimes;
 
             if (show) {
               self.popupWindow(self.rank.node);
-              self.rank.init(rank, points);
+              self.rank.init(rank, points, mostAsset, interestPaied, borrowed, tradeTimes);
             } else {
               self.rank.node.active = false;
             }
@@ -5901,7 +5943,7 @@ System.register("chunks:///_virtual/rank.ts", ['./rollupPluginModLoBabelHelpers.
       ccc_msg = module.ccc_msg;
     }],
     execute: function () {
-      var _dec, _dec2, _dec3, _dec4, _class, _class2, _descriptor, _descriptor2, _descriptor3;
+      var _dec, _dec2, _dec3, _dec4, _dec5, _dec6, _dec7, _dec8, _class, _class2, _descriptor, _descriptor2, _descriptor3, _descriptor4, _descriptor5, _descriptor6, _descriptor7;
 
       cclegacy._RF.push({}, "54d5aEhC05A5IR98CYYCn2I", "rank", undefined);
 
@@ -5912,6 +5954,14 @@ System.register("chunks:///_virtual/rank.ts", ['./rollupPluginModLoBabelHelpers.
       }), _dec3 = property({
         type: Label
       }), _dec4 = property({
+        type: Label
+      }), _dec5 = property({
+        type: Label
+      }), _dec6 = property({
+        type: Label
+      }), _dec7 = property({
+        type: Label
+      }), _dec8 = property({
         type: Label
       }), _dec(_class = (_class2 = /*#__PURE__*/function (_Component) {
         _inheritsLoose(rank, _Component);
@@ -5931,6 +5981,14 @@ System.register("chunks:///_virtual/rank.ts", ['./rollupPluginModLoBabelHelpers.
 
           _initializerDefineProperty(_this, "labelNotice", _descriptor3, _assertThisInitialized(_this));
 
+          _initializerDefineProperty(_this, "labelMostAsset", _descriptor4, _assertThisInitialized(_this));
+
+          _initializerDefineProperty(_this, "labelInterestPaied", _descriptor5, _assertThisInitialized(_this));
+
+          _initializerDefineProperty(_this, "labelBorrowed", _descriptor6, _assertThisInitialized(_this));
+
+          _initializerDefineProperty(_this, "labelTradeTimes", _descriptor7, _assertThisInitialized(_this));
+
           return _this;
         }
 
@@ -5940,7 +5998,11 @@ System.register("chunks:///_virtual/rank.ts", ['./rollupPluginModLoBabelHelpers.
 
         _proto.update = function update(deltaTime) {};
 
-        _proto.init = function init(_rank, points) {
+        _proto.init = function init(_rank, points, mostAsset, interestPaied, borrowed, tradeTimes) {
+          this.labelMostAsset.string = "Most Held Asset ------ " + (mostAsset || "Unknown");
+          this.labelInterestPaied.string = "Total Interest Paid ------ " + (interestPaied || 0);
+          this.labelBorrowed.string = "Total Borrowd ------ $" + (borrowed || 0);
+          this.labelTradeTimes.string = "Total Trades ------ " + (tradeTimes || 0);
           this.labelPoints.string = points.toString();
           this.labelRank.string = _rank.toString();
           this.labelNotice.string = this.getNoticeByRank(_rank).toString();
@@ -5967,6 +6029,8 @@ System.register("chunks:///_virtual/rank.ts", ['./rollupPluginModLoBabelHelpers.
         _proto.getNoticeByRank = function getNoticeByRank(_rank2) {
           if (_rank2 === 1) {
             return "CONGRATS!! YOU ARE NOW THE MAN WHO BEAT THE MARKET!!";
+          } else if (_rank2 == 0) {
+            return "YOU WERE ELIMINATED DUE TO DEFAULT, NOT EVERYONE'S TOO BIG TO FAIL";
           } else {
             return "CONGRATS ON SURVIVING THE BEAR! YOU WILL THRIVE IN THE NEXT CYCLE!";
           }
@@ -5984,6 +6048,26 @@ System.register("chunks:///_virtual/rank.ts", ['./rollupPluginModLoBabelHelpers.
         writable: true,
         initializer: null
       }), _descriptor3 = _applyDecoratedDescriptor(_class2.prototype, "labelNotice", [_dec4], {
+        configurable: true,
+        enumerable: true,
+        writable: true,
+        initializer: null
+      }), _descriptor4 = _applyDecoratedDescriptor(_class2.prototype, "labelMostAsset", [_dec5], {
+        configurable: true,
+        enumerable: true,
+        writable: true,
+        initializer: null
+      }), _descriptor5 = _applyDecoratedDescriptor(_class2.prototype, "labelInterestPaied", [_dec6], {
+        configurable: true,
+        enumerable: true,
+        writable: true,
+        initializer: null
+      }), _descriptor6 = _applyDecoratedDescriptor(_class2.prototype, "labelBorrowed", [_dec7], {
+        configurable: true,
+        enumerable: true,
+        writable: true,
+        initializer: null
+      }), _descriptor7 = _applyDecoratedDescriptor(_class2.prototype, "labelTradeTimes", [_dec8], {
         configurable: true,
         enumerable: true,
         writable: true,

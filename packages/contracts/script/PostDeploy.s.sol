@@ -19,7 +19,6 @@ contract PostDeploy is Script {
     // Call increment on the world via the registered function selector
     uint32 newValue = world.increment();
     console.log("Increment via IWorld:", newValue);
-
     initGame(world);
 
     initGameMap(world);
@@ -57,12 +56,12 @@ contract PostDeploy is Script {
     // [18,260,14,50]
   function initFundCards(IWorld world) private{
     uint16[72] memory allCardIn4 = [
-      1,10,1,30,
-      2,20,1,30,
-      3,30,1,30,
-      4,40,1,30,
-      5,50,1,30,
-      6,60,1,30,
+      1,10,1,300,
+      2,20,1,300,
+      3,30,1,300,
+      4,40,1,300,
+      5,50,1,300,
+      6,60,1,300,
 
       7,110,12,40,
       8,120,12,40,
@@ -137,7 +136,7 @@ function bytesToUint16(bytes32 b) public pure returns (uint16) {
     GameState.set(world, 1);
 
     uint gameSec = 48 * 3600;
-    uint startWaitSec = 1 * 60;
+    uint startWaitSec = 1;//1 * 60;
     uint256 gameId = block.timestamp;
     uint256 startTime = block.timestamp + startWaitSec;
     uint256 endTime = startTime + gameSec;
