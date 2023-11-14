@@ -157,7 +157,7 @@ export default mudConfig({
         oil:'int8',
       }
     },
-    IsFinishGame:{
+    IsEliminated:{
       schema:"bool"
     },
     UnsolicitedTransaction:{

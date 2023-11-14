@@ -2,7 +2,7 @@
 pragma solidity >=0.8.0;
 
 import { System } from "@latticexyz/world/src/System.sol";
-import { IsFinishGame,HasDebt, Debt, OwnedCards, Log,Player,Game ,GameData,GameState,GameMap,MapItem,MapItemTableId,MapItemData,PlayerData,TransactionList,TransactionListData,PlayerTableId,IsPlayer,GameMapData} from "../codegen/Tables.sol";
+import { IsEliminated,HasDebt, Debt, OwnedCards, Log,Player,Game ,GameData,GameState,GameMap,MapItem,MapItemTableId,MapItemData,PlayerData,TransactionList,TransactionListData,PlayerTableId,IsPlayer,GameMapData} from "../codegen/Tables.sol";
 import { addressToEntityKey } from "../addressToEntityKey.sol";
 import { getUniqueEntity } from "@latticexyz/world/src/modules/uniqueentity/getUniqueEntity.sol";
 import { getKeysInTable } from "@latticexyz/world/src/modules/keysintable/getKeysInTable.sol";
@@ -18,7 +18,9 @@ contract MapSystem is System {
         bytes32 player = addressToEntityKey(_msgSender());
         require(IsPlayer.get(player), "Not a player!!!");
 
-        require(!IsFinishGame.get(player),"You are already eliminated.");
+        require(GameState.get() == 2,"Game is finished.");
+
+        require(!IsEliminated.get(player),"You are already eliminated.");
         
         PlayerData memory playerData = Player.get(player);
         // GameMapData memory gameMap = GameMap.get();
@@ -54,6 +56,8 @@ contract MapSystem is System {
         bytes32 player = addressToEntityKey(_msgSender());
         require(IsPlayer.get(player), "Not a player!!!");
         
+        require(GameState.get() == 2,"Game is finished.");
+
         PlayerData memory playerData = Player.get(player);
 
         bytes32[] memory keysWithValue = getKeysWithValue(MapItemTableId, MapItem.encode(playerData.x, playerData.y));
@@ -76,6 +80,7 @@ contract MapSystem is System {
     function findPartner() public returns(uint32){
         bytes32 player = addressToEntityKey(_msgSender());
         require(IsPlayer.get(player), "Not a player!!!");
+        require(GameState.get() == 2,"Game is finished.");
 
         QueryFragment[] memory fragments = new QueryFragment[](1);
         fragments[0] = QueryFragment(QueryType.Has, PlayerTableId, new bytes(0));

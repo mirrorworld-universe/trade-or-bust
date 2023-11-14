@@ -77,6 +77,18 @@ components.IsPlayer.update$.subscribe((update)=>{
   globalThis.ponzi.isplayer_update?.(update);
 });
 
+components.IsEliminated.update$.subscribe((update)=>{
+  const [nextValue, prevValue] = update.value;
+  console.log("IsEliminated updated", update);
+  globalThis.ponzi.iseliminated_update?.(update);
+});
+
+// components.IsFinishGame.update$.subscribe((update)=>{
+//   const [nextValue, prevValue] = update.value;
+//   console.log("IsFinishGame updated", update);
+//   globalThis.ponzi.isfinishgame_update?.(update);
+// });
+
 components.OwnedCards.update$.subscribe((update)=>{
   const [nextValue, prevValue] = update.value;
   console.log("OwnedCards updated", update);
@@ -164,6 +176,15 @@ components.HasDebt.update$.subscribe((update)=>{
     const matchingEntities = runQuery([
       Has(components.AssetsList)
       // Not(components.IsTrading)
+    ])
+
+    return matchingEntities;
+}
+
+(window as any).queryResultAssetsList = async ()=>{
+    const matchingEntities = runQuery([
+      Has(components.AssetsList),
+      Not(components.IsEliminated)
     ])
 
     return matchingEntities;

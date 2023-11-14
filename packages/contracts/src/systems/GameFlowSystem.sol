@@ -2,7 +2,7 @@
 pragma solidity >=0.8.0;
 
 import { System } from "@latticexyz/world/src/System.sol";
-import { IsFinishGame,OwnedCards,HasDebt,Debt,MapItem,MapItemTableId,RaiseColddown,TransactionList,PlayerGameResult, TradeListData, TradeList, PassiveTransactionData, IsTrading, PassiveTransaction, UnsolicitedTransaction,IsTrading, AssetsListData,AssetsList,Player,Game ,GameData,GameState,PlayerData,PlayerTableId,IsPlayer} from "../codegen/Tables.sol";
+import { IsEliminated,OwnedCards,HasDebt,Debt,MapItem,MapItemTableId,RaiseColddown,TransactionList,PlayerGameResult, TradeListData, TradeList, PassiveTransactionData, IsTrading, PassiveTransaction, UnsolicitedTransaction,IsTrading, AssetsListData,AssetsList,Player,Game ,GameData,GameState,PlayerData,PlayerTableId,IsPlayer} from "../codegen/Tables.sol";
 
 import { addressToEntityKey } from "../addressToEntityKey.sol";
 import { query, QueryFragment, QueryType } from "@latticexyz/world/src/modules/keysintable/query.sol";
@@ -23,13 +23,13 @@ contract GameFlowSystem is System {
     }
 
   function finishGame() public{
-        // bytes32 player = addressToEntityKey(address(_msgSender()));
-        // require(!IsPlayer.get(player),"Already is a player!");
+        bytes32 player = addressToEntityKey(address(_msgSender()));
+        require(IsPlayer.get(player),"Already is a player!");
 
         uint32 gameState = GameState.get();
         require(gameState == 2,"Game is finished already");
 
-        // require(!IsFinishGame.get(player),"You are already eliminated.");
+        require(!IsEliminated.get(player),"You are already eliminated.");
 
         GameState.set(1);
 
@@ -37,8 +37,8 @@ contract GameFlowSystem is System {
         fragments[0] = QueryFragment(QueryType.Has, PlayerTableId, new bytes(0));
         bytes32[][] memory keyTuples = query(fragments);
 
-        ScoreObj[] memory scoreObjList = new ScoreObj[](keyTuples.length);
-        uint32 index = 0;
+        // ScoreObj[] memory scoreObjList = new ScoreObj[](keyTuples.length);
+        // uint32 index = 0;
 
         for (uint256 a = 0; a < keyTuples.length; a++) {
             bytes32[] memory assetsLists = keyTuples[a];
@@ -54,43 +54,47 @@ contract GameFlowSystem is System {
                     }
                 }
 
-                AssetsListData memory alData = AssetsList.get(tmpPlayer);
+                if(bankrupt){
+                    IsEliminated.set(tmpPlayer,true);
+                }
+               
+                // AssetsListData memory alData = AssetsList.get(tmpPlayer);
 
-                int8 score1 = calculateScore(alData.gpu);
-                int8 score2 = calculateScore(alData.bitcoin);
-                int8 score3 = calculateScore(alData.battery);
-                int8 score4 = calculateScore(alData.leiter);
-                int8 score5 = calculateScore(alData.gold);
-                int8 score6 = calculateScore(alData.oil);
-                int32 totalScore = score1 + score2 + score3 + score4 + score5 + score6; 
+                // int8 score1 = calculateScore(alData.gpu);
+                // int8 score2 = calculateScore(alData.bitcoin);
+                // int8 score3 = calculateScore(alData.battery);
+                // int8 score4 = calculateScore(alData.leiter);
+                // int8 score5 = calculateScore(alData.gold);
+                // int8 score6 = calculateScore(alData.oil);
+                // int32 totalScore = score1 + score2 + score3 + score4 + score5 + score6; 
                 
-                ScoreObj memory newItem = ScoreObj(tmpPlayer,totalScore,alData.gpu,alData.bitcoin,alData.battery,alData.leiter,alData.gold,alData.oil,bankrupt);
+                // ScoreObj memory newItem = ScoreObj(tmpPlayer,totalScore,alData.gpu,alData.bitcoin,alData.battery,alData.leiter,alData.gold,alData.oil,bankrupt);
                 
-                assert(index < scoreObjList.length);
-                scoreObjList[index] = newItem;
-                index = index + 1;
+                // assert(index < scoreObjList.length);
+                // scoreObjList[index] = newItem;
+                // index = index + 1;
             }
         }
 
         // scoreObjList = sortScores(scoreObjList);
 
-        for (uint256 a = 0; a < scoreObjList.length; a++) {
-            ScoreObj memory obj = scoreObjList[a];
-            bytes32 p = obj.player;
-            if(IsFinishGame.get(p)) continue;
+        // for (uint256 a = 0; a < scoreObjList.length; a++) {
+        //     ScoreObj memory obj = scoreObjList[a];
+        //     bytes32 p = obj.player;
+        //     if(IsFinishGame.get(p)) continue;
 
-            int32 rank = obj.bankrupt ? convertIntToUint(0) :convertIntToUint(a + 1);
-            int32 totalScore = obj.totalScore;
-            int8 gpu = obj.gpu;
-            int8 bitcoin = obj.bitcoin;
-            int8 battery = obj.battery;
-            int8 leiter = obj.leiter;
-            int8 gold = obj.gold;
-            int8 oil = obj.oil;
+        //     int32 rank = obj.bankrupt ? convertIntToUint(0) :convertIntToUint(a + 1);
+        //     int32 totalScore = obj.totalScore;
+        //     int8 gpu = obj.gpu;
+        //     int8 bitcoin = obj.bitcoin;
+        //     int8 battery = obj.battery;
+        //     int8 leiter = obj.leiter;
+        //     int8 gold = obj.gold;
+        //     int8 oil = obj.oil;
 
-            // IsFinishGame.set(p,true);
-            PlayerGameResult.set(p,rank,totalScore,gpu,bitcoin,battery,leiter,gold,oil);
-        }
+        //     // IsFinishGame.set(p,true);
+        //     PlayerGameResult.set(p,rank,totalScore,gpu,bitcoin,battery,leiter,gold,oil);
+        // }
 
         clearPlayerComponents();
         clearMapComponents();
@@ -113,17 +117,17 @@ contract GameFlowSystem is System {
                 IsPlayer.deleteRecord(tmpPlayer);
                 Player.deleteRecord(tmpPlayer);
 
-                //Trade
-                AssetsList.deleteRecord(tmpPlayer);
-                UnsolicitedTransaction.deleteRecord(tmpPlayer);
-                PassiveTransaction.deleteRecord(tmpPlayer);
-                TradeList.deleteRecord(tmpPlayer);
-                TransactionList.deleteRecord(tmpPlayer);
-                RaiseColddown.deleteRecord(tmpPlayer);
+                // //Trade
+                // AssetsList.deleteRecord(tmpPlayer);
+                // UnsolicitedTransaction.deleteRecord(tmpPlayer);
+                // PassiveTransaction.deleteRecord(tmpPlayer);
+                // TradeList.deleteRecord(tmpPlayer);
+                // TransactionList.deleteRecord(tmpPlayer);
+                // RaiseColddown.deleteRecord(tmpPlayer);
 
-                //
-                HasDebt.deleteRecord(tmpPlayer);
-                Debt.deleteRecord(tmpPlayer);
+                // //
+                // HasDebt.deleteRecord(tmpPlayer);
+                // Debt.deleteRecord(tmpPlayer);
             }
         }
     }

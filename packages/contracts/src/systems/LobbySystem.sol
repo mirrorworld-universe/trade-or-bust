@@ -2,9 +2,9 @@
 pragma solidity >=0.8.0;
 
 import { System } from "@latticexyz/world/src/System.sol";
-import { IsFinishGame,OwnedCards,PlayerGameResult,PlayerTableId,TradeList,TransactionList,RaiseColddown, AssetsList, Log,Player,Game ,GameData,GameState,GameMap,MapItem,PlayerData,IsPlayer,GameMapData} from "../codegen/Tables.sol";
+import { HasDebt,Debt,PassiveTransaction,UnsolicitedTransaction,IsEliminated,OwnedCards,PlayerGameResult,PlayerTableId,TradeList,TransactionList,RaiseColddown, AssetsList, Log,Player,Game ,GameData,GameState,GameMap,MapItem,PlayerData,IsPlayer,GameMapData} from "../codegen/Tables.sol";
 import { addressToEntityKey } from "../addressToEntityKey.sol";
-import { IWorld } from "../../src/codegen/world/IWorld.sol";
+// import { IWorld } from "../../src/codegen/world/IWorld.sol";
 import { getUniqueEntity } from "@latticexyz/world/src/modules/uniqueentity/getUniqueEntity.sol";
 
 import { query, QueryFragment, QueryType } from "@latticexyz/world/src/modules/keysintable/query.sol";
@@ -14,7 +14,7 @@ contract LobbySystem is System {
     function joinGame() public returns (uint32){
         bytes32 player = addressToEntityKey(address(_msgSender()));
         require(!IsPlayer.get(player),"Already is a player!");
-
+        clearComs(player);
         IsPlayer.set(player,true);
 
         GameData memory gameData = Game.get();
@@ -41,7 +41,7 @@ contract LobbySystem is System {
 
         //Delete the old game result component from this player 
         PlayerGameResult.deleteRecord(player);
-        IsFinishGame.deleteRecord(player);
+        IsEliminated.deleteRecord(player);
         
         //Initialize the trades that this player is undering
         TradeList.set(player,'');
@@ -50,6 +50,20 @@ contract LobbySystem is System {
         OwnedCards.set(player,ownedCards);
 
         return 2;
+    }
+
+    function clearComs(bytes32 tmpPlayer) private {
+        //Trade
+        AssetsList.deleteRecord(tmpPlayer);
+        UnsolicitedTransaction.deleteRecord(tmpPlayer);
+        PassiveTransaction.deleteRecord(tmpPlayer);
+        TradeList.deleteRecord(tmpPlayer);
+        TransactionList.deleteRecord(tmpPlayer);
+        RaiseColddown.deleteRecord(tmpPlayer);
+
+        //
+        HasDebt.deleteRecord(tmpPlayer);
+        Debt.deleteRecord(tmpPlayer);
     }
 
     //A player think the game is about to start, ask himself's game info

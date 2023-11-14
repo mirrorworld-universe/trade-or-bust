@@ -2,7 +2,7 @@
 pragma solidity >=0.8.0;
 
 import { System } from "@latticexyz/world/src/System.sol";
-import { IsFinishGame,Debt,HasDebt,OwnedCards,TradeListData, TradeList, PassiveTransactionData, IsTrading, PassiveTransaction, UnsolicitedTransaction,IsTrading, AssetsListData,AssetsList,Player,Game ,GameData,GameState,PlayerData,PlayerTableId,IsPlayer} from "../codegen/Tables.sol";
+import { IsEliminated,Debt,HasDebt,OwnedCards,TradeListData, TradeList, PassiveTransactionData, IsTrading, PassiveTransaction, UnsolicitedTransaction,IsTrading, AssetsListData,AssetsList,Player,Game ,GameData,GameState,PlayerData,PlayerTableId,IsPlayer} from "../codegen/Tables.sol";
 import { addressToEntityKey } from "../addressToEntityKey.sol";
 
 contract TradeSystem is System {
@@ -10,9 +10,11 @@ contract TradeSystem is System {
         bytes32 player = addressToEntityKey(_msgSender());
         require(targetPlayer != player,"You can't trade yourself!");
 
-        require(!IsFinishGame.get(player),"You are already eliminated.");
+        require(GameState.get() == 2,"Game is finished.");
 
-        require(!IsFinishGame.get(targetPlayer),"Your trade partner is already eliminated.");
+        require(!IsEliminated.get(player),"You are already eliminated.");
+
+        require(!IsEliminated.get(targetPlayer),"Your trade partner is already eliminated.");
 
         require(IsPlayer.get(player), "Not a player when pick asset.");
 
@@ -73,6 +75,8 @@ contract TradeSystem is System {
         bytes32 player = addressToEntityKey(_msgSender());
         require(IsPlayer.get(player), "Not a player when pick asset.");
 
+        require(GameState.get() == 2,"Game is finished.");
+
         require(IsTrading.get(player),"This player is not in a trading");
 
         require(!HasDebt.get(player),"You have to pay your debt first.");
@@ -124,6 +128,8 @@ contract TradeSystem is System {
     function rejectTrade() public returns(bool){
         bytes32 player = addressToEntityKey(_msgSender());
         require(IsPlayer.get(player), "Not a player when pick asset.");
+
+        require(GameState.get() == 2,"Game is finished.");
 
         require(IsTrading.get(player),"This player is not in a trading");
 

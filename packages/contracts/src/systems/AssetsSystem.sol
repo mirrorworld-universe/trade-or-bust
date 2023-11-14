@@ -2,7 +2,7 @@
 pragma solidity >=0.8.0;
 
 import { System } from "@latticexyz/world/src/System.sol";
-import { IsFinishGame,HasDebt,PlayerGameResult, Debt, OwnedCards,FundCards,FundPool,RaiseColddownData,RaiseColddown, AssetsListData,AssetsList, Log,Player,Game ,GameData,GameState,GameMap,MapItem,MapItemTableId,MapItemData,PlayerData,TransactionList,TransactionListData,PlayerTableId,IsPlayer,GameMapData} from "../codegen/Tables.sol";
+import { IsEliminated,HasDebt, Debt, OwnedCards,FundCards,FundPool,RaiseColddownData,RaiseColddown, AssetsListData,AssetsList, Log,Player,Game ,GameData,GameState,GameMap,MapItem,MapItemTableId,MapItemData,PlayerData,TransactionList,TransactionListData,PlayerTableId,IsPlayer,GameMapData} from "../codegen/Tables.sol";
 import { addressToEntityKey } from "../addressToEntityKey.sol";
 
 contract AssetsSystem is System {
@@ -34,11 +34,13 @@ contract AssetsSystem is System {
         uint32 debt = getNowDebt(player);
         require(debt > 0,"You have no debt!");
 
+        require(GameState.get() == 2,"Game is finished.");
+
         HasDebt.deleteRecord(player);
         Debt.deleteRecord(player);
 
         if(Player.getMoney(player) < debt){
-            setPlayerResult(player);
+            IsEliminated.set(player,true);
         }else{
             uint32 leftMoney = Player.getMoney(player) - debt;
             Player.setMoney(player,leftMoney);
@@ -63,7 +65,9 @@ contract AssetsSystem is System {
         bytes32 player = addressToEntityKey(_msgSender());
         require(IsPlayer.get(player), "Not a player when pick fund.");
 
-        require(!IsFinishGame.get(player),"You are already eliminated.");
+        require(GameState.get() == 2,"Game is finished.");
+
+        require(!IsEliminated.get(player),"You are already eliminated.");
         uint16[72] memory allCards = FundCards.get();
         
         bool cardIdExsists = false;
@@ -109,7 +113,10 @@ contract AssetsSystem is System {
         bytes32 player = addressToEntityKey(_msgSender());
         require(IsPlayer.get(player), "Not a player when pick asset.");
 
-        require(!IsFinishGame.get(player),"You are already eliminated.");
+        require(GameState.get() == 2,"Game is finished.");
+
+        require(!IsEliminated.get(player),"You are already eliminated.");
+
         RaiseColddownData memory rcd = RaiseColddown.get(player);
         uint256 time = rcd.end;
         require(block.timestamp >= time,"Raise colddown is not finish yet.");
@@ -136,20 +143,20 @@ contract AssetsSystem is System {
     }
 
 
-    function setPlayerResult(bytes32 player) private{
-        AssetsListData memory alData = AssetsList.get(player);
+    // function setPlayerResult(bytes32 player) private{
+    //     AssetsListData memory alData = AssetsList.get(player);
 
-        int8 score1 = calculateScore(alData.gpu);
-        int8 score2 = calculateScore(alData.bitcoin);
-        int8 score3 = calculateScore(alData.battery);
-        int8 score4 = calculateScore(alData.leiter);
-        int8 score5 = calculateScore(alData.gold);
-        int8 score6 = calculateScore(alData.oil);
-        int32 totalScore = score1 + score2 + score3 + score4 + score5 + score6; 
+    //     int8 score1 = calculateScore(alData.gpu);
+    //     int8 score2 = calculateScore(alData.bitcoin);
+    //     int8 score3 = calculateScore(alData.battery);
+    //     int8 score4 = calculateScore(alData.leiter);
+    //     int8 score5 = calculateScore(alData.gold);
+    //     int8 score6 = calculateScore(alData.oil);
+    //     int32 totalScore = score1 + score2 + score3 + score4 + score5 + score6; 
 
-        IsFinishGame.set(player,true);
-        PlayerGameResult.set(player,0,totalScore,score1,score2,score3,score4,score5,score6);
-    }
+    //     IsFinishGame.set(player,true);
+    //     PlayerGameResult.set(player,0,totalScore,score1,score2,score3,score4,score5,score6);
+    // }
 
     
     function calculateScore(int8 num) private pure returns (int8) {

@@ -23,6 +23,6 @@ import { TransactionList, TransactionListData, TransactionListTableId } from "./
 import { TradeList, TradeListData, TradeListTableId } from "./tables/TradeList.sol";
 import { IsTrading, IsTradingTableId } from "./tables/IsTrading.sol";
 import { PlayerGameResult, PlayerGameResultData, PlayerGameResultTableId } from "./tables/PlayerGameResult.sol";
-import { IsFinishGame, IsFinishGameTableId } from "./tables/IsFinishGame.sol";
+import { IsEliminated, IsEliminatedTableId } from "./tables/IsEliminated.sol";
 import { UnsolicitedTransaction, UnsolicitedTransactionData, UnsolicitedTransactionTableId } from "./tables/UnsolicitedTransaction.sol";
 import { PassiveTransaction, PassiveTransactionData, PassiveTransactionTableId } from "./tables/PassiveTransaction.sol";
