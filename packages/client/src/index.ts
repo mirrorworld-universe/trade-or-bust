@@ -248,12 +248,11 @@ components.HasDebt.update$.subscribe((update)=>{
 (window as any).searchPartner = async () => {
   console.log("send searchPartner...");
   let data = await findPartner();
-  console.log("send findPartner data:"+data);
+  // console.log("send findPartner data:"+data);
 };
 (window as any).payDebt = async () => {
   console.log("send pay...");
   let data = await pay();
-  console.log("send findPartner data:"+data);
 };
 
 

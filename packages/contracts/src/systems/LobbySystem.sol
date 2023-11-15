@@ -20,7 +20,7 @@ contract LobbySystem is System {
         GameData memory gameData = Game.get();
         GameMapData memory gameMap = GameMap.get();
         uint[][] memory mapArray = bytesToUintArray(gameMap.mapArray,20,20);
-        uint256[2][] memory coordinations = getBornCoordinates(mapArray,20,20,1);
+        uint256[2][] memory coordinations = getBornCoordinates(player,mapArray,20,20,1);
 
         require(!hasPlayerOnBlock(player,coordinations[0][0],coordinations[0][1]),"Fail, born cell has a player already");
 
@@ -95,7 +95,7 @@ contract LobbySystem is System {
         return 3;
     }
 
-    function hasPlayerOnBlock(bytes32 player,uint256 targetX,uint256 targetY) private returns(bool){
+    function hasPlayerOnBlock(bytes32 player,uint256 targetX,uint256 targetY) view private returns(bool){
         QueryFragment[] memory fragments = new QueryFragment[](1);
         fragments[0] = QueryFragment(QueryType.Has, PlayerTableId, new bytes(0));
         bytes32[][] memory keyTuples = query(fragments);
@@ -182,15 +182,17 @@ contract LobbySystem is System {
     // uint O = 0;//Blank, no map cell here
     // uint N = 1;//Normal cell
     // uint R = 2;//Have a role
-    function getBornCoordinates(uint[][] memory mapArray, uint256 width, uint256 height, uint n) private view returns (uint[2][] memory) {
+    function getBornCoordinates(bytes32 player,uint[][] memory mapArray, uint256 width, uint256 height, uint n) private view returns (uint[2][] memory) {
         require(n <= ((12 - 8 + 1) * (12 - 8 + 1)), "Invalid number of coordinates requested."); // 校验所需坐标数量是否合法
 
         uint[2][] memory coordinates = new uint[2][](n);
         uint selectedCount = 0;
 
         while (selectedCount < n) {
-            uint row = getRandomNumberInRange(8, 12); // 生成介于 8 和 12 之间的随机行号
-            uint col = getRandomNumberInRange(8, 12); // 生成介于 8 和 12 之间的随机列号
+            uint row = getRandomNumberInRange(4, 16); // 生成介于 8 和 12 之间的随机行号
+            uint col = getRandomNumberInRange(4, 16); // 生成介于 8 和 12 之间的随机列号
+
+            if(hasPlayerOnBlock(player,row,col)) continue;
 
             if (mapArray[row][col] == 1) { // 检查要选择的位置是否符合条件，例如等于 0
                 coordinates[selectedCount] = [row, col];
