@@ -16,7 +16,8 @@ globalThis.ponzi = {
   game:null,
   gameMap:null,
   mapItems:null,
-  players:null
+  players:null,
+  transactionList:null,
 }
 
 globalThis.env = {
@@ -98,6 +99,8 @@ components.OwnedCards.update$.subscribe((update)=>{
 components.TransactionList.update$.subscribe((update)=>{
   const [nextValue, prevValue] = update.value;
   console.log("TransactionList updated", update);
+
+  globalThis.ponzi.transactionList = nextValue
   globalThis.ponzi.transactionlist_update?.(update);
 });
 
@@ -138,6 +141,11 @@ components.HasDebt.update$.subscribe((update)=>{
   const [nextValue, prevValue] = update.value;
   console.log("HasDebt updated", update);
   globalThis.ponzi.hasdebt_update?.(update);
+});
+components.TransactionList.update$.subscribe((update)=>{
+  const [nextValue, prevValue] = update.value;
+  console.log("TransactionList updated", update);
+  globalThis.ponzi.transactionlist_update?.(update);
 });
 
 //get functions
