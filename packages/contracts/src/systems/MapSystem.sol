@@ -18,6 +18,8 @@ contract MapSystem is System {
         bytes32 player = addressToEntityKey(_msgSender());
         require(IsPlayer.get(player), "Not a player!!!");
 
+        require(!isGameTimeUp(),"Game time up.");
+
         require(GameState.get() == 2,"Game is finished.");
 
         require(!IsEliminated.get(player),"You are already eliminated.");
@@ -56,6 +58,8 @@ contract MapSystem is System {
         bytes32 player = addressToEntityKey(_msgSender());
         require(IsPlayer.get(player), "Not a player!!!");
         
+        require(!isGameTimeUp(),"Game time up.");
+
         require(GameState.get() == 2,"Game is finished.");
 
         PlayerData memory playerData = Player.get(player);
@@ -79,6 +83,7 @@ contract MapSystem is System {
 
     function findPartner() public returns(uint32){
         bytes32 player = addressToEntityKey(_msgSender());
+        require(!isGameTimeUp(),"Game time up.");
         require(IsPlayer.get(player), "Not a player!!!");
         require(GameState.get() == 2,"Game is finished.");
 
@@ -261,6 +266,11 @@ contract MapSystem is System {
         }
         
         return string(buffer);
+    }
+
+    function isGameTimeUp() private view returns(bool){
+        GameData memory game = Game.get();
+        return block.timestamp >= game.endTime;
     }
 
     function isMoveValid(uint256 currentX, uint256 currentY, uint256 targetX, uint256 targetY) private pure returns (bool) {

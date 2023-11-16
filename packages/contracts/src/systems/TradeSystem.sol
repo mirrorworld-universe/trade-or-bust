@@ -9,6 +9,7 @@ contract TradeSystem is System {
     function trade(bytes32 targetPlayer, uint8 assetKind, uint32 money) public{
         bytes32 player = addressToEntityKey(_msgSender());
         require(targetPlayer != player,"You can't trade yourself!");
+        require(!isGameTimeUp(),"Game time up.");
 
         require(GameState.get() == 2,"Game is finished.");
 
@@ -75,6 +76,7 @@ contract TradeSystem is System {
         bytes32 player = addressToEntityKey(_msgSender());
         require(IsPlayer.get(player), "Not a player when pick asset.");
 
+        require(!isGameTimeUp(),"Game time up.");
         require(GameState.get() == 2,"Game is finished.");
 
         require(IsTrading.get(player),"This player is not in a trading");
@@ -129,6 +131,7 @@ contract TradeSystem is System {
         bytes32 player = addressToEntityKey(_msgSender());
         require(IsPlayer.get(player), "Not a player when pick asset.");
 
+        require(!isGameTimeUp(),"Game time up.");
         require(GameState.get() == 2,"Game is finished.");
 
         require(IsTrading.get(player),"This player is not in a trading");
@@ -279,6 +282,11 @@ contract TradeSystem is System {
         return debt;
     }
 
+    function isGameTimeUp() private view returns(bool){
+        GameData memory game = Game.get();
+        return block.timestamp >= game.endTime;
+    }
+    
     struct TradeListItem {
         bool isPresenter;
         bool isSuccess;

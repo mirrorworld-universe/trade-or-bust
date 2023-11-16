@@ -31,6 +31,7 @@ contract AssetsSystem is System {
         bytes32 player = addressToEntityKey(_msgSender());
         require(IsPlayer.get(player), "Not a player when pick fund.");
 
+        require(!isGameTimeUp(),"Game time up.");
         uint32 debt = getNowDebt(player);
         require(debt > 0,"You have no debt!");
 
@@ -65,6 +66,7 @@ contract AssetsSystem is System {
         bytes32 player = addressToEntityKey(_msgSender());
         require(IsPlayer.get(player), "Not a player when pick fund.");
 
+        require(!isGameTimeUp(),"Game time up.");
         require(GameState.get() == 2,"Game is finished.");
 
         require(!IsEliminated.get(player),"You are already eliminated.");
@@ -113,6 +115,7 @@ contract AssetsSystem is System {
         bytes32 player = addressToEntityKey(_msgSender());
         require(IsPlayer.get(player), "Not a player when pick asset.");
 
+        require(!isGameTimeUp(),"Game time up.");
         require(GameState.get() == 2,"Game is finished.");
 
         require(!IsEliminated.get(player),"You are already eliminated.");
@@ -167,6 +170,10 @@ contract AssetsSystem is System {
         return score;
     }
 
+    function isGameTimeUp() private view returns(bool){
+        GameData memory game = Game.get();
+        return block.timestamp >= game.endTime;
+    }
 
     function getRandomNumbers(uint16[9] memory selectedNumbers) private view returns (uint16) {
         uint8 duplicatTimes = 0;//解决生成的数字始终一样的问题

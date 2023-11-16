@@ -135,8 +135,8 @@ function bytesToUint16(bytes32 b) public pure returns (uint16) {
 
     GameState.set(world, 1);
 
-    uint gameSec = 48 * 3600;
-    uint startWaitSec = 1;//1 * 60;
+    uint gameSec = 60;//整个游戏的游戏时长，单位秒
+    uint startWaitSec = 1 * 60;//游戏开始后的等待开始时间
     uint256 gameId = block.timestamp;
     uint256 startTime = block.timestamp + startWaitSec;
     uint256 endTime = startTime + gameSec;

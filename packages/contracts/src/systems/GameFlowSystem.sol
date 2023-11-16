@@ -151,8 +151,8 @@ contract GameFlowSystem is System {
     }
 
     function resetGame() private{
-        uint gameSec = 48 * 3600;
-        uint startWaitSec = 8;
+        uint gameSec = 60;
+        uint startWaitSec = 60;
         uint256 gameId = block.timestamp;
         uint256 startTime = block.timestamp + startWaitSec;
         uint256 endTime = startTime + gameSec;

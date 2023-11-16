@@ -14,6 +14,7 @@ contract LobbySystem is System {
     function joinGame() public returns (uint32){
         bytes32 player = addressToEntityKey(address(_msgSender()));
         require(!IsPlayer.get(player),"Already is a player!");
+        require(!isGameTimeUp(),"Game time up.");
         clearComs(player);
         IsPlayer.set(player,true);
 
@@ -73,6 +74,7 @@ contract LobbySystem is System {
             return 1;
         }
 
+        require(!isGameTimeUp(),"Game time up.");
         GameData memory gameData = Game.get();
         uint32 gameState = GameState.get();
         uint256 nowTime = block.timestamp;
@@ -228,5 +230,10 @@ contract LobbySystem is System {
 
     function isEmpty(bytes32 data) private pure returns (bool) {
         return data == bytes32(0);
+    }
+
+    function isGameTimeUp() private view returns(bool){
+        GameData memory game = Game.get();
+        return block.timestamp >= game.endTime;
     }
 }
