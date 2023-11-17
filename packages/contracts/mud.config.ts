@@ -42,7 +42,8 @@ export default mudConfig({
       schema:{
         gameId:'uint256',
         startTime:'uint256',
-        endTime:'uint256'
+        endTime:'uint256',
+        finishTime:'uint256'//可以开始下一局游戏了
       }
     },
     GameState:{

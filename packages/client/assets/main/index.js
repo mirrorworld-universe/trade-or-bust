@@ -1588,13 +1588,15 @@ System.register("chunks:///_virtual/flowui_manager.ts", ['./rollupPluginModLoBab
           var game = globalThis.ponzi.game;
           if (!game) return;
           var nowTime = sys.now() / 1000;
+          var success = nowTime >= Number(game.endTime) && this.gameState == component_state.game_ingame && this.isPlayer;
 
-          if (nowTime - Number(game.endTime) >= 0 && this.gameState == component_state.game_ingame && this.isPlayer) {
+          if (success) {
             if (!this.gameFinishWindow.active) {
               this.gameFinishWindow.active = true;
               ponzi_controller.instance.sendCCCMsg(ccc_msg.hideallpop, true);
             }
           } else {
+            // console.error(nowTime , Number(game.endTime) ,Number(game.finishTime));
             this.gameFinishWindow.active = false;
           }
         };
@@ -1606,7 +1608,7 @@ System.register("chunks:///_virtual/flowui_manager.ts", ['./rollupPluginModLoBab
               while (1) switch (_context.prev = _context.next) {
                 case 0:
                   self = this;
-                  ponzi_controller.instance.on(ccc_msg.on_game_update, function (_ref) {
+                  ponzi_controller.instance.on(ccc_msg.on_gamestate_update, function (_ref) {
                     var oldObj = _ref.oldObj,
                         newObj = _ref.newObj;
                     self.gameState = newObj;
@@ -1614,19 +1616,21 @@ System.register("chunks:///_virtual/flowui_manager.ts", ['./rollupPluginModLoBab
                   ponzi_controller.instance.on(ccc_msg.on_isplayer_update, function (_ref2) {
                     var entity = _ref2.entity,
                         newObj = _ref2.newObj;
+                    if (newObj == null) return;
                     var playerEntity = globalThis.ponzi.currentPlayer;
 
                     if (entity == playerEntity) {
-                      self.isPlayer = newObj;
+                      self.isPlayer = newObj.value;
                     }
                   });
-                  _context.next = 5;
+                  this.gameState = globalThis.ponzi.gameState;
+                  _context.next = 6;
                   return this.getIsPlayer();
 
-                case 5:
+                case 6:
                   this.isPlayer = _context.sent;
 
-                case 6:
+                case 7:
                 case "end":
                   return _context.stop();
               }
@@ -1642,7 +1646,7 @@ System.register("chunks:///_virtual/flowui_manager.ts", ['./rollupPluginModLoBab
 
         _proto.getIsPlayer = /*#__PURE__*/function () {
           var _getIsPlayer = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee2() {
-            var playerEntity, isPlayer;
+            var playerEntity, isPlayer, queryObj;
             return _regeneratorRuntime().wrap(function _callee2$(_context2) {
               while (1) switch (_context2.prev = _context2.next) {
                 case 0:
@@ -1653,22 +1657,23 @@ System.register("chunks:///_virtual/flowui_manager.ts", ['./rollupPluginModLoBab
                   return window.queryValue == null ? void 0 : window.queryValue(window.env.components.IsPlayer, playerEntity);
 
                 case 5:
-                  isPlayer = _context2.sent;
-                  _context2.next = 10;
+                  queryObj = _context2.sent;
+                  isPlayer = queryObj.value;
+                  _context2.next = 11;
                   break;
 
-                case 8:
-                  _context2.prev = 8;
+                case 9:
+                  _context2.prev = 9;
                   _context2.t0 = _context2["catch"](2);
 
-                case 10:
+                case 11:
                   return _context2.abrupt("return", isPlayer);
 
-                case 11:
+                case 12:
                 case "end":
                   return _context2.stop();
               }
-            }, _callee2, null, [[2, 8]]);
+            }, _callee2, null, [[2, 9]]);
           }));
 
           function getIsPlayer() {
@@ -2317,6 +2322,7 @@ System.register("chunks:///_virtual/GameData.ts", ['cc'], function (exports) {
         this.gameId = void 0;
         this.startTime = void 0;
         this.endTime = void 0;
+        this.finishTime = void 0;
       });
 
       cclegacy._RF.pop();
@@ -2576,7 +2582,7 @@ System.register("chunks:///_virtual/list_utils.ts", ['./rollupPluginModLoBabelHe
 });
 
 System.register("chunks:///_virtual/lobby-controller.ts", ['./rollupPluginModLoBabelHelpers.js', 'cc', './component_state.ts', './ponzi-controller.ts', './ccc_msg.ts', './string_utils.ts'], function (exports) {
-  var _applyDecoratedDescriptor, _inheritsLoose, _initializerDefineProperty, _assertThisInitialized, _asyncToGenerator, _regeneratorRuntime, cclegacy, _decorator, Label, Node, Component, log, sys, warn, component_state, ponzi_controller, ccc_msg, string_utils;
+  var _applyDecoratedDescriptor, _inheritsLoose, _initializerDefineProperty, _assertThisInitialized, _asyncToGenerator, _regeneratorRuntime, cclegacy, _decorator, Label, Node, sys, Component, log, warn, component_state, ponzi_controller, ccc_msg, string_utils;
 
   return {
     setters: [function (module) {
@@ -2591,9 +2597,9 @@ System.register("chunks:///_virtual/lobby-controller.ts", ['./rollupPluginModLoB
       _decorator = module._decorator;
       Label = module.Label;
       Node = module.Node;
+      sys = module.sys;
       Component = module.Component;
       log = module.log;
-      sys = module.sys;
       warn = module.warn;
     }, function (module) {
       component_state = module.component_state;
@@ -2605,12 +2611,22 @@ System.register("chunks:///_virtual/lobby-controller.ts", ['./rollupPluginModLoB
       string_utils = module.string_utils;
     }],
     execute: function () {
-      var _dec, _dec2, _dec3, _dec4, _dec5, _dec6, _dec7, _dec8, _dec9, _class, _class2, _descriptor, _descriptor2, _descriptor3, _descriptor4, _descriptor5, _descriptor6, _descriptor7, _descriptor8;
+      var _dec, _dec2, _dec3, _dec4, _dec5, _dec6, _dec7, _dec8, _dec9, _dec10, _class, _class2, _descriptor, _descriptor2, _descriptor3, _descriptor4, _descriptor5, _descriptor6, _descriptor7, _descriptor8, _descriptor9;
 
       cclegacy._RF.push({}, "9aed4LIkbtB8b7eNgSv/Q/O", "lobby-controller", undefined);
 
       var ccclass = _decorator.ccclass,
           property = _decorator.property;
+
+      var time_state = /*#__PURE__*/function (time_state) {
+        time_state[time_state["default"] = 0] = "default";
+        time_state[time_state["prepare"] = 1] = "prepare";
+        time_state[time_state["gaming"] = 2] = "gaming";
+        time_state[time_state["calculating"] = 3] = "calculating";
+        time_state[time_state["longTimeNoPlay"] = 4] = "longTimeNoPlay";
+        return time_state;
+      }(time_state || {});
+
       var lobby_controller = exports('lobby_controller', (_dec = ccclass('lobby_controller'), _dec2 = property({
         type: Label
       }), _dec3 = property({
@@ -2622,10 +2638,12 @@ System.register("chunks:///_virtual/lobby-controller.ts", ['./rollupPluginModLoB
       }), _dec6 = property({
         type: Node
       }), _dec7 = property({
-        type: Label
-      }), _dec8 = property({
         type: Node
+      }), _dec8 = property({
+        type: Label
       }), _dec9 = property({
+        type: Node
+      }), _dec10 = property({
         type: Node
       }), _dec(_class = (_class2 = /*#__PURE__*/function (_Component) {
         _inheritsLoose(lobby_controller, _Component);
@@ -2649,20 +2667,26 @@ System.register("chunks:///_virtual/lobby-controller.ts", ['./rollupPluginModLoB
 
           _initializerDefineProperty(_this, "btnLastRank", _descriptor5, _assertThisInitialized(_this));
 
-          _initializerDefineProperty(_this, "welcomeLabel", _descriptor6, _assertThisInitialized(_this));
+          _initializerDefineProperty(_this, "btnRestart", _descriptor6, _assertThisInitialized(_this));
 
-          _initializerDefineProperty(_this, "lobbyNode", _descriptor7, _assertThisInitialized(_this));
+          _initializerDefineProperty(_this, "welcomeLabel", _descriptor7, _assertThisInitialized(_this));
 
-          _initializerDefineProperty(_this, "gameNode", _descriptor8, _assertThisInitialized(_this));
+          _initializerDefineProperty(_this, "lobbyNode", _descriptor8, _assertThisInitialized(_this));
+
+          _initializerDefineProperty(_this, "gameNode", _descriptor9, _assertThisInitialized(_this));
 
           _this.IsPlayerButGameNotStart = "The Round Has Not Started Yet";
           _this.NotPlayerButGameIsStart = "Game is started, just waiting for entering game!";
           _this.IsPlayerButFinishGame = "You are already eliminated, please wait for next game.";
           _this.IsPlayerGameReachTimeButNotStart = "The Game Has Already Started, Please Click \"Play\" To Begin.";
           _this.NotPlayerAndGameNotReachTime = "Game is not start, just join us!";
+          _this.GameCalculating = "Game is calculating, click \"Last Rank\" to check your last rank(If you have one).";
+          _this.LongTimeNoPlay = "Join game and play.";
+          _this.IsPlayerButLongTimeNoPlay = "The last game is over,please click \"Restart\" start a new game.";
           _this.welcomeInited = false;
           _this.inited = false;
           _this.timer = null;
+          _this._oldTimeState = time_state["default"];
           _this.leftTime = void 0;
           return _this;
         }
@@ -2694,6 +2718,9 @@ System.register("chunks:///_virtual/lobby-controller.ts", ['./rollupPluginModLoB
                   return this.initWelcome();
 
                 case 6:
+                  this.updateTimeState();
+
+                case 7:
                 case "end":
                   return _context.stop();
               }
@@ -2707,26 +2734,68 @@ System.register("chunks:///_virtual/lobby-controller.ts", ['./rollupPluginModLoB
           return update;
         }();
 
-        _proto.onBtnLastRankClicked = /*#__PURE__*/function () {
-          var _onBtnLastRankClicked = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee2() {
-            var isEliminated;
+        _proto.onBtnRestartClicked = /*#__PURE__*/function () {
+          var _onBtnRestartClicked = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee2() {
             return _regeneratorRuntime().wrap(function _callee2$(_context2) {
               while (1) switch (_context2.prev = _context2.next) {
                 case 0:
+                  log("onBtnRestartClicked");
+                  ponzi_controller.instance.sendCCCMsg(ccc_msg.network_block_ui, true);
+                  _context2.prev = 2;
+                  _context2.next = 5;
+                  return window.restartGame == null ? void 0 : window.restartGame();
+
+                case 5:
+                  _context2.next = 10;
+                  break;
+
+                case 7:
+                  _context2.prev = 7;
+                  _context2.t0 = _context2["catch"](2);
+                  ponzi_controller.instance.sendCCCMsg(ccc_msg.single_button_dialog, {
+                    content: "The end game encountered a problem.",
+                    btnText: "OK"
+                  });
+
+                case 10:
+                  _context2.prev = 10;
+                  ponzi_controller.instance.sendCCCMsg(ccc_msg.network_block_ui, false);
+                  return _context2.finish(10);
+
+                case 13:
+                case "end":
+                  return _context2.stop();
+              }
+            }, _callee2, null, [[2, 7, 10, 13]]);
+          }));
+
+          function onBtnRestartClicked() {
+            return _onBtnRestartClicked.apply(this, arguments);
+          }
+
+          return onBtnRestartClicked;
+        }();
+
+        _proto.onBtnLastRankClicked = /*#__PURE__*/function () {
+          var _onBtnLastRankClicked = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee3() {
+            var isEliminated;
+            return _regeneratorRuntime().wrap(function _callee3$(_context3) {
+              while (1) switch (_context3.prev = _context3.next) {
+                case 0:
                   log("onBtnLastRankClicked1");
-                  _context2.next = 3;
+                  _context3.next = 3;
                   return this.getIsEliminated();
 
                 case 3:
-                  isEliminated = _context2.sent;
+                  isEliminated = _context3.sent;
                   log("onBtnLastRankClicked2", isEliminated);
                   ponzi_controller.instance.calResultOnClient(isEliminated);
 
                 case 6:
                 case "end":
-                  return _context2.stop();
+                  return _context3.stop();
               }
-            }, _callee2, this);
+            }, _callee3, this);
           }));
 
           function onBtnLastRankClicked() {
@@ -2741,12 +2810,12 @@ System.register("chunks:///_virtual/lobby-controller.ts", ['./rollupPluginModLoB
         };
 
         _proto.onJoinGameClicked = /*#__PURE__*/function () {
-          var _onJoinGameClicked = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee3() {
-            return _regeneratorRuntime().wrap(function _callee3$(_context3) {
-              while (1) switch (_context3.prev = _context3.next) {
+          var _onJoinGameClicked = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee4() {
+            return _regeneratorRuntime().wrap(function _callee4$(_context4) {
+              while (1) switch (_context4.prev = _context4.next) {
                 case 0:
                   ponzi_controller.instance.sendCCCMsg(ccc_msg.network_block_ui, true);
-                  _context3.next = 3;
+                  _context4.next = 3;
                   return window.joinGame == null ? void 0 : window.joinGame();
 
                 case 3:
@@ -2754,9 +2823,9 @@ System.register("chunks:///_virtual/lobby-controller.ts", ['./rollupPluginModLoB
 
                 case 4:
                 case "end":
-                  return _context3.stop();
+                  return _context4.stop();
               }
-            }, _callee3);
+            }, _callee4);
           }));
 
           function onJoinGameClicked() {
@@ -2767,18 +2836,18 @@ System.register("chunks:///_virtual/lobby-controller.ts", ['./rollupPluginModLoB
         }();
 
         _proto.onTriggerGameClicked = /*#__PURE__*/function () {
-          var _onTriggerGameClicked = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee4() {
-            return _regeneratorRuntime().wrap(function _callee4$(_context4) {
-              while (1) switch (_context4.prev = _context4.next) {
+          var _onTriggerGameClicked = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee5() {
+            return _regeneratorRuntime().wrap(function _callee5$(_context5) {
+              while (1) switch (_context5.prev = _context5.next) {
                 case 0:
-                  _context4.next = 2;
+                  _context5.next = 2;
                   return this.triggerGame();
 
                 case 2:
                 case "end":
-                  return _context4.stop();
+                  return _context5.stop();
               }
-            }, _callee4, this);
+            }, _callee5, this);
           }));
 
           function onTriggerGameClicked() {
@@ -2789,19 +2858,19 @@ System.register("chunks:///_virtual/lobby-controller.ts", ['./rollupPluginModLoB
         }();
 
         _proto.initWelcome = /*#__PURE__*/function () {
-          var _initWelcome = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee5() {
+          var _initWelcome = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee6() {
             var playerEntity, hash;
-            return _regeneratorRuntime().wrap(function _callee5$(_context5) {
-              while (1) switch (_context5.prev = _context5.next) {
+            return _regeneratorRuntime().wrap(function _callee6$(_context6) {
+              while (1) switch (_context6.prev = _context6.next) {
                 case 0:
                   playerEntity = globalThis.ponzi.currentPlayer;
 
                   if (playerEntity) {
-                    _context5.next = 3;
+                    _context6.next = 3;
                     break;
                   }
 
-                  return _context5.abrupt("return");
+                  return _context6.abrupt("return");
 
                 case 3:
                   this.welcomeInited = true;
@@ -2810,9 +2879,9 @@ System.register("chunks:///_virtual/lobby-controller.ts", ['./rollupPluginModLoB
 
                 case 6:
                 case "end":
-                  return _context5.stop();
+                  return _context6.stop();
               }
-            }, _callee5, this);
+            }, _callee6, this);
           }));
 
           function initWelcome() {
@@ -2823,10 +2892,10 @@ System.register("chunks:///_virtual/lobby-controller.ts", ['./rollupPluginModLoB
         }();
 
         _proto.initLobby = /*#__PURE__*/function () {
-          var _initLobby = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee6() {
+          var _initLobby = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee7() {
             var gameObj;
-            return _regeneratorRuntime().wrap(function _callee6$(_context6) {
-              while (1) switch (_context6.prev = _context6.next) {
+            return _regeneratorRuntime().wrap(function _callee7$(_context7) {
+              while (1) switch (_context7.prev = _context7.next) {
                 case 0:
                   gameObj = globalThis.ponzi.game;
 
@@ -2839,9 +2908,9 @@ System.register("chunks:///_virtual/lobby-controller.ts", ['./rollupPluginModLoB
 
                 case 2:
                 case "end":
-                  return _context6.stop();
+                  return _context7.stop();
               }
-            }, _callee6, this);
+            }, _callee7, this);
           }));
 
           function initLobby() {
@@ -2852,12 +2921,12 @@ System.register("chunks:///_virtual/lobby-controller.ts", ['./rollupPluginModLoB
         }();
 
         _proto.triggerGame = /*#__PURE__*/function () {
-          var _triggerGame = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee7() {
-            return _regeneratorRuntime().wrap(function _callee7$(_context7) {
-              while (1) switch (_context7.prev = _context7.next) {
+          var _triggerGame = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee8() {
+            return _regeneratorRuntime().wrap(function _callee8$(_context8) {
+              while (1) switch (_context8.prev = _context8.next) {
                 case 0:
                   ponzi_controller.instance.sendCCCMsg(ccc_msg.network_block_ui, true);
-                  _context7.next = 3;
+                  _context8.next = 3;
                   return window.askStart == null ? void 0 : window.askStart();
 
                 case 3:
@@ -2865,9 +2934,9 @@ System.register("chunks:///_virtual/lobby-controller.ts", ['./rollupPluginModLoB
 
                 case 4:
                 case "end":
-                  return _context7.stop();
+                  return _context8.stop();
               }
-            }, _callee7);
+            }, _callee8);
           }));
 
           function triggerGame() {
@@ -2878,33 +2947,33 @@ System.register("chunks:///_virtual/lobby-controller.ts", ['./rollupPluginModLoB
         }();
 
         _proto.startCountdownAnimator = /*#__PURE__*/function () {
-          var _startCountdownAnimator = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee9(leftSeconds) {
+          var _startCountdownAnimator = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee10(leftSeconds) {
             var self;
-            return _regeneratorRuntime().wrap(function _callee9$(_context9) {
-              while (1) switch (_context9.prev = _context9.next) {
+            return _regeneratorRuntime().wrap(function _callee10$(_context10) {
+              while (1) switch (_context10.prev = _context10.next) {
                 case 0:
                   self = this;
                   this.startCountDownAnimation(leftSeconds);
                   clearTimeout(this.timer);
                   log("start timer:", leftSeconds * 1000);
-                  this.timer = setTimeout( /*#__PURE__*/_asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee8() {
-                    return _regeneratorRuntime().wrap(function _callee8$(_context8) {
-                      while (1) switch (_context8.prev = _context8.next) {
+                  this.timer = setTimeout( /*#__PURE__*/_asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee9() {
+                    return _regeneratorRuntime().wrap(function _callee9$(_context9) {
+                      while (1) switch (_context9.prev = _context9.next) {
                         case 0:
                           self.updateLobby();
 
                         case 1:
                         case "end":
-                          return _context8.stop();
+                          return _context9.stop();
                       }
-                    }, _callee8);
+                    }, _callee9);
                   })), leftSeconds * 1000);
 
                 case 5:
                 case "end":
-                  return _context9.stop();
+                  return _context10.stop();
               }
-            }, _callee9, this);
+            }, _callee10, this);
           }));
 
           function startCountdownAnimator(_x2) {
@@ -2914,54 +2983,113 @@ System.register("chunks:///_virtual/lobby-controller.ts", ['./rollupPluginModLoB
           return startCountdownAnimator;
         }();
 
-        _proto.updateLobby = /*#__PURE__*/function () {
-          var _updateLobby = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee10() {
-            var gameState, gameObj, isPlayer, IsEliminated, timeStamp, gameStartTime, leftSeconds, _timeStamp, _gameStartTime, _leftSeconds;
+        _proto.updateTimeState = function updateTimeState() {
+          var timeState = time_state["default"];
+          var gameObj = globalThis.ponzi.game;
+          var timeStamp = sys.now();
+          timeStamp = Number(timeStamp) / 1000;
+          var gameStartTime = Number(gameObj.startTime);
+          var endTime = Number(gameObj.endTime);
+          var finishTime = Number(gameObj.finishTime);
 
-            return _regeneratorRuntime().wrap(function _callee10$(_context10) {
-              while (1) switch (_context10.prev = _context10.next) {
+          if (timeStamp < gameStartTime) {
+            timeState = time_state.prepare;
+          } else if (timeStamp >= gameStartTime && timeStamp < endTime) {
+            timeState = time_state.gaming;
+          } else if (timeStamp >= endTime && timeStamp < finishTime) {
+            timeState = time_state.calculating;
+          } else if (timeStamp >= finishTime) {
+            timeState = time_state.longTimeNoPlay;
+          } else {
+            console.error("Unknown time state");
+          }
+
+          if (this._oldTimeState != timeState) {
+            this._oldTimeState = timeState;
+            this.updateLobby();
+          }
+        };
+
+        _proto.updateLobby = /*#__PURE__*/function () {
+          var _updateLobby = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee11() {
+            var gameState, gameObj, isPlayer, IsEliminated, timeStamp, gameStartTime, endTime, finishTime, leftSeconds, timeState, _timeStamp, _gameStartTime, _leftSeconds;
+
+            return _regeneratorRuntime().wrap(function _callee11$(_context11) {
+              while (1) switch (_context11.prev = _context11.next) {
                 case 0:
                   gameState = globalThis.ponzi.gameState;
                   gameObj = globalThis.ponzi.game;
 
                   if (gameObj) {
-                    _context10.next = 5;
+                    _context11.next = 5;
                     break;
                   }
 
                   warn("No game obj when update lobby");
-                  return _context10.abrupt("return");
+                  return _context11.abrupt("return");
 
                 case 5:
                   isPlayer = false;
                   IsEliminated = false;
-                  _context10.prev = 7;
-                  _context10.next = 10;
+                  _context11.prev = 7;
+                  _context11.next = 10;
                   return this.getIsPlayer();
 
                 case 10:
-                  isPlayer = _context10.sent;
-                  _context10.next = 13;
+                  isPlayer = _context11.sent;
+                  _context11.next = 13;
                   return this.getIsEliminated();
 
                 case 13:
-                  IsEliminated = _context10.sent;
-                  _context10.next = 19;
+                  IsEliminated = _context11.sent;
+                  _context11.next = 19;
                   break;
 
                 case 16:
-                  _context10.prev = 16;
-                  _context10.t0 = _context10["catch"](7);
-                  console.error(_context10.t0);
+                  _context11.prev = 16;
+                  _context11.t0 = _context11["catch"](7);
+                  console.error(_context11.t0);
 
                 case 19:
+                  timeStamp = sys.now();
+                  timeStamp = Number(timeStamp) / 1000;
+                  gameStartTime = Number(gameObj.startTime);
+                  endTime = Number(gameObj.endTime);
+                  finishTime = Number(gameObj.finishTime);
+                  leftSeconds = Math.floor(gameStartTime - timeStamp);
+                  timeState = time_state["default"];
+
+                  if (timeStamp < gameStartTime) {
+                    timeState = time_state.prepare;
+                  } else if (timeStamp >= gameStartTime && timeStamp < endTime) {
+                    timeState = time_state.gaming;
+                  } else if (timeStamp >= endTime && timeStamp < finishTime) {
+                    timeState = time_state.calculating;
+                  } else if (timeStamp >= finishTime) {
+                    timeState = time_state.longTimeNoPlay;
+                  } else {
+                    console.error("Unknown time state");
+                  }
+
                   if (gameState == component_state.game_ingame) {
                     if (isPlayer && !IsEliminated) {
                       log("ingame+isPlayer");
                       this.showGameNode();
-                      this.btnJoinGame.active = false;
-                      this.btnTriggerGame.active = false;
-                      this.btnLastRank.active = false;
+
+                      if (timeState == time_state.gaming || timeState == time_state.prepare) {
+                        this.btnJoinGame.active = false;
+                        this.btnTriggerGame.active = false;
+                        this.btnLastRank.active = false;
+                        this.btnRestart.active = false;
+                      } else if (timeState == time_state.calculating || timeState == time_state.longTimeNoPlay) {
+                        this.contentLabel.string = this.IsPlayerButLongTimeNoPlay;
+                        this.btnJoinGame.active = false;
+                        this.btnTriggerGame.active = false;
+                        this.btnLastRank.active = false;
+                        this.btnRestart.active = true;
+                      } else {
+                        console.error("未知的时间段");
+                      }
                     } else if (isPlayer && IsEliminated) {
                       this.showLobbyNode();
                       log("ingame+isPlayer+IsEliminated");
@@ -2969,6 +3097,7 @@ System.register("chunks:///_virtual/lobby-controller.ts", ['./rollupPluginModLoB
                       this.btnJoinGame.active = false;
                       this.btnTriggerGame.active = false;
                       this.btnLastRank.active = true;
+                      this.btnRestart.active = false;
                     } else {
                       this.showLobbyNode();
                       log("ingame+notPlayer");
@@ -2976,19 +3105,17 @@ System.register("chunks:///_virtual/lobby-controller.ts", ['./rollupPluginModLoB
                       this.btnJoinGame.active = true;
                       this.btnTriggerGame.active = false;
                       this.btnLastRank.active = true;
+                      this.btnRestart.active = false;
                     }
                   } else if (gameState == component_state.game_waiting) {
                     this.showLobbyNode();
-                    timeStamp = sys.now();
-                    timeStamp = Number(timeStamp) / 1000;
-                    gameStartTime = Number(gameObj.startTime);
-                    leftSeconds = Math.floor(gameStartTime - timeStamp);
 
                     if (isPlayer) {
                       this.contentLabel.string = "Game is started, just enter game!";
                       this.btnJoinGame.active = false;
                       this.btnTriggerGame.active = false;
                       this.btnLastRank.active = false;
+                      this.btnRestart.active = false;
                       _timeStamp = sys.now();
                       _timeStamp = Number(_timeStamp) / 1000;
                       _gameStartTime = Number(gameObj.startTime);
@@ -2999,30 +3126,71 @@ System.register("chunks:///_virtual/lobby-controller.ts", ['./rollupPluginModLoB
                         this.contentLabel.string = this.IsPlayerButGameNotStart;
                         this.startCountdownAnimator(_leftSeconds);
                       } else {
-                        log("gameWaiting+isPlayer+isStarted");
-                        this.contentLabel.string = this.IsPlayerGameReachTimeButNotStart;
-                        this.btnJoinGame.active = false;
-                        this.btnTriggerGame.active = true;
+                        log("gameWaiting+isPlayer+isStarted", timeState);
+
+                        if (timeState == time_state.prepare) {
+                          console.error("不可能");
+                        } else if (timeState == time_state.gaming) {
+                          this.contentLabel.string = this.IsPlayerGameReachTimeButNotStart;
+                          this.btnJoinGame.active = false;
+                          this.btnTriggerGame.active = true;
+                          this.btnRestart.active = false;
+                        } else if (timeState == time_state.calculating || timeState == time_state.longTimeNoPlay) {
+                          this.contentLabel.string = this.IsPlayerGameReachTimeButNotStart;
+                          this.btnJoinGame.active = false;
+                          this.btnTriggerGame.active = false;
+                          this.btnRestart.active = true;
+                        } else {
+                          console.error("未知的状态");
+                        }
                       }
                     } else {
-                      log("gameWaiting+notPlayer");
+                      log("gameWaiting+notPlayer,timeState:" + timeState);
 
-                      if (leftSeconds > 0) {
-                        this.startCountdownAnimator(leftSeconds);
+                      if (timeState == time_state.prepare) {
+                        if (leftSeconds > 0) {
+                          this.startCountdownAnimator(leftSeconds);
+                        }
+
+                        this.contentLabel.string = this.NotPlayerAndGameNotReachTime;
+                        this.btnJoinGame.active = true;
+                        this.btnTriggerGame.active = false;
+                        this.btnLastRank.active = false;
+                        this.btnRestart.active = false;
+                      } else if (timeState == time_state.gaming) {
+                        this.contentLabel.string = this.NotPlayerButGameIsStart;
+                        this.btnJoinGame.active = true;
+                        this.btnTriggerGame.active = false;
+                        this.btnLastRank.active = false;
+                        this.btnRestart.active = false;
+                      } else if (timeState == time_state.calculating) {
+                        this.contentLabel.string = this.GameCalculating;
+                        this.btnJoinGame.active = false;
+                        this.btnTriggerGame.active = false;
+                        this.btnLastRank.active = true;
+                        this.btnRestart.active = false;
+                      } else if (timeState == time_state.longTimeNoPlay) {
+                        this.contentLabel.string = this.LongTimeNoPlay;
+                        this.btnJoinGame.active = true;
+                        this.btnTriggerGame.active = false;
+                        this.btnLastRank.active = false;
+                        this.btnRestart.active = false;
+                      } else {
+                        console.error("未捕获的时间段");
+                        this.contentLabel.string = this.LongTimeNoPlay;
+                        this.btnJoinGame.active = true;
+                        this.btnTriggerGame.active = false;
+                        this.btnLastRank.active = false;
+                        this.btnRestart.active = false;
                       }
-
-                      this.contentLabel.string = this.NotPlayerAndGameNotReachTime;
-                      this.btnJoinGame.active = true;
-                      this.btnTriggerGame.active = false;
-                      this.btnLastRank.active = true;
                     }
                   }
 
-                case 20:
+                case 28:
                 case "end":
-                  return _context10.stop();
+                  return _context11.stop();
               }
-            }, _callee10, this, [[7, 16]]);
+            }, _callee11, this, [[7, 16]]);
           }));
 
           function updateLobby() {
@@ -3033,34 +3201,34 @@ System.register("chunks:///_virtual/lobby-controller.ts", ['./rollupPluginModLoB
         }();
 
         _proto.getIsEliminated = /*#__PURE__*/function () {
-          var _getIsEliminated = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee11() {
+          var _getIsEliminated = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee12() {
             var playerEntity, IsEliminated;
-            return _regeneratorRuntime().wrap(function _callee11$(_context11) {
-              while (1) switch (_context11.prev = _context11.next) {
+            return _regeneratorRuntime().wrap(function _callee12$(_context12) {
+              while (1) switch (_context12.prev = _context12.next) {
                 case 0:
                   playerEntity = globalThis.ponzi.currentPlayer;
                   IsEliminated = false;
-                  _context11.prev = 2;
-                  _context11.next = 5;
+                  _context12.prev = 2;
+                  _context12.next = 5;
                   return window.queryValue == null ? void 0 : window.queryValue(window.env.components.IsEliminated, playerEntity);
 
                 case 5:
-                  IsEliminated = _context11.sent;
-                  _context11.next = 10;
+                  IsEliminated = _context12.sent;
+                  _context12.next = 10;
                   break;
 
                 case 8:
-                  _context11.prev = 8;
-                  _context11.t0 = _context11["catch"](2);
+                  _context12.prev = 8;
+                  _context12.t0 = _context12["catch"](2);
 
                 case 10:
-                  return _context11.abrupt("return", IsEliminated);
+                  return _context12.abrupt("return", IsEliminated);
 
                 case 11:
                 case "end":
-                  return _context11.stop();
+                  return _context12.stop();
               }
-            }, _callee11, null, [[2, 8]]);
+            }, _callee12, null, [[2, 8]]);
           }));
 
           function getIsEliminated() {
@@ -3071,34 +3239,34 @@ System.register("chunks:///_virtual/lobby-controller.ts", ['./rollupPluginModLoB
         }();
 
         _proto.getIsPlayer = /*#__PURE__*/function () {
-          var _getIsPlayer = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee12() {
+          var _getIsPlayer = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee13() {
             var playerEntity, isPlayer;
-            return _regeneratorRuntime().wrap(function _callee12$(_context12) {
-              while (1) switch (_context12.prev = _context12.next) {
+            return _regeneratorRuntime().wrap(function _callee13$(_context13) {
+              while (1) switch (_context13.prev = _context13.next) {
                 case 0:
                   playerEntity = globalThis.ponzi.currentPlayer;
                   isPlayer = false;
-                  _context12.prev = 2;
-                  _context12.next = 5;
+                  _context13.prev = 2;
+                  _context13.next = 5;
                   return window.queryValue == null ? void 0 : window.queryValue(window.env.components.IsPlayer, playerEntity);
 
                 case 5:
-                  isPlayer = _context12.sent;
-                  _context12.next = 10;
+                  isPlayer = _context13.sent;
+                  _context13.next = 10;
                   break;
 
                 case 8:
-                  _context12.prev = 8;
-                  _context12.t0 = _context12["catch"](2);
+                  _context13.prev = 8;
+                  _context13.t0 = _context13["catch"](2);
 
                 case 10:
-                  return _context12.abrupt("return", isPlayer);
+                  return _context13.abrupt("return", isPlayer);
 
                 case 11:
                 case "end":
-                  return _context12.stop();
+                  return _context13.stop();
               }
-            }, _callee12, null, [[2, 8]]);
+            }, _callee13, null, [[2, 8]]);
           }));
 
           function getIsPlayer() {
@@ -3110,19 +3278,7 @@ System.register("chunks:///_virtual/lobby-controller.ts", ['./rollupPluginModLoB
 
         _proto.registerListeners = function registerListeners() {
           var self = this;
-          ponzi_controller.instance.on(ccc_msg.on_game_update, /*#__PURE__*/_asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee13(obj) {
-            return _regeneratorRuntime().wrap(function _callee13$(_context13) {
-              while (1) switch (_context13.prev = _context13.next) {
-                case 0:
-                  self.updateLobby();
-
-                case 1:
-                case "end":
-                  return _context13.stop();
-              }
-            }, _callee13);
-          })));
-          ponzi_controller.instance.on(ccc_msg.on_gamestate_update, /*#__PURE__*/_asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee14(obj) {
+          ponzi_controller.instance.on(ccc_msg.on_game_update, /*#__PURE__*/_asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee14(obj) {
             return _regeneratorRuntime().wrap(function _callee14$(_context14) {
               while (1) switch (_context14.prev = _context14.next) {
                 case 0:
@@ -3134,10 +3290,22 @@ System.register("chunks:///_virtual/lobby-controller.ts", ['./rollupPluginModLoB
               }
             }, _callee14);
           })));
-          ponzi_controller.instance.on(ccc_msg.on_isplayer_update, /*#__PURE__*/_asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee15(obj) {
-            var entity, playerEntity, hash;
+          ponzi_controller.instance.on(ccc_msg.on_gamestate_update, /*#__PURE__*/_asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee15(obj) {
             return _regeneratorRuntime().wrap(function _callee15$(_context15) {
               while (1) switch (_context15.prev = _context15.next) {
+                case 0:
+                  self.updateLobby();
+
+                case 1:
+                case "end":
+                  return _context15.stop();
+              }
+            }, _callee15);
+          })));
+          ponzi_controller.instance.on(ccc_msg.on_isplayer_update, /*#__PURE__*/_asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee16(obj) {
+            var entity, playerEntity, hash;
+            return _regeneratorRuntime().wrap(function _callee16$(_context16) {
+              while (1) switch (_context16.prev = _context16.next) {
                 case 0:
                   entity = obj.entity;
                   obj.newValue;
@@ -3150,14 +3318,14 @@ System.register("chunks:///_virtual/lobby-controller.ts", ['./rollupPluginModLoB
 
                 case 5:
                 case "end":
-                  return _context15.stop();
+                  return _context16.stop();
               }
-            }, _callee15);
+            }, _callee16);
           })));
-          ponzi_controller.instance.on(ccc_msg.on_iseliminated_update, /*#__PURE__*/_asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee16(obj) {
+          ponzi_controller.instance.on(ccc_msg.on_iseliminated_update, /*#__PURE__*/_asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee17(obj) {
             var entity, newValue, playerEntity;
-            return _regeneratorRuntime().wrap(function _callee16$(_context16) {
-              while (1) switch (_context16.prev = _context16.next) {
+            return _regeneratorRuntime().wrap(function _callee17$(_context17) {
+              while (1) switch (_context17.prev = _context17.next) {
                 case 0:
                   entity = obj.entity;
                   newValue = obj.newObj;
@@ -3165,34 +3333,34 @@ System.register("chunks:///_virtual/lobby-controller.ts", ['./rollupPluginModLoB
                   playerEntity = globalThis.ponzi.currentPlayer; // let hash = string_utils.getHashFromSymbol(playerEntity);
 
                   if (!(playerEntity == entity)) {
-                    _context16.next = 12;
+                    _context17.next = 12;
                     break;
                   }
 
-                  _context16.next = 7;
+                  _context17.next = 7;
                   return self.updateLobby();
 
                 case 7:
                   if (!newValue) {
-                    _context16.next = 12;
+                    _context17.next = 12;
                     break;
                   }
 
                   console.error("on_iseliminated_update2 ", newValue.value);
 
                   if (!newValue.value) {
-                    _context16.next = 12;
+                    _context17.next = 12;
                     break;
                   }
 
-                  _context16.next = 12;
+                  _context17.next = 12;
                   return ponzi_controller.instance.calResultOnClientWhenBankrupt();
 
                 case 12:
                 case "end":
-                  return _context16.stop();
+                  return _context17.stop();
               }
-            }, _callee16);
+            }, _callee17);
           })));
         };
 
@@ -3291,17 +3459,22 @@ System.register("chunks:///_virtual/lobby-controller.ts", ['./rollupPluginModLoB
         enumerable: true,
         writable: true,
         initializer: null
-      }), _descriptor6 = _applyDecoratedDescriptor(_class2.prototype, "welcomeLabel", [_dec7], {
+      }), _descriptor6 = _applyDecoratedDescriptor(_class2.prototype, "btnRestart", [_dec7], {
         configurable: true,
         enumerable: true,
         writable: true,
         initializer: null
-      }), _descriptor7 = _applyDecoratedDescriptor(_class2.prototype, "lobbyNode", [_dec8], {
+      }), _descriptor7 = _applyDecoratedDescriptor(_class2.prototype, "welcomeLabel", [_dec8], {
         configurable: true,
         enumerable: true,
         writable: true,
         initializer: null
-      }), _descriptor8 = _applyDecoratedDescriptor(_class2.prototype, "gameNode", [_dec9], {
+      }), _descriptor8 = _applyDecoratedDescriptor(_class2.prototype, "lobbyNode", [_dec9], {
+        configurable: true,
+        enumerable: true,
+        writable: true,
+        initializer: null
+      }), _descriptor9 = _applyDecoratedDescriptor(_class2.prototype, "gameNode", [_dec10], {
         configurable: true,
         enumerable: true,
         writable: true,
@@ -6265,7 +6438,7 @@ System.register("chunks:///_virtual/ponzi-controller.ts", ['./rollupPluginModLoB
 
         _proto.calResultOnClient = /*#__PURE__*/function () {
           var _calResultOnClient = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee5(isBankrupt) {
-            var scoreObjList, entities, _iterator, _step, playerEntity, al, score1, score2, score3, score4, score5, score6, newItem, me, i, obj, tmpArray, mostAsset, rank, show, points;
+            var scoreObjList, entities, _iterator, _step, playerEntity, al, score1, score2, score3, score4, score5, score6, newItem, me, hasMe, i, obj, tmpArray, mostAsset, rank, show, points;
 
             return _regeneratorRuntime().wrap(function _callee5$(_context5) {
               while (1) switch (_context5.prev = _context5.next) {
@@ -6318,11 +6491,12 @@ System.register("chunks:///_virtual/ponzi-controller.ts", ['./rollupPluginModLoB
                 case 32:
                   scoreObjList = this.sortScores(scoreObjList);
                   me = globalThis.ponzi.currentPlayer;
+                  hasMe = false;
                   i = 0;
 
-                case 35:
+                case 36:
                   if (!(i < scoreObjList.length)) {
-                    _context5.next = 49;
+                    _context5.next = 51;
                     break;
                   }
 
@@ -6330,7 +6504,7 @@ System.register("chunks:///_virtual/ponzi-controller.ts", ['./rollupPluginModLoB
                   console.error("game is over, calculating result", obj.player, me);
 
                   if (!(obj.player == me)) {
-                    _context5.next = 46;
+                    _context5.next = 48;
                     break;
                   }
 
@@ -6345,32 +6519,40 @@ System.register("chunks:///_virtual/ponzi-controller.ts", ['./rollupPluginModLoB
                     points: points,
                     mostAsset: mostAsset
                   });
-                  return _context5.abrupt("break", 49);
+                  hasMe = true;
+                  return _context5.abrupt("break", 51);
 
-                case 46:
+                case 48:
                   i++;
-                  _context5.next = 35;
-                  break;
-
-                case 49:
-                  _context5.next = 54;
+                  _context5.next = 36;
                   break;
 
                 case 51:
-                  _context5.prev = 51;
-                  _context5.t0 = _context5["catch"](2);
-                  error(_context5.t0);
+                  if (!hasMe) {
+                    ponzi_controller.instance.sendCCCMsg(ccc_msg.single_button_dialog, {
+                      content: "Can not find your rank in last game. Maybe it's been too long...",
+                      btnText: "OK"
+                    });
+                  }
+
+                  _context5.next = 57;
+                  break;
 
                 case 54:
                   _context5.prev = 54;
-                  ponzi_controller.instance.sendCCCMsg(ccc_msg.network_block_ui, false);
-                  return _context5.finish(54);
+                  _context5.t0 = _context5["catch"](2);
+                  error(_context5.t0);
 
                 case 57:
+                  _context5.prev = 57;
+                  ponzi_controller.instance.sendCCCMsg(ccc_msg.network_block_ui, false);
+                  return _context5.finish(57);
+
+                case 60:
                 case "end":
                   return _context5.stop();
               }
-            }, _callee5, this, [[2, 51, 54, 57]]);
+            }, _callee5, this, [[2, 54, 57, 60]]);
           }));
 
           function calResultOnClient(_x7) {

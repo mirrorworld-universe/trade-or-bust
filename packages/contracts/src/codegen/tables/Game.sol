@@ -24,6 +24,7 @@ struct GameData {
   uint256 gameId;
   uint256 startTime;
   uint256 endTime;
+  uint256 finishTime;
 }
 
 library Game {
@@ -36,10 +37,11 @@ library Game {
 
   /** Get the table's value schema */
   function getValueSchema() internal pure returns (Schema) {
-    SchemaType[] memory _schema = new SchemaType[](3);
+    SchemaType[] memory _schema = new SchemaType[](4);
     _schema[0] = SchemaType.UINT256;
     _schema[1] = SchemaType.UINT256;
     _schema[2] = SchemaType.UINT256;
+    _schema[3] = SchemaType.UINT256;
 
     return SchemaLib.encode(_schema);
   }
@@ -51,10 +53,11 @@ library Game {
 
   /** Get the table's field names */
   function getFieldNames() internal pure returns (string[] memory fieldNames) {
-    fieldNames = new string[](3);
+    fieldNames = new string[](4);
     fieldNames[0] = "gameId";
     fieldNames[1] = "startTime";
     fieldNames[2] = "endTime";
+    fieldNames[3] = "finishTime";
   }
 
   /** Register the table's key schema, value schema, key names and value names */
@@ -157,6 +160,36 @@ library Game {
     _store.setField(_tableId, _keyTuple, 2, abi.encodePacked((endTime)), getValueSchema());
   }
 
+  /** Get finishTime */
+  function getFinishTime() internal view returns (uint256 finishTime) {
+    bytes32[] memory _keyTuple = new bytes32[](0);
+
+    bytes memory _blob = StoreSwitch.getField(_tableId, _keyTuple, 3, getValueSchema());
+    return (uint256(Bytes.slice32(_blob, 0)));
+  }
+
+  /** Get finishTime (using the specified store) */
+  function getFinishTime(IStore _store) internal view returns (uint256 finishTime) {
+    bytes32[] memory _keyTuple = new bytes32[](0);
+
+    bytes memory _blob = _store.getField(_tableId, _keyTuple, 3, getValueSchema());
+    return (uint256(Bytes.slice32(_blob, 0)));
+  }
+
+  /** Set finishTime */
+  function setFinishTime(uint256 finishTime) internal {
+    bytes32[] memory _keyTuple = new bytes32[](0);
+
+    StoreSwitch.setField(_tableId, _keyTuple, 3, abi.encodePacked((finishTime)), getValueSchema());
+  }
+
+  /** Set finishTime (using the specified store) */
+  function setFinishTime(IStore _store, uint256 finishTime) internal {
+    bytes32[] memory _keyTuple = new bytes32[](0);
+
+    _store.setField(_tableId, _keyTuple, 3, abi.encodePacked((finishTime)), getValueSchema());
+  }
+
   /** Get the full data */
   function get() internal view returns (GameData memory _table) {
     bytes32[] memory _keyTuple = new bytes32[](0);
@@ -174,8 +207,8 @@ library Game {
   }
 
   /** Set the full data using individual values */
-  function set(uint256 gameId, uint256 startTime, uint256 endTime) internal {
-    bytes memory _data = encode(gameId, startTime, endTime);
+  function set(uint256 gameId, uint256 startTime, uint256 endTime, uint256 finishTime) internal {
+    bytes memory _data = encode(gameId, startTime, endTime, finishTime);
 
     bytes32[] memory _keyTuple = new bytes32[](0);
 
@@ -183,8 +216,8 @@ library Game {
   }
 
   /** Set the full data using individual values (using the specified store) */
-  function set(IStore _store, uint256 gameId, uint256 startTime, uint256 endTime) internal {
-    bytes memory _data = encode(gameId, startTime, endTime);
+  function set(IStore _store, uint256 gameId, uint256 startTime, uint256 endTime, uint256 finishTime) internal {
+    bytes memory _data = encode(gameId, startTime, endTime, finishTime);
 
     bytes32[] memory _keyTuple = new bytes32[](0);
 
@@ -193,12 +226,12 @@ library Game {
 
   /** Set the full data using the data struct */
   function set(GameData memory _table) internal {
-    set(_table.gameId, _table.startTime, _table.endTime);
+    set(_table.gameId, _table.startTime, _table.endTime, _table.finishTime);
   }
 
   /** Set the full data using the data struct (using the specified store) */
   function set(IStore _store, GameData memory _table) internal {
-    set(_store, _table.gameId, _table.startTime, _table.endTime);
+    set(_store, _table.gameId, _table.startTime, _table.endTime, _table.finishTime);
   }
 
   /** Decode the tightly packed blob using this table's schema */
@@ -208,11 +241,18 @@ library Game {
     _table.startTime = (uint256(Bytes.slice32(_blob, 32)));
 
     _table.endTime = (uint256(Bytes.slice32(_blob, 64)));
+
+    _table.finishTime = (uint256(Bytes.slice32(_blob, 96)));
   }
 
   /** Tightly pack full data using this table's schema */
-  function encode(uint256 gameId, uint256 startTime, uint256 endTime) internal pure returns (bytes memory) {
-    return abi.encodePacked(gameId, startTime, endTime);
+  function encode(
+    uint256 gameId,
+    uint256 startTime,
+    uint256 endTime,
+    uint256 finishTime
+  ) internal pure returns (bytes memory) {
+    return abi.encodePacked(gameId, startTime, endTime, finishTime);
   }
 
   /** Encode keys as a bytes32 array using this table's schema */

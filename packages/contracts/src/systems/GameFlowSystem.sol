@@ -22,6 +22,42 @@ contract GameFlowSystem is System {
         bool bankrupt;
     }
 
+  function restartGame() public{
+        bytes32 player = addressToEntityKey(address(_msgSender()));
+        require(IsPlayer.get(player),"Already is a player!");
+
+        GameState.set(1);
+
+        QueryFragment[] memory fragments = new QueryFragment[](1);
+        fragments[0] = QueryFragment(QueryType.Has, PlayerTableId, new bytes(0));
+        bytes32[][] memory keyTuples = query(fragments);
+
+        // ScoreObj[] memory scoreObjList = new ScoreObj[](keyTuples.length);
+        // uint32 index = 0;
+
+        for (uint256 a = 0; a < keyTuples.length; a++) {
+            bytes32[] memory assetsLists = keyTuples[a];
+
+            for (uint256 i = 0; i < assetsLists.length; i++) {
+                bytes32 tmpPlayer = assetsLists[i];
+                // if(!isBytes32NonZero(tmpPlayer)) continue;
+                bool bankrupt = false;
+                if(HasDebt.get(tmpPlayer)){
+                    uint32 debt = getDebt(tmpPlayer);
+                    if(Player.getMoney(tmpPlayer) < debt){
+                        bankrupt = true;
+                    }
+                }
+
+                if(bankrupt){
+                    IsEliminated.set(tmpPlayer,true);
+                }
+            }
+        }
+        clearPlayerComponents();
+        clearMapComponents();
+        // resetGame();
+    }
   function finishGame() public{
         bytes32 player = addressToEntityKey(address(_msgSender()));
         require(IsPlayer.get(player),"Already is a player!");
@@ -57,48 +93,11 @@ contract GameFlowSystem is System {
                 if(bankrupt){
                     IsEliminated.set(tmpPlayer,true);
                 }
-               
-                // AssetsListData memory alData = AssetsList.get(tmpPlayer);
-
-                // int8 score1 = calculateScore(alData.gpu);
-                // int8 score2 = calculateScore(alData.bitcoin);
-                // int8 score3 = calculateScore(alData.battery);
-                // int8 score4 = calculateScore(alData.leiter);
-                // int8 score5 = calculateScore(alData.gold);
-                // int8 score6 = calculateScore(alData.oil);
-                // int32 totalScore = score1 + score2 + score3 + score4 + score5 + score6; 
-                
-                // ScoreObj memory newItem = ScoreObj(tmpPlayer,totalScore,alData.gpu,alData.bitcoin,alData.battery,alData.leiter,alData.gold,alData.oil,bankrupt);
-                
-                // assert(index < scoreObjList.length);
-                // scoreObjList[index] = newItem;
-                // index = index + 1;
             }
         }
-
-        // scoreObjList = sortScores(scoreObjList);
-
-        // for (uint256 a = 0; a < scoreObjList.length; a++) {
-        //     ScoreObj memory obj = scoreObjList[a];
-        //     bytes32 p = obj.player;
-        //     if(IsFinishGame.get(p)) continue;
-
-        //     int32 rank = obj.bankrupt ? convertIntToUint(0) :convertIntToUint(a + 1);
-        //     int32 totalScore = obj.totalScore;
-        //     int8 gpu = obj.gpu;
-        //     int8 bitcoin = obj.bitcoin;
-        //     int8 battery = obj.battery;
-        //     int8 leiter = obj.leiter;
-        //     int8 gold = obj.gold;
-        //     int8 oil = obj.oil;
-
-        //     // IsFinishGame.set(p,true);
-        //     PlayerGameResult.set(p,rank,totalScore,gpu,bitcoin,battery,leiter,gold,oil);
-        // }
-
         clearPlayerComponents();
         clearMapComponents();
-        resetGame();
+        // resetGame();
     }
 
     function clearPlayerComponents() private {
@@ -152,12 +151,15 @@ contract GameFlowSystem is System {
 
     function resetGame() private{
         uint gameSec = 60;
+        uint calSec = 60;
+
         uint startWaitSec = 60;
         uint256 gameId = block.timestamp;
         uint256 startTime = block.timestamp + startWaitSec;
         uint256 endTime = startTime + gameSec;
+        uint256 finishTime = endTime + calSec;
 
-        Game.set(gameId, startTime, endTime);
+        Game.set(gameId, startTime, endTime, finishTime);
     }
 
     function isBytes32NonZero(bytes32 value) private pure returns (bool) {

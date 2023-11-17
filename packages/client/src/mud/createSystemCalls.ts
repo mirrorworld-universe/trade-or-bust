@@ -77,6 +77,10 @@ export function createSystemCalls(
     const tx = await worldContract.write.pay();
     return await waitForTransaction(tx);
   };
+  const restartGame = async () => {
+    const tx = await worldContract.write.restartGame();
+    return await waitForTransaction(tx);
+  };
 
   return {
     increment,
@@ -91,6 +95,7 @@ export function createSystemCalls(
     finishGame,
     pickCoin,
     findPartner,
-    pay
+    pay,
+    restartGame
   };
 }

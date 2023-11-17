@@ -5,7 +5,7 @@ import { runQuery ,getComponentValue,getComponentValueStrict, Has, Not  } from "
 
 const {
   components,
-  systemCalls: { pay,increment,joinGame,askStart,move,pickAsset,pickFund,trade,acceptTrade,rejectTrade,finishGame,pickCoin,findPartner },
+  systemCalls: {restartGame, pay,increment,joinGame,askStart,move,pickAsset,pickFund,trade,acceptTrade,rejectTrade,finishGame,pickCoin,findPartner },
   network,
 } = await setup();
 
@@ -243,8 +243,8 @@ components.TransactionList.update$.subscribe((update)=>{
 };
 
 (window as any).finishGame = async () => {
+  console.log("send finishGame");
   let data = await finishGame();
-  console.log("send finishGame:"+data);
 };
 
 (window as any).pickCoin = async () => {
@@ -261,6 +261,10 @@ components.TransactionList.update$.subscribe((update)=>{
 (window as any).payDebt = async () => {
   console.log("send pay...");
   let data = await pay();
+};
+(window as any).restartGame = async () => {
+  console.log("send restartGame...");
+  let data = await restartGame();
 };
 
 
