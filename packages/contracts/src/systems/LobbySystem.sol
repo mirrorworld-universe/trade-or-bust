@@ -294,7 +294,7 @@ contract LobbySystem is System {
     }
 
     function resetGame() private{
-        uint gameSec = 60;
+        uint gameSec = 5*60;
         uint calSec = 60;
 
         uint startWaitSec = 60;

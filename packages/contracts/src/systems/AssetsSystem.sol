@@ -69,6 +69,14 @@ contract AssetsSystem is System {
         require(!isGameTimeUp(),"Game time up.");
         require(GameState.get() == 2,"Game is finished.");
 
+        require(!HasDebt.get(player),"You have debt now.");
+        uint32 debt = getDebt(player);
+        Log.set(player,debt);
+        if(debt > 0){
+            HasDebt.set(player,true);
+            Debt.set(player,debt);
+        }
+
         require(!IsEliminated.get(player),"You are already eliminated.");
         uint16[72] memory allCards = FundCards.get();
         
@@ -102,6 +110,25 @@ contract AssetsSystem is System {
         Player.setMoney(player,Player.getMoney(player) + gainMoney);
     }
 
+    function checkDebt() public{
+        bytes32 player = addressToEntityKey(_msgSender());
+        require(IsPlayer.get(player), "Not a player when pick asset.");
+        require(!isGameTimeUp(),"Game time up.");
+        require(GameState.get() == 2,"Game is finished.");
+        require(!HasDebt.get(player),"You have debt now.");
+        
+        uint32 debt = getDebt(player);
+        Log.set(player,debt);
+        if(debt > 0){
+            HasDebt.set(player,true);
+            Debt.set(player,debt);
+        }
+    }
+
+
+
+
+
     function push(uint256[] memory ownedCards,uint number) pure private{
         for(uint16 i=0;i<ownedCards.length;i++){
             if(ownedCards[i] == 0){
@@ -118,6 +145,13 @@ contract AssetsSystem is System {
         require(!isGameTimeUp(),"Game time up.");
         require(GameState.get() == 2,"Game is finished.");
 
+        require(!HasDebt.get(player),"You have debt now.");
+        uint32 debt = getDebt(player);
+        Log.set(player,debt);
+        if(debt > 0){
+            HasDebt.set(player,true);
+            Debt.set(player,debt);
+        }
         require(!IsEliminated.get(player),"You are already eliminated.");
 
         RaiseColddownData memory rcd = RaiseColddown.get(player);
@@ -252,26 +286,33 @@ contract AssetsSystem is System {
         return ownedCards;
     }
 
-    // function processArray(uint[] memory ownedCards) private pure returns (uint[][] memory) {
-    //     uint[][] memory result = new uint[][](ownedCards.length / 5);
-    //     uint index = 0;
+    function getDebt(bytes32 player) private view returns (uint32) {
+         uint256[] memory ownedCards = OwnedCards.get(player);
+        uint32 debt = 0;
+        require(ownedCards.length % 5 == 0, "Invalid array length");
 
-    //     for (uint i = 0; i < ownedCards.length; i += 5) {
-    //         if (ownedCards[i] == 0) {
-    //             break;
-    //         }
+        for (uint i = 0; i < ownedCards.length; i += 5) {
+            // Check if the first element of the group is 0
+            if (ownedCards[i] == 0) {
+                // If it's 0, break the loop as the subsequent elements are all 0
+                break;
+            }
 
-    //         uint[5] memory subArray;
-    //         for (uint j = 0; j < 5; j++) {
-    //             subArray[j] = ownedCards[i + j];
-    //         }
+            // Update the fourth element of each group to 9999
+            uint256 timeInterval = ownedCards[i + 2] * 60;
+            if(ownedCards[i + 4] + timeInterval < block.timestamp){
+                uint256 timeDiff = (block.timestamp - ownedCards[i + 4]);
+                uint256 payTimes = timeDiff / timeInterval;
+                // Log.set(player,payTimes);
+                uint256 input = payTimes * (ownedCards[i + 1] * ownedCards[i + 3] / 100);
+                // Log.set(player,input);
 
-    //         result[index] = subArray;
-    //         index++;
-    //     }
+                debt += uint32(input);
+            }
+        }
 
-    //     return result;
-    // }
+        return debt;
+    }
     
     function bytesToUint16(bytes32 b) private pure returns (uint16) {
         uint16 number;

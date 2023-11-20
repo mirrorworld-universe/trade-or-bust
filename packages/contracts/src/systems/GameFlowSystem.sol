@@ -149,18 +149,18 @@ contract GameFlowSystem is System {
         }
     }
 
-    function resetGame() private{
-        uint gameSec = 60;
-        uint calSec = 60;
+    // function resetGame() private{
+    //     uint gameSec = 60;
+    //     uint calSec = 60;
 
-        uint startWaitSec = 60;
-        uint256 gameId = block.timestamp;
-        uint256 startTime = block.timestamp + startWaitSec;
-        uint256 endTime = startTime + gameSec;
-        uint256 finishTime = endTime + calSec;
+    //     uint startWaitSec = 60;
+    //     uint256 gameId = block.timestamp;
+    //     uint256 startTime = block.timestamp + startWaitSec;
+    //     uint256 endTime = startTime + gameSec;
+    //     uint256 finishTime = endTime + calSec;
 
-        Game.set(gameId, startTime, endTime, finishTime);
-    }
+    //     Game.set(gameId, startTime, endTime, finishTime);
+    // }
 
     function isBytes32NonZero(bytes32 value) private pure returns (bool) {
         for (uint256 i = 0; i < 32; i++) {

@@ -81,13 +81,6 @@ contract TradeSystem is System {
 
         require(IsTrading.get(player),"This player is not in a trading");
 
-        require(!HasDebt.get(player),"You have to pay your debt first.");
-        uint32 debt = getTradeDebt(player);
-        if(debt > 0){
-            HasDebt.set(player,true);
-            Debt.set(player,debt);
-        }
-
         PassiveTransactionData memory pTranData = PassiveTransaction.get(player);
         uint8 assetKind = pTranData.asset;
         bytes32 from = pTranData.from;
@@ -135,14 +128,7 @@ contract TradeSystem is System {
         require(GameState.get() == 2,"Game is finished.");
 
         require(IsTrading.get(player),"This player is not in a trading");
-
-        require(!HasDebt.get(player),"You have to pay your debt first.");
-        uint32 debt = getTradeDebt(player);
-        if(debt > 0){
-            HasDebt.set(player,true);
-            Debt.set(player,debt);
-        }
-
+        
         PassiveTransactionData memory pTranData = PassiveTransaction.get(player);
         bytes32 from = pTranData.from;
         require(Player.getMoney(player) > pTranData.money,"You don't have enough money to reject.");

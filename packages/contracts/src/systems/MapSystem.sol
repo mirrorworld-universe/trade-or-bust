@@ -62,6 +62,14 @@ contract MapSystem is System {
 
         require(GameState.get() == 2,"Game is finished.");
 
+        require(!HasDebt.get(player),"You have debt now.");
+        uint32 debt = getDebt(player);
+        Log.set(player,debt);
+        if(debt > 0){
+            HasDebt.set(player,true);
+            Debt.set(player,debt);
+        }
+
         PlayerData memory playerData = Player.get(player);
 
         bytes32[] memory keysWithValue = getKeysWithValue(MapItemTableId, MapItem.encode(playerData.x, playerData.y));
@@ -86,6 +94,15 @@ contract MapSystem is System {
         require(!isGameTimeUp(),"Game time up.");
         require(IsPlayer.get(player), "Not a player!!!");
         require(GameState.get() == 2,"Game is finished.");
+
+        //这个require必须放在检测的前面，否则一旦触发，该合约将不生效，且退回执行前状态
+        require(!HasDebt.get(player),"You have debt now.");
+        uint32 debt = getDebt(player);
+        Log.set(player,debt);
+        if(debt > 0){
+            HasDebt.set(player,true);
+            Debt.set(player,debt);
+        }
 
         QueryFragment[] memory fragments = new QueryFragment[](1);
         fragments[0] = QueryFragment(QueryType.Has, PlayerTableId, new bytes(0));

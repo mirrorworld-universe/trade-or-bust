@@ -8,5 +8,7 @@ interface IAssetsSystem {
 
   function pickFund(uint8 cardId) external;
 
+  function checkDebt() external;
+
   function pickAsset(uint8 assetKind) external;
 }

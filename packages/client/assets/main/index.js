@@ -240,8 +240,8 @@ System.register("chunks:///_virtual/assets.ts", ['./rollupPluginModLoBabelHelper
   };
 });
 
-System.register("chunks:///_virtual/button_raisingcapital.ts", ['./rollupPluginModLoBabelHelpers.js', 'cc', './ponzi-controller.ts', './ccc_msg.ts', './time_utils.ts', './component_state.ts', './ponzi_config.ts'], function (exports) {
-  var _applyDecoratedDescriptor, _inheritsLoose, _initializerDefineProperty, _assertThisInitialized, _asyncToGenerator, _regeneratorRuntime, cclegacy, _decorator, Label, Button, log, sys, Component, warn, ponzi_controller, ccc_msg, time_utils, component_state, ponzi_config;
+System.register("chunks:///_virtual/button_raisingcapital.ts", ['./rollupPluginModLoBabelHelpers.js', 'cc', './ponzi-controller.ts', './ccc_msg.ts', './time_utils.ts', './component_state.ts', './ponzi_config.ts', './string_utils.ts'], function (exports) {
+  var _applyDecoratedDescriptor, _inheritsLoose, _initializerDefineProperty, _assertThisInitialized, _asyncToGenerator, _regeneratorRuntime, cclegacy, _decorator, Label, Button, log, sys, Component, warn, ponzi_controller, ccc_msg, time_utils, component_state, ponzi_config, string_utils;
 
   return {
     setters: [function (module) {
@@ -270,6 +270,8 @@ System.register("chunks:///_virtual/button_raisingcapital.ts", ['./rollupPluginM
       component_state = module.component_state;
     }, function (module) {
       ponzi_config = module.ponzi_config;
+    }, function (module) {
+      string_utils = module.string_utils;
     }],
     execute: function () {
       var _dec, _dec2, _dec3, _class, _class2, _descriptor, _descriptor2;
@@ -340,16 +342,39 @@ System.register("chunks:///_virtual/button_raisingcapital.ts", ['./rollupPluginM
 
         _proto.onBtnClicked = /*#__PURE__*/function () {
           var _onBtnClicked = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee2() {
+            var content;
             return _regeneratorRuntime().wrap(function _callee2$(_context2) {
               while (1) switch (_context2.prev = _context2.next) {
                 case 0:
-                  ponzi_controller.instance.sendCCCMsg(ccc_msg.show_pick_asset, true);
+                  ponzi_controller.instance.sendCCCMsg(ccc_msg.network_block_ui, true);
+                  _context2.prev = 1;
+                  _context2.next = 4;
+                  return window.checkDebt == null ? void 0 : window.checkDebt();
 
-                case 1:
+                case 4:
+                  ponzi_controller.instance.sendCCCMsg(ccc_msg.show_pick_asset, true);
+                  _context2.next = 11;
+                  break;
+
+                case 7:
+                  _context2.prev = 7;
+                  _context2.t0 = _context2["catch"](1);
+                  content = string_utils.getSecondLine(_context2.t0.toString());
+                  ponzi_controller.instance.sendCCCMsg(ccc_msg.single_button_dialog, {
+                    content: content,
+                    btnText: "OK"
+                  });
+
+                case 11:
+                  _context2.prev = 11;
+                  ponzi_controller.instance.sendCCCMsg(ccc_msg.network_block_ui, false);
+                  return _context2.finish(11);
+
+                case 14:
                 case "end":
                   return _context2.stop();
               }
-            }, _callee2);
+            }, _callee2, null, [[1, 7, 11, 14]]);
           }));
 
           function onBtnClicked() {
@@ -2045,8 +2070,8 @@ System.register("chunks:///_virtual/game_countdown.ts", ['./rollupPluginModLoBab
   };
 });
 
-System.register("chunks:///_virtual/game_ui_controller.ts", ['./rollupPluginModLoBabelHelpers.js', 'cc', './ponzi-controller.ts', './ccc_msg.ts', './fake.ts', './paytime.ts'], function (exports) {
-  var _applyDecoratedDescriptor, _inheritsLoose, _initializerDefineProperty, _assertThisInitialized, _asyncToGenerator, _regeneratorRuntime, cclegacy, _decorator, sys, warn, Component, ponzi_controller, ccc_msg, fake, paytime;
+System.register("chunks:///_virtual/game_ui_controller.ts", ['./rollupPluginModLoBabelHelpers.js', 'cc', './ponzi-controller.ts', './ccc_msg.ts', './fake.ts', './paytime.ts', './string_utils.ts'], function (exports) {
+  var _applyDecoratedDescriptor, _inheritsLoose, _initializerDefineProperty, _assertThisInitialized, _asyncToGenerator, _regeneratorRuntime, cclegacy, _decorator, sys, warn, Component, ponzi_controller, ccc_msg, fake, paytime, string_utils;
 
   return {
     setters: [function (module) {
@@ -2070,6 +2095,8 @@ System.register("chunks:///_virtual/game_ui_controller.ts", ['./rollupPluginModL
       fake = module.fake;
     }, function (module) {
       paytime = module.paytime;
+    }, function (module) {
+      string_utils = module.string_utils;
     }],
     execute: function () {
       var _dec, _dec2, _class, _class2, _descriptor;
@@ -2112,40 +2139,46 @@ System.register("chunks:///_virtual/game_ui_controller.ts", ['./rollupPluginModL
 
         _proto.onPickCoinClicked = /*#__PURE__*/function () {
           var _onPickCoinClicked = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee() {
+            var content;
             return _regeneratorRuntime().wrap(function _callee$(_context) {
               while (1) switch (_context.prev = _context.next) {
                 case 0:
                   ponzi_controller.instance.sendCCCMsg(ccc_msg.network_block_ui, true);
                   _context.prev = 1;
                   _context.next = 4;
-                  return window.pickCoin == null ? void 0 : window.pickCoin();
+                  return window.checkDebt == null ? void 0 : window.checkDebt();
 
                 case 4:
+                  _context.next = 6;
+                  return window.pickCoin == null ? void 0 : window.pickCoin();
+
+                case 6:
                   ponzi_controller.instance.sendCCCMsg(ccc_msg.single_button_dialog, {
                     content: "You gain some money!",
                     btnText: "OK"
                   });
-                  _context.next = 10;
+                  _context.next = 13;
                   break;
 
-                case 7:
-                  _context.prev = 7;
+                case 9:
+                  _context.prev = 9;
                   _context.t0 = _context["catch"](1);
+                  content = string_utils.getSecondLine(_context.t0.toString());
                   ponzi_controller.instance.sendCCCMsg(ccc_msg.single_button_dialog, {
-                    content: "There is nothing on your cell.",
+                    content: content,
                     btnText: "OK"
                   });
 
-                case 10:
-                  _context.prev = 10;
-                  ponzi_controller.instance.sendCCCMsg(ccc_msg.network_block_ui, false);
-                  return _context.finish(10);
-
                 case 13:
+                  _context.prev = 13;
+                  ponzi_controller.instance.sendCCCMsg(ccc_msg.network_block_ui, false);
+                  return _context.finish(13);
+
+                case 16:
                 case "end":
                   return _context.stop();
               }
-            }, _callee, null, [[1, 7, 10, 13]]);
+            }, _callee, null, [[1, 9, 13, 16]]);
           }));
 
           function onPickCoinClicked() {
@@ -2157,6 +2190,7 @@ System.register("chunks:///_virtual/game_ui_controller.ts", ['./rollupPluginModL
 
         _proto.onSearchPartnerClicked = /*#__PURE__*/function () {
           var _onSearchPartnerClicked = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee2() {
+            var content;
             return _regeneratorRuntime().wrap(function _callee2$(_context2) {
               while (1) switch (_context2.prev = _context2.next) {
                 case 0:
@@ -2164,30 +2198,35 @@ System.register("chunks:///_virtual/game_ui_controller.ts", ['./rollupPluginModL
                   ponzi_controller.instance.sendCCCMsg(ccc_msg.network_block_ui, true);
                   _context2.prev = 2;
                   _context2.next = 5;
-                  return window.searchPartner == null ? void 0 : window.searchPartner();
+                  return window.checkDebt == null ? void 0 : window.checkDebt();
 
                 case 5:
-                  _context2.next = 10;
-                  break;
+                  _context2.next = 7;
+                  return window.searchPartner == null ? void 0 : window.searchPartner();
 
                 case 7:
-                  _context2.prev = 7;
+                  _context2.next = 13;
+                  break;
+
+                case 9:
+                  _context2.prev = 9;
                   _context2.t0 = _context2["catch"](2);
+                  content = string_utils.getSecondLine(_context2.t0.toString());
                   ponzi_controller.instance.sendCCCMsg(ccc_msg.single_button_dialog, {
-                    content: "There is nobody in 2 distance with you.",
+                    content: content,
                     btnText: "OK"
                   });
 
-                case 10:
-                  _context2.prev = 10;
-                  ponzi_controller.instance.sendCCCMsg(ccc_msg.network_block_ui, false);
-                  return _context2.finish(10);
-
                 case 13:
+                  _context2.prev = 13;
+                  ponzi_controller.instance.sendCCCMsg(ccc_msg.network_block_ui, false);
+                  return _context2.finish(13);
+
+                case 16:
                 case "end":
                   return _context2.stop();
               }
-            }, _callee2, null, [[2, 7, 10, 13]]);
+            }, _callee2, null, [[2, 9, 13, 16]]);
           }));
 
           function onSearchPartnerClicked() {
@@ -2228,42 +2267,82 @@ System.register("chunks:///_virtual/game_ui_controller.ts", ['./rollupPluginModL
           return onPayDebtClicked;
         }();
 
-        _proto.onCovertTradeClicked = function onCovertTradeClicked() {
-          ponzi_controller.instance.sendCCCMsg(ccc_msg.show_trade, true);
-        };
-
-        _proto.onGameFinishClicked = /*#__PURE__*/function () {
-          var _onGameFinishClicked = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee4() {
+        _proto.onCovertTradeClicked = /*#__PURE__*/function () {
+          var _onCovertTradeClicked = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee4() {
+            var content;
             return _regeneratorRuntime().wrap(function _callee4$(_context4) {
               while (1) switch (_context4.prev = _context4.next) {
                 case 0:
                   ponzi_controller.instance.sendCCCMsg(ccc_msg.network_block_ui, true);
                   _context4.prev = 1;
                   _context4.next = 4;
+                  return window.checkDebt == null ? void 0 : window.checkDebt();
+
+                case 4:
+                  ponzi_controller.instance.sendCCCMsg(ccc_msg.show_trade, true);
+                  _context4.next = 11;
+                  break;
+
+                case 7:
+                  _context4.prev = 7;
+                  _context4.t0 = _context4["catch"](1);
+                  content = string_utils.getSecondLine(_context4.t0.toString());
+                  ponzi_controller.instance.sendCCCMsg(ccc_msg.single_button_dialog, {
+                    content: content,
+                    btnText: "OK"
+                  });
+
+                case 11:
+                  _context4.prev = 11;
+                  ponzi_controller.instance.sendCCCMsg(ccc_msg.network_block_ui, false);
+                  return _context4.finish(11);
+
+                case 14:
+                case "end":
+                  return _context4.stop();
+              }
+            }, _callee4, null, [[1, 7, 11, 14]]);
+          }));
+
+          function onCovertTradeClicked() {
+            return _onCovertTradeClicked.apply(this, arguments);
+          }
+
+          return onCovertTradeClicked;
+        }();
+
+        _proto.onGameFinishClicked = /*#__PURE__*/function () {
+          var _onGameFinishClicked = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee5() {
+            return _regeneratorRuntime().wrap(function _callee5$(_context5) {
+              while (1) switch (_context5.prev = _context5.next) {
+                case 0:
+                  ponzi_controller.instance.sendCCCMsg(ccc_msg.network_block_ui, true);
+                  _context5.prev = 1;
+                  _context5.next = 4;
                   return window.finishGame == null ? void 0 : window.finishGame();
 
                 case 4:
-                  _context4.next = 9;
+                  _context5.next = 9;
                   break;
 
                 case 6:
-                  _context4.prev = 6;
-                  _context4.t0 = _context4["catch"](1);
+                  _context5.prev = 6;
+                  _context5.t0 = _context5["catch"](1);
                   ponzi_controller.instance.sendCCCMsg(ccc_msg.single_button_dialog, {
                     content: "The end game encountered a problem.",
                     btnText: "OK"
                   });
 
                 case 9:
-                  _context4.prev = 9;
+                  _context5.prev = 9;
                   ponzi_controller.instance.sendCCCMsg(ccc_msg.network_block_ui, false);
-                  return _context4.finish(9);
+                  return _context5.finish(9);
 
                 case 12:
                 case "end":
-                  return _context4.stop();
+                  return _context5.stop();
               }
-            }, _callee4, null, [[1, 6, 9, 12]]);
+            }, _callee5, null, [[1, 6, 9, 12]]);
           }));
 
           function onGameFinishClicked() {
@@ -2675,12 +2754,12 @@ System.register("chunks:///_virtual/lobby-controller.ts", ['./rollupPluginModLoB
 
           _initializerDefineProperty(_this, "gameNode", _descriptor9, _assertThisInitialized(_this));
 
-          _this.IsPlayerButGameNotStart = "The Round Has Not Started Yet";
+          _this.IsPlayerButGameNotStart = "The Round Has Not Started Yet, Please wait";
           _this.NotPlayerButGameIsStart = "Game is started, just waiting for entering game!";
           _this.IsPlayerButFinishGame = "You are already eliminated, please wait for next game.";
           _this.IsPlayerGameReachTimeButNotStart = "The Game Has Already Started, Please Click \"Play\" To Begin.";
           _this.NotPlayerAndGameNotReachTime = "Game is not start, just join us!";
-          _this.GameCalculating = "Game is calculating, click \"Last Rank\" to check your last rank(If you have one).";
+          _this.GameCalculating = "Game is calculating, click \"Last Rank\" to check your last rank(If you have one). The next game will be start soon...";
           _this.LongTimeNoPlay = "Join game and play.";
           _this.IsPlayerButLongTimeNoPlay = "The last game is over,please click \"Restart\" start a new game.";
           _this.welcomeInited = false;
@@ -3012,7 +3091,7 @@ System.register("chunks:///_virtual/lobby-controller.ts", ['./rollupPluginModLoB
 
         _proto.updateLobby = /*#__PURE__*/function () {
           var _updateLobby = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee11() {
-            var gameState, gameObj, isPlayer, IsEliminated, timeStamp, gameStartTime, endTime, finishTime, leftSeconds, timeState, _timeStamp, _gameStartTime, _leftSeconds;
+            var gameState, gameObj, isPlayer, IsEliminated, timeStamp, gameStartTime, endTime, finishTime, leftSeconds, timeState, _timeStamp, _gameStartTime, _leftSeconds, timeToPrepare;
 
             return _regeneratorRuntime().wrap(function _callee11$(_context11) {
               while (1) switch (_context11.prev = _context11.next) {
@@ -3135,7 +3214,12 @@ System.register("chunks:///_virtual/lobby-controller.ts", ['./rollupPluginModLoB
                           this.btnJoinGame.active = false;
                           this.btnTriggerGame.active = true;
                           this.btnRestart.active = false;
-                        } else if (timeState == time_state.calculating || timeState == time_state.longTimeNoPlay) {
+                        } else if (timeState == time_state.calculating) {
+                          this.contentLabel.string = this.IsPlayerGameReachTimeButNotStart;
+                          this.btnJoinGame.active = false;
+                          this.btnTriggerGame.active = false;
+                          this.btnRestart.active = true;
+                        } else if (timeState == time_state.longTimeNoPlay) {
                           this.contentLabel.string = this.IsPlayerGameReachTimeButNotStart;
                           this.btnJoinGame.active = false;
                           this.btnTriggerGame.active = false;
@@ -3169,6 +3253,8 @@ System.register("chunks:///_virtual/lobby-controller.ts", ['./rollupPluginModLoB
                         this.btnTriggerGame.active = false;
                         this.btnLastRank.active = true;
                         this.btnRestart.active = false;
+                        timeToPrepare = finishTime - timeStamp;
+                        this.startCountdownAnimator(timeToPrepare);
                       } else if (timeState == time_state.longTimeNoPlay) {
                         this.contentLabel.string = this.LongTimeNoPlay;
                         this.btnJoinGame.active = true;
@@ -5242,7 +5328,7 @@ System.register("chunks:///_virtual/pick_asset_item.ts", ['./rollupPluginModLoBa
 });
 
 System.register("chunks:///_virtual/pick_asset.ts", ['./rollupPluginModLoBabelHelpers.js', 'cc', './ponzi-controller.ts', './ccc_msg.ts', './pick_asset_item.ts'], function (exports) {
-  var _applyDecoratedDescriptor, _inheritsLoose, _initializerDefineProperty, _assertThisInitialized, _asyncToGenerator, _regeneratorRuntime, cclegacy, _decorator, Node, Component, warn, ponzi_controller, ccc_msg, pick_asset_item;
+  var _applyDecoratedDescriptor, _inheritsLoose, _initializerDefineProperty, _assertThisInitialized, _asyncToGenerator, _regeneratorRuntime, cclegacy, _decorator, Node, Component, ponzi_controller, ccc_msg, pick_asset_item;
 
   return {
     setters: [function (module) {
@@ -5257,7 +5343,6 @@ System.register("chunks:///_virtual/pick_asset.ts", ['./rollupPluginModLoBabelHe
       _decorator = module._decorator;
       Node = module.Node;
       Component = module.Component;
-      warn = module.warn;
     }, function (module) {
       ponzi_controller = module.ponzi_controller;
     }, function (module) {
@@ -5323,27 +5408,7 @@ System.register("chunks:///_virtual/pick_asset.ts", ['./rollupPluginModLoBabelHe
           });
           var assetNumber = index + 1;
           this.pickAsset = assetNumber;
-        } // public async onPickClicked(){
-        //     warn("User wants to pick ",this.pickAsset);
-        //     if(this.pickAsset == 0){
-        //         ponzi_controller.instance.sendCCCMsg(ccc_msg.single_button_dialog,{content:"Please choose an asset first!",btnText:"OK"});
-        //         return;
-        //     }
-        //     //todo: 检测想要的资产是否超过3个
-        //     ponzi_controller.instance.sendCCCMsg(ccc_msg.network_block_ui,true);
-        //     try{
-        //         await window.pickAsset?.(this.pickAsset);
-        //     }catch{
-        //         ponzi_controller.instance.sendCCCMsg(ccc_msg.single_button_dialog,{content:"pick failed",btnText:"OK"});
-        //     }finally{
-        //         ponzi_controller.instance.sendCCCMsg(ccc_msg.network_block_ui,false);
-        //         this.node.active = false;
-        //         let assetId = this.pickAsset;
-        //         let assetExpectedCount = 1;
-        //         ponzi_controller.instance.sendCCCMsg(ccc_msg.show_pick_fund,{assetId,assetExpectedCount});
-        //     }
-        // }
-        ;
+        };
 
         _proto.onPickClicked = /*#__PURE__*/function () {
           var _onPickClicked = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee() {
@@ -5351,10 +5416,8 @@ System.register("chunks:///_virtual/pick_asset.ts", ['./rollupPluginModLoBabelHe
             return _regeneratorRuntime().wrap(function _callee$(_context) {
               while (1) switch (_context.prev = _context.next) {
                 case 0:
-                  warn("User wants to pick ", this.pickAsset);
-
                   if (!(this.pickAsset == 0)) {
-                    _context.next = 4;
+                    _context.next = 3;
                     break;
                   }
 
@@ -5364,15 +5427,15 @@ System.register("chunks:///_virtual/pick_asset.ts", ['./rollupPluginModLoBabelHe
                   });
                   return _context.abrupt("return");
 
-                case 4:
-                  _context.next = 6;
+                case 3:
+                  _context.next = 5;
                   return this.checkAssetCount(this.pickAsset);
 
-                case 6:
+                case 5:
                   assetCount = _context.sent;
 
                   if (!(assetCount >= 3)) {
-                    _context.next = 10;
+                    _context.next = 9;
                     break;
                   }
 
@@ -5382,7 +5445,7 @@ System.register("chunks:///_virtual/pick_asset.ts", ['./rollupPluginModLoBabelHe
                   });
                   return _context.abrupt("return");
 
-                case 10:
+                case 9:
                   //显示下个窗口
                   this.node.active = false;
                   assetId = this.pickAsset;
@@ -5392,7 +5455,7 @@ System.register("chunks:///_virtual/pick_asset.ts", ['./rollupPluginModLoBabelHe
                     assetExpectedCount: assetExpectedCount
                   });
 
-                case 14:
+                case 13:
                 case "end":
                   return _context.stop();
               }
@@ -5406,85 +5469,122 @@ System.register("chunks:///_virtual/pick_asset.ts", ['./rollupPluginModLoBabelHe
           return onPickClicked;
         }();
 
-        _proto.checkAssetCount = /*#__PURE__*/function () {
-          var _checkAssetCount = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee2(assetId) {
-            var me, assetList;
+        _proto.checkHasDebt = /*#__PURE__*/function () {
+          var _checkHasDebt = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee2() {
+            var me, has;
             return _regeneratorRuntime().wrap(function _callee2$(_context2) {
               while (1) switch (_context2.prev = _context2.next) {
                 case 0:
                   _context2.prev = 0;
                   me = globalThis.ponzi.currentPlayer;
                   _context2.next = 4;
+                  return window.queryValue == null ? void 0 : window.queryValue(globalThis.env.components.HasDebt, me);
+
+                case 4:
+                  has = _context2.sent;
+                  return _context2.abrupt("return", has);
+
+                case 8:
+                  _context2.prev = 8;
+                  _context2.t0 = _context2["catch"](0);
+                  console.error(_context2.t0);
+
+                case 11:
+                  return _context2.abrupt("return", false);
+
+                case 12:
+                case "end":
+                  return _context2.stop();
+              }
+            }, _callee2, null, [[0, 8]]);
+          }));
+
+          function checkHasDebt() {
+            return _checkHasDebt.apply(this, arguments);
+          }
+
+          return checkHasDebt;
+        }();
+
+        _proto.checkAssetCount = /*#__PURE__*/function () {
+          var _checkAssetCount = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee3(assetId) {
+            var me, assetList;
+            return _regeneratorRuntime().wrap(function _callee3$(_context3) {
+              while (1) switch (_context3.prev = _context3.next) {
+                case 0:
+                  _context3.prev = 0;
+                  me = globalThis.ponzi.currentPlayer;
+                  _context3.next = 4;
                   return window.queryValue == null ? void 0 : window.queryValue(globalThis.env.components.AssetsList, me);
 
                 case 4:
-                  assetList = _context2.sent;
+                  assetList = _context3.sent;
 
                   if (!(assetId == 1)) {
-                    _context2.next = 9;
+                    _context3.next = 9;
                     break;
                   }
 
-                  return _context2.abrupt("return", assetList.gpu);
+                  return _context3.abrupt("return", assetList.gpu);
 
                 case 9:
                   if (!(assetId == 2)) {
-                    _context2.next = 13;
+                    _context3.next = 13;
                     break;
                   }
 
-                  return _context2.abrupt("return", assetList.bitcoin);
+                  return _context3.abrupt("return", assetList.bitcoin);
 
                 case 13:
                   if (!(assetId == 3)) {
-                    _context2.next = 17;
+                    _context3.next = 17;
                     break;
                   }
 
-                  return _context2.abrupt("return", assetList.battery);
+                  return _context3.abrupt("return", assetList.battery);
 
                 case 17:
                   if (!(assetId == 4)) {
-                    _context2.next = 21;
+                    _context3.next = 21;
                     break;
                   }
 
-                  return _context2.abrupt("return", assetList.leiter);
+                  return _context3.abrupt("return", assetList.leiter);
 
                 case 21:
                   if (!(assetId == 5)) {
-                    _context2.next = 25;
+                    _context3.next = 25;
                     break;
                   }
 
-                  return _context2.abrupt("return", assetList.gold);
+                  return _context3.abrupt("return", assetList.gold);
 
                 case 25:
                   if (!(assetId == 6)) {
-                    _context2.next = 29;
+                    _context3.next = 29;
                     break;
                   }
 
-                  return _context2.abrupt("return", assetList.oil);
+                  return _context3.abrupt("return", assetList.oil);
 
                 case 29:
                   console.error("Unexpected asset index:", assetId);
 
                 case 30:
-                  _context2.next = 36;
+                  _context3.next = 36;
                   break;
 
                 case 32:
-                  _context2.prev = 32;
-                  _context2.t0 = _context2["catch"](0);
+                  _context3.prev = 32;
+                  _context3.t0 = _context3["catch"](0);
                   console.error("Can not find assetslist on entity");
-                  return _context2.abrupt("return", 3);
+                  return _context3.abrupt("return", 3);
 
                 case 36:
                 case "end":
-                  return _context2.stop();
+                  return _context3.stop();
               }
-            }, _callee2, null, [[0, 32]]);
+            }, _callee3, null, [[0, 32]]);
           }));
 
           function checkAssetCount(_x) {
@@ -5507,8 +5607,8 @@ System.register("chunks:///_virtual/pick_asset.ts", ['./rollupPluginModLoBabelHe
   };
 });
 
-System.register("chunks:///_virtual/pick-money-card.ts", ['./rollupPluginModLoBabelHelpers.js', 'cc', './fond_card.ts', './ponzi-controller.ts', './ccc_msg.ts'], function (exports) {
-  var _applyDecoratedDescriptor, _inheritsLoose, _initializerDefineProperty, _assertThisInitialized, _createForOfIteratorHelperLoose, _asyncToGenerator, _regeneratorRuntime, cclegacy, _decorator, Node, log, instantiate, Component, fond_card, ponzi_controller, ccc_msg;
+System.register("chunks:///_virtual/pick-money-card.ts", ['./rollupPluginModLoBabelHelpers.js', 'cc', './fond_card.ts', './ponzi-controller.ts', './ccc_msg.ts', './string_utils.ts'], function (exports) {
+  var _applyDecoratedDescriptor, _inheritsLoose, _initializerDefineProperty, _assertThisInitialized, _createForOfIteratorHelperLoose, _asyncToGenerator, _regeneratorRuntime, cclegacy, _decorator, Node, log, instantiate, Component, fond_card, ponzi_controller, ccc_msg, string_utils;
 
   return {
     setters: [function (module) {
@@ -5532,6 +5632,8 @@ System.register("chunks:///_virtual/pick-money-card.ts", ['./rollupPluginModLoBa
       ponzi_controller = module.ponzi_controller;
     }, function (module) {
       ccc_msg = module.ccc_msg;
+    }, function (module) {
+      string_utils = module.string_utils;
     }],
     execute: function () {
       var _dec, _dec2, _dec3, _class, _class2, _descriptor, _descriptor2;
@@ -5654,6 +5756,7 @@ System.register("chunks:///_virtual/pick-money-card.ts", ['./rollupPluginModLoBa
 
         _proto.onButtonClicked = /*#__PURE__*/function () {
           var _onButtonClicked = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee() {
+            var content;
             return _regeneratorRuntime().wrap(function _callee$(_context) {
               while (1) switch (_context.prev = _context.next) {
                 case 0:
@@ -5679,28 +5782,29 @@ System.register("chunks:///_virtual/pick-money-card.ts", ['./rollupPluginModLoBa
                   return window.pickFund == null ? void 0 : window.pickFund(this.cardId);
 
                 case 9:
-                  _context.next = 14;
+                  _context.next = 15;
                   break;
 
                 case 11:
                   _context.prev = 11;
                   _context.t0 = _context["catch"](4);
+                  content = string_utils.getSecondLine(_context.t0.toString());
                   ponzi_controller.instance.sendCCCMsg(ccc_msg.single_button_dialog, {
-                    content: "pick failed",
+                    content: content,
                     btnText: "OK"
                   });
 
-                case 14:
-                  _context.prev = 14;
+                case 15:
+                  _context.prev = 15;
                   ponzi_controller.instance.sendCCCMsg(ccc_msg.network_block_ui, false);
                   this.node.active = false;
-                  return _context.finish(14);
+                  return _context.finish(15);
 
-                case 18:
+                case 19:
                 case "end":
                   return _context.stop();
               }
-            }, _callee, this, [[4, 11, 14, 18]]);
+            }, _callee, this, [[4, 11, 15, 19]]);
           }));
 
           function onButtonClicked() {
@@ -6063,7 +6167,7 @@ System.register("chunks:///_virtual/ponzi-controller.ts", ['./rollupPluginModLoB
           console.log("onHasDebt runs!", nextValue);
 
           if (nextValue) {
-            ponzi_controller.instance.sendCCCMsg(ccc_msg.show_paydebt_button, true);
+            if (nextValue.value) ponzi_controller.instance.sendCCCMsg(ccc_msg.show_paydebt_button, true);else ponzi_controller.instance.sendCCCMsg(ccc_msg.show_paydebt_button, false);
           } else if (!nextValue) {
             ponzi_controller.instance.sendCCCMsg(ccc_msg.show_paydebt_button, false);
           }
@@ -7143,12 +7247,20 @@ System.register("chunks:///_virtual/popupui_manager.ts", ['./rollupPluginModLoBa
 
         _proto.initPayButton = /*#__PURE__*/function () {
           var _initPayButton = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee2() {
+            var hasDebt, show;
             return _regeneratorRuntime().wrap(function _callee2$(_context2) {
               while (1) switch (_context2.prev = _context2.next) {
                 case 0:
-                  ponzi_controller.instance.sendCCCMsg(ccc_msg.show_paydebt_button, this.getHasDebt());
+                  _context2.next = 2;
+                  return this.getHasDebt();
 
-                case 1:
+                case 2:
+                  hasDebt = _context2.sent;
+                  console.error("initPayButton:", hasDebt);
+                  show = hasDebt ? hasDebt.value : false;
+                  ponzi_controller.instance.sendCCCMsg(ccc_msg.show_paydebt_button, show);
+
+                case 6:
                 case "end":
                   return _context2.stop();
               }

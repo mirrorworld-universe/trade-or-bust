@@ -5,7 +5,7 @@ import { runQuery ,getComponentValue,getComponentValueStrict, Has, Not  } from "
 
 const {
   components,
-  systemCalls: {restartGame, pay,increment,joinGame,askStart,move,pickAsset,pickFund,trade,acceptTrade,rejectTrade,finishGame,pickCoin,findPartner },
+  systemCalls: {checkDebt, restartGame, pay,increment,joinGame,askStart,move,pickAsset,pickFund,trade,acceptTrade,rejectTrade,finishGame,pickCoin,findPartner },
   network,
 } = await setup();
 
@@ -266,6 +266,10 @@ components.TransactionList.update$.subscribe((update)=>{
   console.log("send restartGame...");
   let data = await restartGame();
 };
+(window as any).checkDebt = async ()=>{
+  console.log("send checkDebt...");
+  let data = await checkDebt();
+}
 
 
 
