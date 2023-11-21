@@ -1888,7 +1888,7 @@ System.register("chunks:///_virtual/fundpool.ts", ['./rollupPluginModLoBabelHelp
           _initializerDefineProperty(_this, "cardModel", _descriptor2, _assertThisInitialized(_this));
 
           _this._inited = void 0;
-          _this.cards = [[1, 10, 10, 30], [2, 20, 10, 30], [3, 30, 10, 30], [4, 40, 10, 30], [5, 50, 10, 30], [6, 60, 10, 30], [7, 110, 12, 40], [8, 120, 12, 40], [9, 130, 12, 40], [10, 140, 12, 40], [11, 150, 12, 40], [12, 160, 12, 40], [13, 210, 14, 50], [14, 220, 14, 50], [15, 230, 14, 50], [16, 240, 14, 50], [17, 250, 14, 50], [18, 260, 14, 50]];
+          _this.cards = [[1, 10, 2, 30], [2, 20, 2, 31], [3, 30, 2, 32], [4, 40, 2, 33], [5, 50, 2, 34], [6, 60, 2, 35], [7, 110, 3, 40], [8, 120, 3, 41], [9, 130, 3, 42], [10, 140, 3, 43], [11, 150, 3, 44], [12, 160, 3, 45], [13, 210, 4, 50], [14, 220, 4, 51], [15, 230, 4, 52], [16, 240, 4, 53], [17, 250, 4, 54], [18, 260, 4, 55]];
           return _this;
         }
 
@@ -5667,7 +5667,7 @@ System.register("chunks:///_virtual/pick-money-card.ts", ['./rollupPluginModLoBa
           _this.assetId = 0; //1,2,3,4,5,6
 
           _this.cardId = 0;
-          _this.cards = [[1, 10, 10, 30], [2, 20, 10, 30], [3, 30, 10, 30], [4, 40, 10, 30], [5, 50, 10, 30], [6, 60, 10, 30], [7, 110, 12, 40], [8, 120, 12, 40], [9, 130, 12, 40], [10, 140, 12, 40], [11, 150, 12, 40], [12, 160, 12, 40], [13, 210, 14, 50], [14, 220, 14, 50], [15, 230, 14, 50], [16, 240, 14, 50], [17, 250, 14, 50], [18, 260, 14, 50]];
+          _this.cards = [[1, 10, 2, 30], [2, 20, 2, 31], [3, 30, 2, 32], [4, 40, 2, 33], [5, 50, 2, 34], [6, 60, 2, 35], [7, 110, 3, 40], [8, 120, 3, 41], [9, 130, 3, 42], [10, 140, 3, 43], [11, 150, 3, 44], [12, 160, 3, 45], [13, 210, 4, 50], [14, 220, 4, 51], [15, 230, 4, 52], [16, 240, 4, 53], [17, 250, 4, 54], [18, 260, 4, 55]];
           return _this;
         }
 
@@ -6161,10 +6161,12 @@ System.register("chunks:///_virtual/ponzi-controller.ts", ['./rollupPluginModLoB
         };
 
         _proto.onHasDebt = function onHasDebt(update) {
+          var me = globalThis.ponzi.currentPlayer;
           var _update$value2 = update.value,
               nextValue = _update$value2[0],
               prevValue = _update$value2[1];
-          console.log("onHasDebt runs!", nextValue);
+          console.log("onHasDebt", me, update.entity);
+          if (update.entity != me) return;
 
           if (nextValue) {
             if (nextValue.value) ponzi_controller.instance.sendCCCMsg(ccc_msg.show_paydebt_button, true);else ponzi_controller.instance.sendCCCMsg(ccc_msg.show_paydebt_button, false);
@@ -7532,7 +7534,7 @@ System.register("chunks:///_virtual/rank.ts", ['./rollupPluginModLoBabelHelpers.
 });
 
 System.register("chunks:///_virtual/right-player-list-item.ts", ['./rollupPluginModLoBabelHelpers.js', 'cc', './ponzi-controller.ts', './ccc_msg.ts', './rule_utils.ts', './string_utils.ts'], function (exports) {
-  var _applyDecoratedDescriptor, _inheritsLoose, _initializerDefineProperty, _assertThisInitialized, _asyncToGenerator, _regeneratorRuntime, cclegacy, _decorator, Label, Component, log, ponzi_controller, ccc_msg, rule_utils, string_utils;
+  var _applyDecoratedDescriptor, _inheritsLoose, _initializerDefineProperty, _assertThisInitialized, _asyncToGenerator, _regeneratorRuntime, cclegacy, _decorator, Label, Component, Color, log, ponzi_controller, ccc_msg, rule_utils, string_utils;
 
   return {
     setters: [function (module) {
@@ -7547,6 +7549,7 @@ System.register("chunks:///_virtual/right-player-list-item.ts", ['./rollupPlugin
       _decorator = module._decorator;
       Label = module.Label;
       Component = module.Component;
+      Color = module.Color;
       log = module.log;
     }, function (module) {
       ponzi_controller = module.ponzi_controller;
@@ -7627,7 +7630,7 @@ System.register("chunks:///_virtual/right-player-list-item.ts", ['./rollupPlugin
 
         _proto._init = /*#__PURE__*/function () {
           var _init2 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee() {
-            var playerEntity;
+            var playerEntity, me;
             return _regeneratorRuntime().wrap(function _callee$(_context) {
               while (1) switch (_context.prev = _context.next) {
                 case 0:
@@ -7642,13 +7645,21 @@ System.register("chunks:///_virtual/right-player-list-item.ts", ['./rollupPlugin
 
                 case 3:
                   this._inited = true;
-                  this.labelName.string = string_utils.truncateString(playerEntity); //query self assetsList
+                  me = globalThis.ponzi.currentPlayer;
+                  this.labelName.string = string_utils.truncateString(playerEntity);
+
+                  if (me == playerEntity) {
+                    this.labelName.color = new Color(255, 245, 0, 255);
+                  } else {
+                    this.labelName.color = new Color(255, 255, 255, 255);
+                  } //query self assetsList
+
 
                   this.updateUI(); //register lis
 
                   this._registerListeners();
 
-                case 7:
+                case 9:
                 case "end":
                   return _context.stop();
               }
