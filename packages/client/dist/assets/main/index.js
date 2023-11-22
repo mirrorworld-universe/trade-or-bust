@@ -7257,12 +7257,12 @@ System.register("chunks:///_virtual/popupui_manager.ts", ['./rollupPluginModLoBa
                   return this.getHasDebt();
 
                 case 2:
-                  hasDebt = _context2.sent;
-                  console.error("initPayButton:", hasDebt);
+                  hasDebt = _context2.sent; // console.error("initPayButton:",hasDebt);
+
                   show = hasDebt ? hasDebt.value : false;
                   ponzi_controller.instance.sendCCCMsg(ccc_msg.show_paydebt_button, show);
 
-                case 6:
+                case 5:
                 case "end":
                   return _context2.stop();
               }
