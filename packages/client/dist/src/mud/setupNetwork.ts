@@ -45,7 +45,6 @@ export async function setupNetwork() {
   });
 
   // Request drip from faucet
-  console.info("networkConfig.faucetServiceUrl is:",networkConfig.faucetServiceUrl);
   if (networkConfig.faucetServiceUrl) {
     const address = burnerAccount.address;
     console.info("[Dev Faucet]: Player address -> ", address);
