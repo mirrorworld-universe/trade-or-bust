@@ -1,1 +1,10 @@
-System.register([],(function(e){"use strict";return{execute:function(){e("default","")}}}));
+System.register([], (function (exports) {
+	'use strict';
+	return {
+		execute: (function () {
+
+			var spine_js = exports('default', '');
+
+		})
+	};
+}));
