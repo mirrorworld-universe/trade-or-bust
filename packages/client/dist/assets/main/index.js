@@ -3065,6 +3065,7 @@ System.register("chunks:///_virtual/lobby-controller.ts", ['./rollupPluginModLoB
         _proto.updateTimeState = function updateTimeState() {
           var timeState = time_state["default"];
           var gameObj = globalThis.ponzi.game;
+          if (!gameObj) return;
           var timeStamp = sys.now();
           timeStamp = Number(timeStamp) / 1000;
           var gameStartTime = Number(gameObj.startTime);
