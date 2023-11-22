@@ -3883,9 +3883,9 @@ System.register("chunks:///_virtual/map-controller.ts", ['./rollupPluginModLoBab
 
           _initializerDefineProperty(_this, "mapItemModel", _descriptor5, _assertThisInitialized(_this));
 
-          _initializerDefineProperty(_this, "playerModel", _descriptor6, _assertThisInitialized(_this));
+          _initializerDefineProperty(_this, "playerModel", _descriptor6, _assertThisInitialized(_this)); // private terrainArray:any[][];
 
-          _this.terrainArray = void 0;
+
           _this.partners = void 0;
           _this.inited = false;
           _this.tmpCoorArray = void 0;
@@ -4206,15 +4206,14 @@ System.register("chunks:///_virtual/map-controller.ts", ['./rollupPluginModLoBab
         };
 
         _proto.drawMap = function drawMap(width, height, newMap) {
-          var _window$mudutils,
-              _this3 = this;
+          var _this3 = this;
 
           if (!newMap) {
             log("No map data to draw!");
             return;
-          }
+          } // this.terrainArray = window.mudutils?.hexToArray(width,height,newMap);
+          // 示例使用
 
-          this.terrainArray = (_window$mudutils = window.mudutils) == null ? void 0 : _window$mudutils.hexToArray(width, height, newMap); // 示例使用
 
           var centerX = width / 2; // 中心点的 X 坐标
 
