@@ -45,28 +45,29 @@ export async function setupNetwork() {
   });
 
   // Request drip from faucet
-  if (networkConfig.faucetServiceUrl) {
-    const address = burnerAccount.address;
-    console.info("[Dev Faucet]: Player address -> ", address);
+  console.info("networkConfig.faucetServiceUrl is:",networkConfig.faucetServiceUrl);
+  // if (networkConfig.faucetServiceUrl) {
+  //   const address = burnerAccount.address;
+  //   console.info("[Dev Faucet]: Player address -> ", address);
 
-    const faucet = createFaucetService(networkConfig.faucetServiceUrl);
+  //   const faucet = createFaucetService(networkConfig.faucetServiceUrl);
 
-    const requestDrip = async () => {
-      const balance = await publicClient.getBalance({ address });
-      console.info(`[Dev Faucet]: Player balance -> ${balance}`);
-      const lowBalance = balance < parseEther("1");
-      if (lowBalance) {
-        console.info("[Dev Faucet]: Balance is low, dripping funds to player");
-        // Double drip
-        await faucet.dripDev({ address });
-        await faucet.dripDev({ address });
-      }
-    };
+  //   const requestDrip = async () => {
+  //     const balance = await publicClient.getBalance({ address });
+  //     console.info(`[Dev Faucet]: Player balance -> ${balance}`);
+  //     const lowBalance = balance < parseEther("1");
+  //     if (lowBalance) {
+  //       console.info("[Dev Faucet]: Balance is low, dripping funds to player");
+  //       // Double drip
+  //       await faucet.dripDev({ address });
+  //       await faucet.dripDev({ address });
+  //     }
+  //   };
 
-    requestDrip();
-    // Request a drip every 20 seconds
-    setInterval(requestDrip, 20000);
-  }
+  //   requestDrip();
+  //   // Request a drip every 20 seconds
+  //   setInterval(requestDrip, 20000);
+  // }
 
   return {
     world,
