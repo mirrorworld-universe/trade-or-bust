@@ -17,7 +17,7 @@ System.register([], function (_export, _context) {
           _classCallCheck(this, Application);
 
           this.settingsPath = 'src/settings.json';
-          this.showFPS = true;
+          this.showFPS = false;
         }
 
         _createClass(Application, [{
@@ -40,7 +40,7 @@ System.register([], function (_export, _context) {
           key: "start",
           value: function start() {
             return cc.game.init({
-              debugMode: true ? cc.DebugMode.INFO : cc.DebugMode.ERROR,
+              debugMode: false ? cc.DebugMode.INFO : cc.DebugMode.ERROR,
               settingsPath: this.settingsPath,
               overrideSettings: {
                 // assets: {
