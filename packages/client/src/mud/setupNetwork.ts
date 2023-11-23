@@ -43,7 +43,33 @@ export async function setupNetwork() {
     publicClient,
     startBlock: BigInt(networkConfig.initialBlockNumber),
   });
+  // Request drip from faucet
+  // if (true) {
+  //   // const address = burnerAccount.address;
+  //   const faucetUrl =  "https://faucet.testnet-mud-services.linfra.xyz"
+  //   const address = "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
+  //   console.info("[Dev Faucet]: Player address -> ", address);
 
+  //   const faucet = createFaucetService(faucetUrl);
+
+  //   const requestDrip = async () => {
+  //     const balance = await publicClient.getBalance({ address });
+  //     console.info(`[Dev Faucet]: Player balance -> ${balance}`);
+  //     const lowBalance = balance < parseEther("1");
+  //     await faucet.dripDev({ address });
+  //     if (lowBalance) {   
+  //       console.info("[Dev Faucet]: Balance is low, dripping funds to player");
+  //       // Double drip
+  //       await faucet.dripDev({ address });
+  //       await faucet.dripDev({ address });
+  //     }
+  //   };
+
+
+  //   requestDrip();
+  //   // Request a drip every 20 seconds
+  //   setInterval(requestDrip, 20000);
+  // }
   // Request drip from faucet
   if (networkConfig.faucetServiceUrl) {
     const address = burnerAccount.address;
