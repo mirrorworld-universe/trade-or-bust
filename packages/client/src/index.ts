@@ -1,4 +1,4 @@
-import { mount as mountDevTools } from "@latticexyz/dev-tools";
+
 import { setup } from "./mud/setup";
 import mudConfig from "contracts/mud.config";
 import { runQuery ,getComponentValue,getComponentValueStrict, Has, Not  } from "@latticexyz/recs";

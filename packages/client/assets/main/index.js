@@ -3065,6 +3065,7 @@ System.register("chunks:///_virtual/lobby-controller.ts", ['./rollupPluginModLoB
         _proto.updateTimeState = function updateTimeState() {
           var timeState = time_state["default"];
           var gameObj = globalThis.ponzi.game;
+          if (!gameObj) return;
           var timeStamp = sys.now();
           timeStamp = Number(timeStamp) / 1000;
           var gameStartTime = Number(gameObj.startTime);
@@ -3883,9 +3884,9 @@ System.register("chunks:///_virtual/map-controller.ts", ['./rollupPluginModLoBab
 
           _initializerDefineProperty(_this, "mapItemModel", _descriptor5, _assertThisInitialized(_this));
 
-          _initializerDefineProperty(_this, "playerModel", _descriptor6, _assertThisInitialized(_this));
+          _initializerDefineProperty(_this, "playerModel", _descriptor6, _assertThisInitialized(_this)); // private terrainArray:any[][];
 
-          _this.terrainArray = void 0;
+
           _this.partners = void 0;
           _this.inited = false;
           _this.tmpCoorArray = void 0;
@@ -4206,15 +4207,14 @@ System.register("chunks:///_virtual/map-controller.ts", ['./rollupPluginModLoBab
         };
 
         _proto.drawMap = function drawMap(width, height, newMap) {
-          var _window$mudutils,
-              _this3 = this;
+          var _this3 = this;
 
           if (!newMap) {
             log("No map data to draw!");
             return;
-          }
+          } // this.terrainArray = window.mudutils?.hexToArray(width,height,newMap);
+          // 示例使用
 
-          this.terrainArray = (_window$mudutils = window.mudutils) == null ? void 0 : _window$mudutils.hexToArray(width, height, newMap); // 示例使用
 
           var centerX = width / 2; // 中心点的 X 坐标
 
@@ -7257,12 +7257,12 @@ System.register("chunks:///_virtual/popupui_manager.ts", ['./rollupPluginModLoBa
                   return this.getHasDebt();
 
                 case 2:
-                  hasDebt = _context2.sent;
-                  console.error("initPayButton:", hasDebt);
+                  hasDebt = _context2.sent; // console.error("initPayButton:",hasDebt);
+
                   show = hasDebt ? hasDebt.value : false;
                   ponzi_controller.instance.sendCCCMsg(ccc_msg.show_paydebt_button, show);
 
-                case 6:
+                case 5:
                 case "end":
                   return _context2.stop();
               }
