@@ -274,7 +274,7 @@ components.TransactionList.update$.subscribe((update)=>{
 
 
 // https://vitejs.dev/guide/env-and-mode.html
-if (true||import.meta.env.DEV) {
+// if (true||import.meta.env.DEV) {
   const { mount: mountDevTools } = await import("@latticexyz/dev-tools");
   mountDevTools({
     config: mudConfig,
@@ -287,4 +287,4 @@ if (true||import.meta.env.DEV) {
     write$: network.write$,
     recsWorld: network.world,
   });
-}
+// }
