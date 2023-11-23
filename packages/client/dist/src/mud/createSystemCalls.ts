@@ -29,8 +29,7 @@ export function createSystemCalls(
   const move = async (x:number,y:number) => {
     // const tx = await worldSend("move", [x, y]);
     const tx = await worldContract.write.move([x,y]);
-    await waitForTransaction(tx);
-    return getComponentValue(Player, singletonEntity);
+    return await waitForTransaction(tx);
   };
 
   const pickAsset = async (assetType:number) => {
@@ -39,8 +38,8 @@ export function createSystemCalls(
     return getComponentValue(AssetsList, singletonEntity);
   };
 
-  const pickFund = async () => {
-    const tx = await worldContract.write.pickFund();
+  const pickFund = async (cardId:number) => {
+    const tx = await worldContract.write.pickFund([cardId]);
     await waitForTransaction(tx);
   };
 
@@ -64,6 +63,29 @@ export function createSystemCalls(
     return await waitForTransaction(tx);
   };
 
+  const pickCoin = async () => {
+    const tx = await worldContract.write.pickCoin();
+    return await waitForTransaction(tx);
+  };
+
+  const findPartner = async () => {
+    const tx = await worldContract.write.findPartner();
+    return await waitForTransaction(tx);
+  };
+
+  const pay = async () => {
+    const tx = await worldContract.write.pay();
+    return await waitForTransaction(tx);
+  };
+  const restartGame = async () => {
+    const tx = await worldContract.write.restartGame();
+    return await waitForTransaction(tx);
+  };
+  const checkDebt = async () => {
+    const tx = await worldContract.write.checkDebt();
+    return await waitForTransaction(tx);
+  };
+
   return {
     increment,
     joinGame,
@@ -74,6 +96,11 @@ export function createSystemCalls(
     trade,
     acceptTrade,
     rejectTrade,
-    finishGame
+    finishGame,
+    pickCoin,
+    findPartner,
+    pay,
+    restartGame,
+    checkDebt
   };
 }

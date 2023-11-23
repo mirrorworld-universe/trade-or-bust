@@ -1,11 +1,11 @@
-import { mount as mountDevTools } from "@latticexyz/dev-tools";
+
 import { setup } from "./mud/setup";
 import mudConfig from "contracts/mud.config";
 import { runQuery ,getComponentValue,getComponentValueStrict, Has, Not  } from "@latticexyz/recs";
 
 const {
   components,
-  systemCalls: { increment,joinGame,askStart,move,pickAsset,pickFund,trade,acceptTrade,rejectTrade,finishGame },
+  systemCalls: {checkDebt, restartGame, pay,increment,joinGame,askStart,move,pickAsset,pickFund,trade,acceptTrade,rejectTrade,finishGame,pickCoin,findPartner },
   network,
 } = await setup();
 
@@ -16,7 +16,8 @@ globalThis.ponzi = {
   game:null,
   gameMap:null,
   mapItems:null,
-  players:null
+  players:null,
+  transactionList:null,
 }
 
 globalThis.env = {
@@ -59,6 +60,12 @@ components.GameMap.update$.subscribe((update)=>{
   globalThis.ponzi.gamemap_update?.(prevValue, nextValue);
 });
 
+components.FundPool.update$.subscribe((update)=>{
+  const [nextValue, prevValue] = update.value;
+  console.log("FundPool updated", update);
+  globalThis.ponzi.fundpool_update?.(update);
+});
+
 components.MapItem.update$.subscribe((update)=>{
   const [nextValue, prevValue] = update.value;
   // console.log("MapItems updated", { nextValue, prevValue });
@@ -71,9 +78,29 @@ components.IsPlayer.update$.subscribe((update)=>{
   globalThis.ponzi.isplayer_update?.(update);
 });
 
+components.IsEliminated.update$.subscribe((update)=>{
+  const [nextValue, prevValue] = update.value;
+  console.log("IsEliminated updated", update);
+  globalThis.ponzi.iseliminated_update?.(update);
+});
+
+// components.IsFinishGame.update$.subscribe((update)=>{
+//   const [nextValue, prevValue] = update.value;
+//   console.log("IsFinishGame updated", update);
+//   globalThis.ponzi.isfinishgame_update?.(update);
+// });
+
+components.OwnedCards.update$.subscribe((update)=>{
+  const [nextValue, prevValue] = update.value;
+  console.log("OwnedCards updated", update);
+  // globalThis.ponzi.isplayer_update?.(update);
+});
+
 components.TransactionList.update$.subscribe((update)=>{
   const [nextValue, prevValue] = update.value;
   console.log("TransactionList updated", update);
+
+  globalThis.ponzi.transactionList = nextValue
   globalThis.ponzi.transactionlist_update?.(update);
 });
 
@@ -95,11 +122,6 @@ components.RaiseColddown.update$.subscribe((update)=>{
 });
 
 //Trade
-// components.UnsolicitedTransaction.update$.subscribe((update)=>{
-//   const [nextValue, prevValue] = update.value;
-//   console.log("UnsolicitedTransaction updated", update);
-//   // globalThis.ponzi.tradelist_update?.(update);
-// });
 components.PassiveTransaction.update$.subscribe((update)=>{
   const [nextValue, prevValue] = update.value;
   console.log("PassiveTransaction updated", update);
@@ -114,6 +136,16 @@ components.PlayerGameResult.update$.subscribe((update)=>{
   const [nextValue, prevValue] = update.value;
   console.log("PlayerGameResult updated", update);
   globalThis.ponzi.playergameresult_update?.(update);
+});
+components.HasDebt.update$.subscribe((update)=>{
+  const [nextValue, prevValue] = update.value;
+  console.log("HasDebt updated", update);
+  globalThis.ponzi.hasdebt_update?.(update);
+});
+components.TransactionList.update$.subscribe((update)=>{
+  const [nextValue, prevValue] = update.value;
+  console.log("TransactionList updated", update);
+  globalThis.ponzi.transactionlist_update?.(update);
 });
 
 //get functions
@@ -133,6 +165,14 @@ components.PlayerGameResult.update$.subscribe((update)=>{
   return components.AssetsList.values;
 }
 
+(window as any).getTransactionList = ()=>{
+  return components.TransactionList.values;
+}
+
+(window as any).getFundPool = ()=>{
+  return components.FundPool.values;
+}
+
 //Query
 (window as any).queryValue = async (component, entity) => {
   const data = getComponentValueStrict(component, entity)
@@ -144,6 +184,15 @@ components.PlayerGameResult.update$.subscribe((update)=>{
     const matchingEntities = runQuery([
       Has(components.AssetsList)
       // Not(components.IsTrading)
+    ])
+
+    return matchingEntities;
+}
+
+(window as any).queryResultAssetsList = async ()=>{
+    const matchingEntities = runQuery([
+      Has(components.AssetsList),
+      Not(components.IsEliminated)
     ])
 
     return matchingEntities;
@@ -176,9 +225,9 @@ components.PlayerGameResult.update$.subscribe((update)=>{
   console.log("send pickAsset:", assetKind);
   await pickAsset(assetKind);
 };
-(window as any).pickFund = async (assetKind) => {
-  console.log("send pickFund:", assetKind);
-  await pickFund();
+(window as any).pickFund = async (cardId) => {
+  console.log("send pickFund:", cardId);
+  await pickFund(cardId);
 };
 (window as any).trade = async (targetPlayer:string,assetKind:number,money:number) => {
   console.log("send trade:", targetPlayer, money, assetKind);
@@ -194,9 +243,33 @@ components.PlayerGameResult.update$.subscribe((update)=>{
 };
 
 (window as any).finishGame = async () => {
+  console.log("send finishGame");
   let data = await finishGame();
-  console.log("send finishGame:"+data);
 };
+
+(window as any).pickCoin = async () => {
+  console.log("send pickCoin...");
+  let data = await pickCoin();
+  console.log("send pickCoin data:"+data);
+};
+
+(window as any).searchPartner = async () => {
+  console.log("send searchPartner...");
+  let data = await findPartner();
+  // console.log("send findPartner data:"+data);
+};
+(window as any).payDebt = async () => {
+  console.log("send pay...");
+  let data = await pay();
+};
+(window as any).restartGame = async () => {
+  console.log("send restartGame...");
+  let data = await restartGame();
+};
+(window as any).checkDebt = async ()=>{
+  console.log("send checkDebt...");
+  let data = await checkDebt();
+}
 
 
 
