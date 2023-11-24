@@ -274,7 +274,7 @@ components.TransactionList.update$.subscribe((update)=>{
 
 
 // https://vitejs.dev/guide/env-and-mode.html
-// if (true||import.meta.env.DEV) {
+if (import.meta.env.DEV) {
   const { mount: mountDevTools } = await import("@latticexyz/dev-tools");
   console.log("await import(\"@latticexyz/dev-tools\");");
   mountDevTools({
@@ -288,4 +288,16 @@ components.TransactionList.update$.subscribe((update)=>{
     write$: network.write$,
     recsWorld: network.world,
   });
-// }
+}
+// const { mount: mountDevTools } = await import("@latticexyz/dev-tools");
+// mountDevTools({
+//   config: mudConfig,
+//   publicClient: network.publicClient,
+//   walletClient: network.walletClient,
+//   latestBlock$: network.latestBlock$,
+//   blockStorageOperations$: network.blockStorageOperations$,
+//   worldAddress: network.worldContract.address,
+//   worldAbi: network.worldContract.abi,
+//   write$: network.write$,
+//   recsWorld: network.world,
+// });

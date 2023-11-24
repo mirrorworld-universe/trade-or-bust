@@ -276,6 +276,7 @@ components.TransactionList.update$.subscribe((update)=>{
 // https://vitejs.dev/guide/env-and-mode.html
 if (import.meta.env.DEV) {
   const { mount: mountDevTools } = await import("@latticexyz/dev-tools");
+  console.log("await import(\"@latticexyz/dev-tools\");");
   mountDevTools({
     config: mudConfig,
     publicClient: network.publicClient,
