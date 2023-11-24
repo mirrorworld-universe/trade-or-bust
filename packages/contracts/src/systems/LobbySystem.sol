@@ -2,7 +2,7 @@
 pragma solidity >=0.8.0;
 
 import { System } from "@latticexyz/world/src/System.sol";
-import { MapItemTableId,HasDebt,Debt,PassiveTransaction,UnsolicitedTransaction,IsEliminated,OwnedCards,PlayerGameResult,PlayerTableId,TradeList,TransactionList,RaiseColddown, AssetsList, Log,Player,Game ,GameData,GameState,GameMap,MapItem,PlayerData,IsPlayer,GameMapData} from "../codegen/Tables.sol";
+import { AssetsListTableId, MapItemTableId,HasDebt,Debt,PassiveTransaction,UnsolicitedTransaction,IsEliminated,OwnedCards,PlayerGameResult,PlayerTableId,TradeList,TransactionList,RaiseColddown, AssetsList, Log,Player,Game ,GameData,GameState,GameMap,MapItem,PlayerData,IsPlayer,GameMapData} from "../codegen/Tables.sol";
 import { addressToEntityKey } from "../addressToEntityKey.sol";
 // import { IWorld } from "../../src/codegen/world/IWorld.sol";
 import { getUniqueEntity } from "@latticexyz/world/src/modules/uniqueentity/getUniqueEntity.sol";
@@ -92,6 +92,7 @@ contract LobbySystem is System {
             if(gameData.startTime <= nowTime && gameData.endTime > nowTime){
                 GameState.set(2);//Game really started
                 
+                // clearPlayerComponents();//todo 这个打开就会费用过多。。。。无法部署
                 // initGameMap();
                 GameMapData memory gameMap = GameMap.get();
                 uint[][] memory mapArray = bytesToUintArray(gameMap.mapArray,20,20);
@@ -244,36 +245,37 @@ contract LobbySystem is System {
         GameData memory game = Game.get();
         return block.timestamp >= game.endTime;
     }
-    function clearPlayerComponents() private {
-        QueryFragment[] memory fragments = new QueryFragment[](1);
-        fragments[0] = QueryFragment(QueryType.Has, PlayerTableId, new bytes(0));
-        bytes32[][] memory keyTuples = query(fragments);
+
+    // function clearPlayerComponents() private {
+    //     QueryFragment[] memory fragments = new QueryFragment[](1);
+    //     fragments[0] = QueryFragment(QueryType.Has, PlayerTableId, new bytes(0));
+    //     bytes32[][] memory keyTuples = query(fragments);
 
         
-        for (uint256 a = 0; a < keyTuples.length; a++) {
-            bytes32[] memory allPlayers = keyTuples[a];
+    //     for (uint256 a = 0; a < keyTuples.length; a++) {
+    //         bytes32[] memory allPlayers = keyTuples[a];
 
-            for (uint256 i = 0; i < allPlayers.length; i++) {
-                bytes32 tmpPlayer = allPlayers[i];
+    //         for (uint256 i = 0; i < allPlayers.length; i++) {
+    //             bytes32 tmpPlayer = allPlayers[i];
 
-                //Player
-                IsPlayer.deleteRecord(tmpPlayer);
-                Player.deleteRecord(tmpPlayer);
+    //             //Player
+    //             IsPlayer.deleteRecord(tmpPlayer);
+    //             Player.deleteRecord(tmpPlayer);
 
-                // //Trade
-                // AssetsList.deleteRecord(tmpPlayer);
-                // UnsolicitedTransaction.deleteRecord(tmpPlayer);
-                // PassiveTransaction.deleteRecord(tmpPlayer);
-                // TradeList.deleteRecord(tmpPlayer);
-                // TransactionList.deleteRecord(tmpPlayer);
-                // RaiseColddown.deleteRecord(tmpPlayer);
+    //             // //Trade
+    //             // AssetsList.deleteRecord(tmpPlayer);
+    //             // UnsolicitedTransaction.deleteRecord(tmpPlayer);
+    //             // PassiveTransaction.deleteRecord(tmpPlayer);
+    //             // TradeList.deleteRecord(tmpPlayer);
+    //             // TransactionList.deleteRecord(tmpPlayer);
+    //             // RaiseColddown.deleteRecord(tmpPlayer);
 
-                // //
-                // HasDebt.deleteRecord(tmpPlayer);
-                // Debt.deleteRecord(tmpPlayer);
-            }
-        }
-    }
+    //             // //
+    //             // HasDebt.deleteRecord(tmpPlayer);
+    //             // Debt.deleteRecord(tmpPlayer);
+    //         }
+    //     }
+    // }
 
     function clearMapComponents() private{
 
@@ -304,5 +306,37 @@ contract LobbySystem is System {
         uint256 finishTime = endTime + calSec;
 
         Game.set(gameId, startTime, endTime, finishTime);
+    }
+
+    function clearPlayerComponents() private {
+        QueryFragment[] memory fragments = new QueryFragment[](1);
+        fragments[0] = QueryFragment(QueryType.Has, AssetsListTableId, new bytes(0));
+        fragments[1] = QueryFragment(QueryType.Not, PlayerTableId, new bytes(0));
+        bytes32[][] memory keyTuples = query(fragments);
+
+        
+        for (uint256 a = 0; a < keyTuples.length; a++) {
+            bytes32[] memory allPlayers = keyTuples[a];
+
+            for (uint256 i = 0; i < allPlayers.length; i++) {
+                bytes32 tmpPlayer = allPlayers[i];
+
+                //Player
+                // IsPlayer.deleteRecord(tmpPlayer);
+                // Player.deleteRecord(tmpPlayer);
+
+                // //Trade
+                AssetsList.deleteRecord(tmpPlayer);
+                // UnsolicitedTransaction.deleteRecord(tmpPlayer);
+                // PassiveTransaction.deleteRecord(tmpPlayer);
+                // TradeList.deleteRecord(tmpPlayer);
+                // TransactionList.deleteRecord(tmpPlayer);
+                // RaiseColddown.deleteRecord(tmpPlayer);
+
+                // //
+                // HasDebt.deleteRecord(tmpPlayer);
+                // Debt.deleteRecord(tmpPlayer);
+            }
+        }
     }
 }

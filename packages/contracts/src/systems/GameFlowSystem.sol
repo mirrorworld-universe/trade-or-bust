@@ -125,8 +125,8 @@ contract GameFlowSystem is System {
                 // RaiseColddown.deleteRecord(tmpPlayer);
 
                 // //
-                // HasDebt.deleteRecord(tmpPlayer);
-                // Debt.deleteRecord(tmpPlayer);
+                HasDebt.deleteRecord(tmpPlayer);
+                Debt.deleteRecord(tmpPlayer);
             }
         }
     }

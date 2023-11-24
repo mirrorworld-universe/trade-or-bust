@@ -7797,7 +7797,7 @@ System.register("chunks:///_virtual/right-player-list-item.ts", ['./rollupPlugin
 });
 
 System.register("chunks:///_virtual/right-player-list.ts", ['./rollupPluginModLoBabelHelpers.js', 'cc', './right-player-list-item.ts', './string_utils.ts', './ccc_msg.ts', './ponzi-controller.ts'], function (exports) {
-  var _applyDecoratedDescriptor, _inheritsLoose, _initializerDefineProperty, _assertThisInitialized, _createForOfIteratorHelperLoose, cclegacy, _decorator, Node, error, log, instantiate, Component, right_player_list_item, string_utils, ccc_msg, ponzi_controller;
+  var _applyDecoratedDescriptor, _inheritsLoose, _initializerDefineProperty, _assertThisInitialized, _createForOfIteratorHelperLoose, _asyncToGenerator, _regeneratorRuntime, cclegacy, _decorator, Node, error, log, Component, instantiate, right_player_list_item, string_utils, ccc_msg, ponzi_controller;
 
   return {
     setters: [function (module) {
@@ -7806,14 +7806,16 @@ System.register("chunks:///_virtual/right-player-list.ts", ['./rollupPluginModLo
       _initializerDefineProperty = module.initializerDefineProperty;
       _assertThisInitialized = module.assertThisInitialized;
       _createForOfIteratorHelperLoose = module.createForOfIteratorHelperLoose;
+      _asyncToGenerator = module.asyncToGenerator;
+      _regeneratorRuntime = module.regeneratorRuntime;
     }, function (module) {
       cclegacy = module.cclegacy;
       _decorator = module._decorator;
       Node = module.Node;
       error = module.error;
       log = module.log;
-      instantiate = module.instantiate;
       Component = module.Component;
+      instantiate = module.instantiate;
     }, function (module) {
       right_player_list_item = module.right_player_list_item;
     }, function (module) {
@@ -7935,13 +7937,84 @@ System.register("chunks:///_virtual/right-player-list.ts", ['./rollupPluginModLo
           });
         };
 
-        _proto.addPlayerItem = function addPlayerItem(hash) {
-          var newNode = instantiate(this.itemModel);
-          newNode.setParent(this.itemParent);
-          newNode.active = true;
-          var script = newNode.getComponent(right_player_list_item);
-          script.init(hash);
-        };
+        _proto.addPlayerItem = /*#__PURE__*/function () {
+          var _addPlayerItem = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee(hash) {
+            var isPlayer, newNode, script;
+            return _regeneratorRuntime().wrap(function _callee$(_context) {
+              while (1) switch (_context.prev = _context.next) {
+                case 0:
+                  _context.next = 2;
+                  return this.getIsPlayer(hash);
+
+                case 2:
+                  isPlayer = _context.sent;
+
+                  if (isPlayer) {
+                    _context.next = 6;
+                    break;
+                  }
+
+                  console.warn(hash, " is not a player, don't show it on right");
+                  return _context.abrupt("return");
+
+                case 6:
+                  newNode = instantiate(this.itemModel);
+                  newNode.setParent(this.itemParent);
+                  newNode.active = true;
+                  script = newNode.getComponent(right_player_list_item);
+                  script.init(hash);
+
+                case 11:
+                case "end":
+                  return _context.stop();
+              }
+            }, _callee, this);
+          }));
+
+          function addPlayerItem(_x) {
+            return _addPlayerItem.apply(this, arguments);
+          }
+
+          return addPlayerItem;
+        }();
+
+        _proto.getIsPlayer = /*#__PURE__*/function () {
+          var _getIsPlayer = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee2(playerEntity) {
+            var isPlayer;
+            return _regeneratorRuntime().wrap(function _callee2$(_context2) {
+              while (1) switch (_context2.prev = _context2.next) {
+                case 0:
+                  isPlayer = false;
+                  _context2.prev = 1;
+                  _context2.next = 4;
+                  return window.queryValue == null ? void 0 : window.queryValue(window.env.components.IsPlayer, playerEntity);
+
+                case 4:
+                  isPlayer = _context2.sent;
+                  _context2.next = 10;
+                  break;
+
+                case 7:
+                  _context2.prev = 7;
+                  _context2.t0 = _context2["catch"](1);
+                  console.error(_context2.t0);
+
+                case 10:
+                  return _context2.abrupt("return", isPlayer);
+
+                case 11:
+                case "end":
+                  return _context2.stop();
+              }
+            }, _callee2, null, [[1, 7]]);
+          }));
+
+          function getIsPlayer(_x2) {
+            return _getIsPlayer.apply(this, arguments);
+          }
+
+          return getIsPlayer;
+        }();
 
         return right_player_list;
       }(Component), (_descriptor = _applyDecoratedDescriptor(_class2.prototype, "itemModel", [_dec2], {

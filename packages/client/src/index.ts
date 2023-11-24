@@ -180,10 +180,10 @@ components.TransactionList.update$.subscribe((update)=>{
   return data;
 };
 
-(window as any).queryAssetsList = async ()=>{
+(window as any).queryPlayingAssetsList = async ()=>{
     const matchingEntities = runQuery([
-      Has(components.AssetsList)
-      // Not(components.IsTrading)
+      Has(components.AssetsList),
+      Has(components.Player)
     ])
 
     return matchingEntities;
@@ -274,9 +274,9 @@ components.TransactionList.update$.subscribe((update)=>{
 
 
 // https://vitejs.dev/guide/env-and-mode.html
-if (import.meta.env.DEV) {
+if (true||import.meta.env.DEV) {
   const { mount: mountDevTools } = await import("@latticexyz/dev-tools");
-  const aaa = 1;
+  console.log("============================");
   mountDevTools({
     config: mudConfig,
     publicClient: network.publicClient,
@@ -289,15 +289,3 @@ if (import.meta.env.DEV) {
     recsWorld: network.world,
   });
 }
-// const { mount: mountDevTools } = await import("@latticexyz/dev-tools");
-// mountDevTools({
-//   config: mudConfig,
-//   publicClient: network.publicClient,
-//   walletClient: network.walletClient,
-//   latestBlock$: network.latestBlock$,
-//   blockStorageOperations$: network.blockStorageOperations$,
-//   worldAddress: network.worldContract.address,
-//   worldAbi: network.worldContract.abi,
-//   write$: network.write$,
-//   recsWorld: network.world,
-// });
