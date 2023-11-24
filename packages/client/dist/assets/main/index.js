@@ -353,28 +353,29 @@ System.register("chunks:///_virtual/button_raisingcapital.ts", ['./rollupPluginM
 
                 case 4:
                   ponzi_controller.instance.sendCCCMsg(ccc_msg.show_pick_asset, true);
-                  _context2.next = 11;
+                  _context2.next = 12;
                   break;
 
                 case 7:
                   _context2.prev = 7;
                   _context2.t0 = _context2["catch"](1);
+                  console.error(_context2.t0);
                   content = string_utils.getSecondLine(_context2.t0.toString());
                   ponzi_controller.instance.sendCCCMsg(ccc_msg.single_button_dialog, {
                     content: content,
                     btnText: "OK"
                   });
 
-                case 11:
-                  _context2.prev = 11;
+                case 12:
+                  _context2.prev = 12;
                   ponzi_controller.instance.sendCCCMsg(ccc_msg.network_block_ui, false);
-                  return _context2.finish(11);
+                  return _context2.finish(12);
 
-                case 14:
+                case 15:
                 case "end":
                   return _context2.stop();
               }
-            }, _callee2, null, [[1, 7, 11, 14]]);
+            }, _callee2, null, [[1, 7, 12, 15]]);
           }));
 
           function onBtnClicked() {
@@ -417,31 +418,32 @@ System.register("chunks:///_virtual/button_raisingcapital.ts", ['./rollupPluginM
 
                 case 10:
                   raiseCountdown = _context3.sent;
-                  _context3.next = 16;
+                  _context3.next = 17;
                   break;
 
                 case 13:
                   _context3.prev = 13;
                   _context3.t0 = _context3["catch"](7);
+                  console.error(_context3.t0);
                   log("Can not find RaiseColddown component on entity");
 
-                case 16:
+                case 17:
                   if (raiseCountdown) {
-                    _context3.next = 18;
+                    _context3.next = 19;
                     break;
                   }
 
                   return _context3.abrupt("return");
 
-                case 18:
+                case 19:
                   this._inited = true;
-                  _context3.next = 21;
+                  _context3.next = 22;
                   return this.updateUI();
 
-                case 21:
+                case 22:
                   this._registerListeners();
 
-                case 22:
+                case 23:
                 case "end":
                   return _context3.stop();
               }
@@ -469,23 +471,24 @@ System.register("chunks:///_virtual/button_raisingcapital.ts", ['./rollupPluginM
 
                 case 5:
                   raiseCountdown = _context4.sent;
-                  _context4.next = 11;
+                  _context4.next = 12;
                   break;
 
                 case 8:
                   _context4.prev = 8;
                   _context4.t0 = _context4["catch"](2);
+                  console.error(_context4.t0);
                   log("Can not get raisecolddown component on entity");
 
-                case 11:
+                case 12:
                   if (raiseCountdown) {
-                    _context4.next = 13;
+                    _context4.next = 14;
                     break;
                   }
 
                   return _context4.abrupt("return");
 
-                case 13:
+                case 14:
                   timeStamp = sys.now() / 1000;
                   useableTime = Number(raiseCountdown.end);
                   warn("btn_raise:", timeStamp, useableTime);
@@ -502,7 +505,7 @@ System.register("chunks:///_virtual/button_raisingcapital.ts", ['./rollupPluginM
                     this.startCountDownAnimation();
                   }
 
-                case 17:
+                case 18:
                 case "end":
                   return _context4.stop();
               }
@@ -1684,17 +1687,18 @@ System.register("chunks:///_virtual/flowui_manager.ts", ['./rollupPluginModLoBab
                 case 5:
                   queryObj = _context2.sent;
                   isPlayer = queryObj.value;
-                  _context2.next = 11;
+                  _context2.next = 12;
                   break;
 
                 case 9:
                   _context2.prev = 9;
                   _context2.t0 = _context2["catch"](2);
-
-                case 11:
-                  return _context2.abrupt("return", isPlayer);
+                  console.error(_context2.t0);
 
                 case 12:
+                  return _context2.abrupt("return", isPlayer);
+
+                case 13:
                 case "end":
                   return _context2.stop();
               }
@@ -2157,28 +2161,29 @@ System.register("chunks:///_virtual/game_ui_controller.ts", ['./rollupPluginModL
                     content: "You gain some money!",
                     btnText: "OK"
                   });
-                  _context.next = 13;
+                  _context.next = 14;
                   break;
 
                 case 9:
                   _context.prev = 9;
                   _context.t0 = _context["catch"](1);
+                  console.error(_context.t0);
                   content = string_utils.getSecondLine(_context.t0.toString());
                   ponzi_controller.instance.sendCCCMsg(ccc_msg.single_button_dialog, {
                     content: content,
                     btnText: "OK"
                   });
 
-                case 13:
-                  _context.prev = 13;
+                case 14:
+                  _context.prev = 14;
                   ponzi_controller.instance.sendCCCMsg(ccc_msg.network_block_ui, false);
-                  return _context.finish(13);
+                  return _context.finish(14);
 
-                case 16:
+                case 17:
                 case "end":
                   return _context.stop();
               }
-            }, _callee, null, [[1, 9, 13, 16]]);
+            }, _callee, null, [[1, 9, 14, 17]]);
           }));
 
           function onPickCoinClicked() {
@@ -2205,28 +2210,29 @@ System.register("chunks:///_virtual/game_ui_controller.ts", ['./rollupPluginModL
                   return window.searchPartner == null ? void 0 : window.searchPartner();
 
                 case 7:
-                  _context2.next = 13;
+                  _context2.next = 14;
                   break;
 
                 case 9:
                   _context2.prev = 9;
                   _context2.t0 = _context2["catch"](2);
+                  console.error(_context2.t0);
                   content = string_utils.getSecondLine(_context2.t0.toString());
                   ponzi_controller.instance.sendCCCMsg(ccc_msg.single_button_dialog, {
                     content: content,
                     btnText: "OK"
                   });
 
-                case 13:
-                  _context2.prev = 13;
+                case 14:
+                  _context2.prev = 14;
                   ponzi_controller.instance.sendCCCMsg(ccc_msg.network_block_ui, false);
-                  return _context2.finish(13);
+                  return _context2.finish(14);
 
-                case 16:
+                case 17:
                 case "end":
                   return _context2.stop();
               }
-            }, _callee2, null, [[2, 9, 13, 16]]);
+            }, _callee2, null, [[2, 9, 14, 17]]);
           }));
 
           function onSearchPartnerClicked() {
@@ -2280,28 +2286,29 @@ System.register("chunks:///_virtual/game_ui_controller.ts", ['./rollupPluginModL
 
                 case 4:
                   ponzi_controller.instance.sendCCCMsg(ccc_msg.show_trade, true);
-                  _context4.next = 11;
+                  _context4.next = 12;
                   break;
 
                 case 7:
                   _context4.prev = 7;
                   _context4.t0 = _context4["catch"](1);
+                  console.error(_context4.t0);
                   content = string_utils.getSecondLine(_context4.t0.toString());
                   ponzi_controller.instance.sendCCCMsg(ccc_msg.single_button_dialog, {
                     content: content,
                     btnText: "OK"
                   });
 
-                case 11:
-                  _context4.prev = 11;
+                case 12:
+                  _context4.prev = 12;
                   ponzi_controller.instance.sendCCCMsg(ccc_msg.network_block_ui, false);
-                  return _context4.finish(11);
+                  return _context4.finish(12);
 
-                case 14:
+                case 15:
                 case "end":
                   return _context4.stop();
               }
-            }, _callee4, null, [[1, 7, 11, 14]]);
+            }, _callee4, null, [[1, 7, 12, 15]]);
           }));
 
           function onCovertTradeClicked() {
@@ -2322,27 +2329,28 @@ System.register("chunks:///_virtual/game_ui_controller.ts", ['./rollupPluginModL
                   return window.finishGame == null ? void 0 : window.finishGame();
 
                 case 4:
-                  _context5.next = 9;
+                  _context5.next = 10;
                   break;
 
                 case 6:
                   _context5.prev = 6;
                   _context5.t0 = _context5["catch"](1);
+                  console.error(_context5.t0);
                   ponzi_controller.instance.sendCCCMsg(ccc_msg.single_button_dialog, {
                     content: "The end game encountered a problem.",
                     btnText: "OK"
                   });
 
-                case 9:
-                  _context5.prev = 9;
+                case 10:
+                  _context5.prev = 10;
                   ponzi_controller.instance.sendCCCMsg(ccc_msg.network_block_ui, false);
-                  return _context5.finish(9);
+                  return _context5.finish(10);
 
-                case 12:
+                case 13:
                 case "end":
                   return _context5.stop();
               }
-            }, _callee5, null, [[1, 6, 9, 12]]);
+            }, _callee5, null, [[1, 6, 10, 13]]);
           }));
 
           function onGameFinishClicked() {
@@ -2825,27 +2833,28 @@ System.register("chunks:///_virtual/lobby-controller.ts", ['./rollupPluginModLoB
                   return window.restartGame == null ? void 0 : window.restartGame();
 
                 case 5:
-                  _context2.next = 10;
+                  _context2.next = 11;
                   break;
 
                 case 7:
                   _context2.prev = 7;
                   _context2.t0 = _context2["catch"](2);
+                  console.error(_context2.t0);
                   ponzi_controller.instance.sendCCCMsg(ccc_msg.single_button_dialog, {
                     content: "The end game encountered a problem.",
                     btnText: "OK"
                   });
 
-                case 10:
-                  _context2.prev = 10;
+                case 11:
+                  _context2.prev = 11;
                   ponzi_controller.instance.sendCCCMsg(ccc_msg.network_block_ui, false);
-                  return _context2.finish(10);
+                  return _context2.finish(11);
 
-                case 13:
+                case 14:
                 case "end":
                   return _context2.stop();
               }
-            }, _callee2, null, [[2, 7, 10, 13]]);
+            }, _callee2, null, [[2, 7, 11, 14]]);
           }));
 
           function onBtnRestartClicked() {
@@ -3301,17 +3310,18 @@ System.register("chunks:///_virtual/lobby-controller.ts", ['./rollupPluginModLoB
 
                 case 5:
                   IsEliminated = _context12.sent;
-                  _context12.next = 10;
+                  _context12.next = 11;
                   break;
 
                 case 8:
                   _context12.prev = 8;
                   _context12.t0 = _context12["catch"](2);
-
-                case 10:
-                  return _context12.abrupt("return", IsEliminated);
+                  console.error(_context12.t0);
 
                 case 11:
+                  return _context12.abrupt("return", IsEliminated);
+
+                case 12:
                 case "end":
                   return _context12.stop();
               }
@@ -3339,17 +3349,18 @@ System.register("chunks:///_virtual/lobby-controller.ts", ['./rollupPluginModLoB
 
                 case 5:
                   isPlayer = _context13.sent;
-                  _context13.next = 10;
+                  _context13.next = 11;
                   break;
 
                 case 8:
                   _context13.prev = 8;
                   _context13.t0 = _context13["catch"](2);
-
-                case 10:
-                  return _context13.abrupt("return", isPlayer);
+                  console.error(_context13.t0);
 
                 case 11:
+                  return _context13.abrupt("return", isPlayer);
+
+                case 12:
                 case "end":
                   return _context13.stop();
               }
@@ -4903,27 +4914,28 @@ System.register("chunks:///_virtual/pay_debt.ts", ['./rollupPluginModLoBabelHelp
                 case 5:
                   ponzi_controller.instance.sendCCCMsg(ccc_msg.show_paydebt_button, false);
                   ponzi_controller.instance.sendCCCMsg(ccc_msg.show_payconfirm, false);
-                  _context2.next = 12;
+                  _context2.next = 13;
                   break;
 
                 case 9:
                   _context2.prev = 9;
                   _context2.t0 = _context2["catch"](2);
+                  console.error(_context2.t0);
                   ponzi_controller.instance.sendCCCMsg(ccc_msg.single_button_dialog, {
                     content: "Unknown error.",
                     btnText: "OK"
                   });
 
-                case 12:
-                  _context2.prev = 12;
+                case 13:
+                  _context2.prev = 13;
                   ponzi_controller.instance.sendCCCMsg(ccc_msg.network_block_ui, false);
-                  return _context2.finish(12);
+                  return _context2.finish(13);
 
-                case 15:
+                case 16:
                 case "end":
                   return _context2.stop();
               }
-            }, _callee2, null, [[2, 9, 12, 15]]);
+            }, _callee2, null, [[2, 9, 13, 16]]);
           }));
 
           function onBtnConfirmClicked() {
@@ -5571,16 +5583,17 @@ System.register("chunks:///_virtual/pick_asset.ts", ['./rollupPluginModLoBabelHe
                   console.error("Unexpected asset index:", assetId);
 
                 case 30:
-                  _context3.next = 36;
+                  _context3.next = 37;
                   break;
 
                 case 32:
                   _context3.prev = 32;
                   _context3.t0 = _context3["catch"](0);
+                  console.error(_context3.t0);
                   console.error("Can not find assetslist on entity");
                   return _context3.abrupt("return", 3);
 
-                case 36:
+                case 37:
                 case "end":
                   return _context3.stop();
               }
@@ -5782,29 +5795,30 @@ System.register("chunks:///_virtual/pick-money-card.ts", ['./rollupPluginModLoBa
                   return window.pickFund == null ? void 0 : window.pickFund(this.cardId);
 
                 case 9:
-                  _context.next = 15;
+                  _context.next = 16;
                   break;
 
                 case 11:
                   _context.prev = 11;
                   _context.t0 = _context["catch"](4);
+                  console.error(_context.t0);
                   content = string_utils.getSecondLine(_context.t0.toString());
                   ponzi_controller.instance.sendCCCMsg(ccc_msg.single_button_dialog, {
                     content: content,
                     btnText: "OK"
                   });
 
-                case 15:
-                  _context.prev = 15;
+                case 16:
+                  _context.prev = 16;
                   ponzi_controller.instance.sendCCCMsg(ccc_msg.network_block_ui, false);
                   this.node.active = false;
-                  return _context.finish(15);
+                  return _context.finish(16);
 
-                case 19:
+                case 20:
                 case "end":
                   return _context.stop();
               }
-            }, _callee, this, [[4, 11, 15, 19]]);
+            }, _callee, this, [[4, 11, 16, 20]]);
           }));
 
           function onButtonClicked() {
@@ -5986,7 +6000,7 @@ System.register("chunks:///_virtual/ponzi_config.ts", ['cc'], function (exports)
 });
 
 System.register("chunks:///_virtual/ponzi-controller.ts", ['./rollupPluginModLoBabelHelpers.js', 'cc', './ccc_msg.ts', './object_utils.ts', './list_utils.ts', './bytes_utils.ts', './string_utils.ts', './component_state.ts', './data_center.ts', './rule_utils.ts'], function (exports) {
-  var _inheritsLoose, _asyncToGenerator, _createClass, _regeneratorRuntime, _createForOfIteratorHelperLoose, cclegacy, _decorator, log, find, Component, error, warn, ccc_msg, object_utils, list_utils, bytes_utils, string_utils, component_state, data_center, rule_utils;
+  var _inheritsLoose, _asyncToGenerator, _createClass, _regeneratorRuntime, _createForOfIteratorHelperLoose, cclegacy, _decorator, log, find, Component, warn, ccc_msg, object_utils, list_utils, bytes_utils, string_utils, component_state, data_center, rule_utils;
 
   return {
     setters: [function (module) {
@@ -6001,7 +6015,6 @@ System.register("chunks:///_virtual/ponzi-controller.ts", ['./rollupPluginModLoB
       log = module.log;
       find = module.find;
       Component = module.Component;
-      error = module.error;
       warn = module.warn;
     }, function (module) {
       ccc_msg = module.ccc_msg;
@@ -6488,7 +6501,7 @@ System.register("chunks:///_virtual/ponzi-controller.ts", ['./rollupPluginModLoB
                 case 25:
                   _context3.prev = 25;
                   _context3.t0 = _context3["catch"](17);
-                  error(_context3.t0);
+                  console.error(_context3.t0);
 
                 case 28:
                 case "end":
@@ -6518,17 +6531,18 @@ System.register("chunks:///_virtual/ponzi-controller.ts", ['./rollupPluginModLoB
 
                 case 5:
                   IsEliminated = _context4.sent;
-                  _context4.next = 10;
+                  _context4.next = 11;
                   break;
 
                 case 8:
                   _context4.prev = 8;
                   _context4.t0 = _context4["catch"](2);
-
-                case 10:
-                  return _context4.abrupt("return", IsEliminated);
+                  console.error(_context4.t0);
 
                 case 11:
+                  return _context4.abrupt("return", IsEliminated);
+
+                case 12:
                 case "end":
                   return _context4.stop();
               }
@@ -6647,7 +6661,7 @@ System.register("chunks:///_virtual/ponzi-controller.ts", ['./rollupPluginModLoB
                 case 54:
                   _context5.prev = 54;
                   _context5.t0 = _context5["catch"](2);
-                  error(_context5.t0);
+                  console.error(_context5.t0);
 
                 case 57:
                   _context5.prev = 57;
@@ -6706,7 +6720,7 @@ System.register("chunks:///_virtual/ponzi-controller.ts", ['./rollupPluginModLoB
                 case 21:
                   _context6.prev = 21;
                   _context6.t0 = _context6["catch"](2);
-                  error(_context6.t0);
+                  console.error(_context6.t0);
 
                 case 24:
                   _context6.prev = 24;
@@ -7290,17 +7304,18 @@ System.register("chunks:///_virtual/popupui_manager.ts", ['./rollupPluginModLoBa
 
                 case 5:
                   hasDebt = _context3.sent;
-                  _context3.next = 10;
+                  _context3.next = 11;
                   break;
 
                 case 8:
                   _context3.prev = 8;
                   _context3.t0 = _context3["catch"](2);
-
-                case 10:
-                  return _context3.abrupt("return", hasDebt);
+                  console.error(_context3.t0);
 
                 case 11:
+                  return _context3.abrupt("return", hasDebt);
+
+                case 12:
                 case "end":
                   return _context3.stop();
               }
@@ -7686,16 +7701,17 @@ System.register("chunks:///_virtual/right-player-list-item.ts", ['./rollupPlugin
 
                 case 4:
                   assetsList = _context2.sent;
-                  _context2.next = 11;
+                  _context2.next = 12;
                   break;
 
                 case 7:
                   _context2.prev = 7;
                   _context2.t0 = _context2["catch"](1);
+                  console.error(_context2.t0);
                   log("Can not find AssetsList on entity");
                   return _context2.abrupt("return");
 
-                case 11:
+                case 12:
                   this.labelItem1.string = assetsList.gpu;
                   this.labelItem2.string = assetsList.bitcoin;
                   this.labelItem3.string = assetsList.battery;
@@ -7705,7 +7721,7 @@ System.register("chunks:///_virtual/right-player-list-item.ts", ['./rollupPlugin
                   totalScore = rule_utils.calculateScore(assetsList.gpu) + rule_utils.calculateScore(assetsList.bitcoin) + rule_utils.calculateScore(assetsList.battery) + rule_utils.calculateScore(assetsList.leiter) + rule_utils.calculateScore(assetsList.gold) + rule_utils.calculateScore(assetsList.oil);
                   this.labelPoints.string = totalScore.toString();
 
-                case 19:
+                case 20:
                 case "end":
                   return _context2.stop();
               }
@@ -8646,18 +8662,19 @@ System.register("chunks:///_virtual/title-money.ts", ['./rollupPluginModLoBabelH
                 case 9:
                   currentPlayer = _context.sent;
                   this.moneyLabel.string = this.getBalanceString(currentPlayer);
-                  _context.next = 16;
+                  _context.next = 17;
                   break;
 
                 case 13:
                   _context.prev = 13;
                   _context.t0 = _context["catch"](6);
+                  console.error(_context.t0);
                   currentPlayer = null;
 
-                case 16:
+                case 17:
                   this.registerListeners();
 
-                case 17:
+                case 18:
                 case "end":
                   return _context.stop();
               }
@@ -8885,27 +8902,28 @@ System.register("chunks:///_virtual/trade_input_price.ts", ['./rollupPluginModLo
                     btnText: "OK"
                   });
                   this.node.active = false;
-                  _context.next = 20;
+                  _context.next = 21;
                   break;
 
                 case 17:
                   _context.prev = 17;
                   _context.t0 = _context["catch"](9);
+                  console.error(_context.t0);
                   ponzi_controller.instance.sendCCCMsg(ccc_msg.single_button_dialog, {
                     content: "Trade failed, conditions not met.",
                     btnText: "OK"
                   });
 
-                case 20:
-                  _context.prev = 20;
+                case 21:
+                  _context.prev = 21;
                   ponzi_controller.instance.sendCCCMsg(ccc_msg.network_block_ui, false);
-                  return _context.finish(20);
+                  return _context.finish(21);
 
-                case 23:
+                case 24:
                 case "end":
                   return _context.stop();
               }
-            }, _callee, this, [[9, 17, 20, 23]]);
+            }, _callee, this, [[9, 17, 21, 24]]);
           }));
 
           function onConfirmClicked() {
@@ -8943,10 +8961,11 @@ System.register("chunks:///_virtual/trade_input_price.ts", ['./rollupPluginModLo
                 case 11:
                   _context2.prev = 11;
                   _context2.t0 = _context2["catch"](0);
+                  console.error(_context2.t0);
                   error("You don't have enough money.");
                   return _context2.abrupt("return", false);
 
-                case 15:
+                case 16:
                 case "end":
                   return _context2.stop();
               }
@@ -9161,30 +9180,31 @@ System.register("chunks:///_virtual/trade-ask.ts", ['./rollupPluginModLoBabelHel
                   return window.acceptTrade == null ? void 0 : window.acceptTrade();
 
                 case 4:
-                  _context.next = 9;
+                  _context.next = 10;
                   break;
 
                 case 6:
                   _context.prev = 6;
                   _context.t0 = _context["catch"](1);
+                  console.error(_context.t0);
                   ponzi_controller.instance.sendCCCMsg(ccc_msg.single_button_dialog, {
                     content: "Accept failed",
                     btnText: "OK"
                   });
 
-                case 9:
-                  _context.prev = 9;
+                case 10:
+                  _context.prev = 10;
                   ponzi_controller.instance.sendCCCMsg(ccc_msg.network_block_ui, false);
-                  return _context.finish(9);
-
-                case 12:
-                  this.node.active = false;
+                  return _context.finish(10);
 
                 case 13:
+                  this.node.active = false;
+
+                case 14:
                 case "end":
                   return _context.stop();
               }
-            }, _callee, this, [[1, 6, 9, 12]]);
+            }, _callee, this, [[1, 6, 10, 13]]);
           }));
 
           function onBtnAcceptClicked() {
@@ -9207,27 +9227,28 @@ System.register("chunks:///_virtual/trade-ask.ts", ['./rollupPluginModLoBabelHel
                 case 4:
                   //只有在反买成功时才关闭窗口
                   this.node.active = false;
-                  _context2.next = 10;
+                  _context2.next = 11;
                   break;
 
                 case 7:
                   _context2.prev = 7;
                   _context2.t0 = _context2["catch"](1);
+                  console.error(_context2.t0);
                   ponzi_controller.instance.sendCCCMsg(ccc_msg.single_button_dialog, {
                     content: "Accept failed",
                     btnText: "OK"
                   });
 
-                case 10:
-                  _context2.prev = 10;
+                case 11:
+                  _context2.prev = 11;
                   ponzi_controller.instance.sendCCCMsg(ccc_msg.network_block_ui, false);
-                  return _context2.finish(10);
+                  return _context2.finish(11);
 
-                case 13:
+                case 14:
                 case "end":
                   return _context2.stop();
               }
-            }, _callee2, this, [[1, 7, 10, 13]]);
+            }, _callee2, this, [[1, 7, 11, 14]]);
           }));
 
           function onBtnRejectClicked() {
@@ -9600,7 +9621,7 @@ System.register("chunks:///_virtual/trade.ts", ['./rollupPluginModLoBabelHelpers
 
                 case 6:
                   if ((_step = _iterator()).done) {
-                    _context2.next = 29;
+                    _context2.next = 30;
                     break;
                   }
 
@@ -9612,16 +9633,17 @@ System.register("chunks:///_virtual/trade.ts", ['./rollupPluginModLoBabelHelpers
 
                 case 12:
                   al = _context2.sent;
-                  _context2.next = 19;
+                  _context2.next = 20;
                   break;
 
                 case 15:
                   _context2.prev = 15;
                   _context2.t0 = _context2["catch"](9);
+                  console.error(_context2.t0);
                   log("Can not find assetslist on entity");
-                  return _context2.abrupt("continue", 27);
+                  return _context2.abrupt("continue", 28);
 
-                case 19:
+                case 20:
                   newNode = instantiate(this.tradeItemModel);
                   newNode.active = true;
                   newNode.parent = this.partnerParent;
@@ -9631,11 +9653,11 @@ System.register("chunks:///_virtual/trade.ts", ['./rollupPluginModLoBabelHelpers
                   name = string_utils.truncateString(string_utils.getHashFromSymbol(playerEntity));
                   script.init(name, al.gpu, al.bitcoin, al.battery, al.leiter, al.gold, al.oil);
 
-                case 27:
+                case 28:
                   _context2.next = 6;
                   break;
 
-                case 29:
+                case 30:
                 case "end":
                   return _context2.stop();
               }
@@ -9715,16 +9737,17 @@ System.register("chunks:///_virtual/trade.ts", ['./rollupPluginModLoBabelHelpers
                   error("Unexpected asset index:", assetIndex);
 
                 case 31:
-                  _context3.next = 37;
+                  _context3.next = 38;
                   break;
 
                 case 33:
                   _context3.prev = 33;
                   _context3.t0 = _context3["catch"](1);
+                  console.error(_context3.t0);
                   error("Can not find assetslist on entity");
                   return _context3.abrupt("return", false);
 
-                case 37:
+                case 38:
                 case "end":
                   return _context3.stop();
               }
