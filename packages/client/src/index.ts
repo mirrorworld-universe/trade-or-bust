@@ -36,7 +36,7 @@ components.GameState.update$.subscribe((update) => {
 // Update initial sync status in the UI
 components.SyncProgress.update$.subscribe((obj) => {
   console.log("onSyncProgressUpdate:",obj);
-  globalThis.ponzi.percentage = obj.value[0].percentage/100;
+  globalThis.ponzi.percentage = obj.value[0].percentage;
   globalThis.ponzi.syncprogress_update?.(globalThis.ponzi.percentage);
 });
 
