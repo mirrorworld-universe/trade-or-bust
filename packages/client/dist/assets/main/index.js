@@ -2721,8 +2721,7 @@ System.register("chunks:///_virtual/loading.ts", ['./rollupPluginModLoBabelHelpe
           }
 
           var self = this;
-          ponzi_controller.instance.on(ccc_msg.update_loading_percentage, function (_ref) {
-            var percent = _ref.percent;
+          ponzi_controller.instance.on(ccc_msg.update_loading_percentage, function (percent) {
             self.setProgress(percent);
           });
         } // 外界传入百分比，并更新进度条
