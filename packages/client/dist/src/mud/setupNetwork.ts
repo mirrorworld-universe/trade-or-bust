@@ -41,7 +41,7 @@ export async function setupNetwork() {
     config: mudConfig,
     address: networkConfig.worldAddress as Hex,
     publicClient,
-    startSync: false,
+    // startSync: false,
     startBlock: BigInt(networkConfig.initialBlockNumber),
   });
 
