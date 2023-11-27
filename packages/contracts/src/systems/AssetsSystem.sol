@@ -70,12 +70,13 @@ contract AssetsSystem is System {
         require(GameState.get() == 2,"Game is finished.");
 
         require(!HasDebt.get(player),"You have debt now.");
-        uint32 debt = getDebt(player);
-        Log.set(player,debt);
-        if(debt > 0){
-            HasDebt.set(player,true);
-            Debt.set(player,debt);
-        }
+        //已经在客户端处理
+        // uint32 debt = getDebt(player);
+        // Log.set(player,debt);
+        // if(debt > 0){
+        //     HasDebt.set(player,true);
+        //     Debt.set(player,debt);
+        // }
 
         require(!IsEliminated.get(player),"You are already eliminated.");
         uint16[72] memory allCards = FundCards.get();
@@ -128,16 +129,7 @@ contract AssetsSystem is System {
 
 
 
-
-    function push(uint256[] memory ownedCards,uint number) pure private{
-        for(uint16 i=0;i<ownedCards.length;i++){
-            if(ownedCards[i] == 0){
-                ownedCards[i] = number;
-                break;
-            }
-        }
-    }
-
+    //在客户端后调用
     function pickAsset(uint8 assetKind) public{
         bytes32 player = addressToEntityKey(_msgSender());
         require(IsPlayer.get(player), "Not a player when pick asset.");
@@ -180,21 +172,15 @@ contract AssetsSystem is System {
     }
 
 
-    // function setPlayerResult(bytes32 player) private{
-    //     AssetsListData memory alData = AssetsList.get(player);
 
-    //     int8 score1 = calculateScore(alData.gpu);
-    //     int8 score2 = calculateScore(alData.bitcoin);
-    //     int8 score3 = calculateScore(alData.battery);
-    //     int8 score4 = calculateScore(alData.leiter);
-    //     int8 score5 = calculateScore(alData.gold);
-    //     int8 score6 = calculateScore(alData.oil);
-    //     int32 totalScore = score1 + score2 + score3 + score4 + score5 + score6; 
-
-    //     IsFinishGame.set(player,true);
-    //     PlayerGameResult.set(player,0,totalScore,score1,score2,score3,score4,score5,score6);
-    // }
-
+    function push(uint256[] memory ownedCards,uint number) pure private{
+        for(uint16 i=0;i<ownedCards.length;i++){
+            if(ownedCards[i] == 0){
+                ownedCards[i] = number;
+                break;
+            }
+        }
+    }
     
     function calculateScore(int8 num) private pure returns (int8) {
         int8 score = 0;

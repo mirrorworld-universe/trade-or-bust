@@ -18,6 +18,7 @@ globalThis.ponzi = {
   mapItems:null,
   players:null,
   transactionList:null,
+  percentage:0,
 }
 
 globalThis.env = {
@@ -28,8 +29,15 @@ globalThis.env = {
 components.GameState.update$.subscribe((update) => {
   const [nextValue, prevValue] = update.value;
   console.log("GameState updated", update, { nextValue, prevValue });
-  globalThis.ponzi.gameState = nextValue.value;
+  globalThis.ponzi.gameState = nextValue?nextValue.value:null;
   globalThis.ponzi.gamestate_update?.(prevValue?.value, nextValue?.value);
+});
+
+// Update initial sync status in the UI
+components.SyncProgress.update$.subscribe((obj) => {
+  console.log("onSyncProgressUpdate:",obj);
+  globalThis.ponzi.percentage = obj.value[0].percentage/100;
+  globalThis.ponzi.syncprogress_update?.(globalThis.ponzi.percentage);
 });
 
 // components.Counter.update$.subscribe((update) => {
@@ -270,7 +278,11 @@ components.TransactionList.update$.subscribe((update)=>{
   console.log("send checkDebt...");
   let data = await checkDebt();
 }
-
+// // start sync manually by subscribing to `blockStorageOperation$`
+// const subcription = network.blockStorageOperation$.subscribe();
+ 
+// // clean up subscription
+// subscription.unsubscribe();
 
 
 // https://vitejs.dev/guide/env-and-mode.html

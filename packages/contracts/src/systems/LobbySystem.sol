@@ -94,6 +94,7 @@ contract LobbySystem is System {
                 
                 // clearPlayerComponents();//todo 这个打开就会费用过多。。。。无法部署
                 // initGameMap();
+                
                 GameMapData memory gameMap = GameMap.get();
                 uint[][] memory mapArray = bytesToUintArray(gameMap.mapArray,20,20);
                 initMapItems(mapArray,20,20);

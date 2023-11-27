@@ -137,16 +137,22 @@ contract TradeSystem is System {
         AssetsListData memory ald = AssetsList.get(player);
 
         if(assetKind == 1){//GPU
+            require(ald.gpu + 1 <= 3,"asset count more than 3");
             AssetsList.setGpu(player,ald.gpu + 1);
         }else if(assetKind == 2){//Bitcoin
+            require(ald.bitcoin + 1 <= 3,"asset count more than 3");
             AssetsList.setBitcoin(player,ald.bitcoin + 1);
         }else if(assetKind == 3){//锂电池
+            require(ald.battery + 1 <= 3,"asset count more than 3");
             AssetsList.setBattery(player,ald.battery + 1);
         }else if(assetKind == 4){//超导体
+            require(ald.leiter + 1 <= 3,"asset count more than 3");
             AssetsList.setLeiter(player,ald.leiter + 1);
         }else if(assetKind == 5){//Gold
+            require(ald.gold + 1 <= 3,"asset count more than 3");
             AssetsList.setGold(player,ald.gold + 1);
         }else if(assetKind == 6){//石油
+            require(ald.oil + 1 <= 3,"asset count more than 3");
             AssetsList.setOil(player,ald.oil + 1);
         }else{
             require(false,"Unknown asset kind");
