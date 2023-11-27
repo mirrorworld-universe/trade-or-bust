@@ -6294,7 +6294,7 @@ System.register("chunks:///_virtual/ponzi-controller.ts", ['./rollupPluginModLoB
 
         _proto.onSyncProgressUpdate = function onSyncProgressUpdate(values) {
           console.log("onSyncProgressUpdate:", values);
-          var percent = values.percentage;
+          var percent = values;
           ponzi_controller.instance.sendCCCMsg(ccc_msg.update_loading_percentage, {
             percent: percent
           }); // if(percentage >= 1){
