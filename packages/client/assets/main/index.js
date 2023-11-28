@@ -2197,18 +2197,14 @@ System.register("chunks:///_virtual/game_ui_controller.ts", ['./rollupPluginModL
                   ponzi_controller.instance.sendCCCMsg(ccc_msg.network_block_ui, true);
                   _context2.prev = 2;
                   _context2.next = 5;
-                  return window.checkDebt == null ? void 0 : window.checkDebt();
-
-                case 5:
-                  _context2.next = 7;
                   return window.searchPartner == null ? void 0 : window.searchPartner();
 
-                case 7:
-                  _context2.next = 13;
+                case 5:
+                  _context2.next = 11;
                   break;
 
-                case 9:
-                  _context2.prev = 9;
+                case 7:
+                  _context2.prev = 7;
                   _context2.t0 = _context2["catch"](2);
                   console.error(_context2.t0); // let content:string = string_utils.getSecondLine(e.toString());
 
@@ -2217,16 +2213,16 @@ System.register("chunks:///_virtual/game_ui_controller.ts", ['./rollupPluginModL
                     btnText: "OK"
                   });
 
-                case 13:
-                  _context2.prev = 13;
+                case 11:
+                  _context2.prev = 11;
                   ponzi_controller.instance.sendCCCMsg(ccc_msg.network_block_ui, false);
-                  return _context2.finish(13);
+                  return _context2.finish(11);
 
-                case 16:
+                case 14:
                 case "end":
                   return _context2.stop();
               }
-            }, _callee2, null, [[2, 9, 13, 16]]);
+            }, _callee2, null, [[2, 7, 11, 14]]);
           }));
 
           function onSearchPartnerClicked() {
