@@ -2153,7 +2153,7 @@ System.register("chunks:///_virtual/game_ui_controller.ts", ['./rollupPluginModL
 
                 case 6:
                   ponzi_controller.instance.sendCCCMsg(ccc_msg.single_button_dialog, {
-                    content: "You gain some money!",
+                    content: "You have collected coins!",
                     btnText: "OK"
                   });
                   _context.next = 13;
@@ -2197,14 +2197,18 @@ System.register("chunks:///_virtual/game_ui_controller.ts", ['./rollupPluginModL
                   ponzi_controller.instance.sendCCCMsg(ccc_msg.network_block_ui, true);
                   _context2.prev = 2;
                   _context2.next = 5;
-                  return window.searchPartner == null ? void 0 : window.searchPartner();
+                  return window.checkDebt == null ? void 0 : window.checkDebt();
 
                 case 5:
-                  _context2.next = 11;
-                  break;
+                  _context2.next = 7;
+                  return window.searchPartner == null ? void 0 : window.searchPartner();
 
                 case 7:
-                  _context2.prev = 7;
+                  _context2.next = 13;
+                  break;
+
+                case 9:
+                  _context2.prev = 9;
                   _context2.t0 = _context2["catch"](2);
                   console.error(_context2.t0); // let content:string = string_utils.getSecondLine(e.toString());
 
@@ -2213,16 +2217,16 @@ System.register("chunks:///_virtual/game_ui_controller.ts", ['./rollupPluginModL
                     btnText: "OK"
                   });
 
-                case 11:
-                  _context2.prev = 11;
+                case 13:
+                  _context2.prev = 13;
                   ponzi_controller.instance.sendCCCMsg(ccc_msg.network_block_ui, false);
-                  return _context2.finish(11);
+                  return _context2.finish(13);
 
-                case 14:
+                case 16:
                 case "end":
                   return _context2.stop();
               }
-            }, _callee2, null, [[2, 7, 11, 14]]);
+            }, _callee2, null, [[2, 9, 13, 16]]);
           }));
 
           function onSearchPartnerClicked() {
@@ -2749,8 +2753,8 @@ System.register("chunks:///_virtual/loading.ts", ['./rollupPluginModLoBabelHelpe
   };
 });
 
-System.register("chunks:///_virtual/lobby-controller.ts", ['./rollupPluginModLoBabelHelpers.js', 'cc', './component_state.ts', './ponzi-controller.ts', './ccc_msg.ts', './string_utils.ts'], function (exports) {
-  var _applyDecoratedDescriptor, _inheritsLoose, _initializerDefineProperty, _assertThisInitialized, _asyncToGenerator, _regeneratorRuntime, cclegacy, _decorator, Label, Node, sys, Component, log, warn, component_state, ponzi_controller, ccc_msg, string_utils;
+System.register("chunks:///_virtual/lobby-controller.ts", ['./rollupPluginModLoBabelHelpers.js', 'cc', './component_state.ts', './ponzi-controller.ts', './ccc_msg.ts', './string_utils.ts', './time_state.ts'], function (exports) {
+  var _applyDecoratedDescriptor, _inheritsLoose, _initializerDefineProperty, _assertThisInitialized, _asyncToGenerator, _regeneratorRuntime, cclegacy, _decorator, Label, Node, sys, Component, log, warn, component_state, ponzi_controller, ccc_msg, string_utils, time_state;
 
   return {
     setters: [function (module) {
@@ -2777,6 +2781,8 @@ System.register("chunks:///_virtual/lobby-controller.ts", ['./rollupPluginModLoB
       ccc_msg = module.ccc_msg;
     }, function (module) {
       string_utils = module.string_utils;
+    }, function (module) {
+      time_state = module.time_state;
     }],
     execute: function () {
       var _dec, _dec2, _dec3, _dec4, _dec5, _dec6, _dec7, _dec8, _dec9, _dec10, _class, _class2, _descriptor, _descriptor2, _descriptor3, _descriptor4, _descriptor5, _descriptor6, _descriptor7, _descriptor8, _descriptor9;
@@ -2785,16 +2791,6 @@ System.register("chunks:///_virtual/lobby-controller.ts", ['./rollupPluginModLoB
 
       var ccclass = _decorator.ccclass,
           property = _decorator.property;
-
-      var time_state = /*#__PURE__*/function (time_state) {
-        time_state[time_state["default"] = 0] = "default";
-        time_state[time_state["prepare"] = 1] = "prepare";
-        time_state[time_state["gaming"] = 2] = "gaming";
-        time_state[time_state["calculating"] = 3] = "calculating";
-        time_state[time_state["longTimeNoPlay"] = 4] = "longTimeNoPlay";
-        return time_state;
-      }(time_state || {});
-
       var lobby_controller = exports('lobby_controller', (_dec = ccclass('lobby_controller'), _dec2 = property({
         type: Label
       }), _dec3 = property({
@@ -3555,7 +3551,7 @@ System.register("chunks:///_virtual/lobby-controller.ts", ['./rollupPluginModLoB
 
         _proto.startCountDownAnimation = function startCountDownAnimation(endTime) {
           this.leftTime = endTime;
-          this.countDownLabel.string = this.leftTime.toString(); // 计算重复次数，等于结束时间减一
+          this.countDownLabel.string = this.leftTime ? this.leftTime.toString() : ""; // 计算重复次数，等于结束时间减一
 
           var repeat = endTime - 1; // 调用schedule方法，传入回调函数，间隔时间为1秒，重复次数为repeat，延迟时间为0
 
@@ -3565,7 +3561,7 @@ System.register("chunks:///_virtual/lobby-controller.ts", ['./rollupPluginModLoB
 
         _proto.minuesTimeLabel = function minuesTimeLabel() {
           this.leftTime--;
-          this.countDownLabel.string = this.formatSeconds(this.leftTime);
+          this.countDownLabel.string = this.leftTime ? this.formatSeconds(this.leftTime) : "";
         } // 定义一个函数，接受一个秒数作为参数，返回一个字符串表示转换后的结果
         ;
 
@@ -3880,9 +3876,9 @@ System.register("chunks:///_virtual/lobby-playerlist.ts", ['./rollupPluginModLoB
   };
 });
 
-System.register("chunks:///_virtual/main", ['./debug-view-runtime-control.ts', './Singleton.ts', './lobby-controller.ts', './counter-label.ts', './ccc_msg.ts', './component_state.ts', './ponzi_config.ts', './GameData.ts', './JsCaller.ts', './MUDListener.ts', './PlayerData.ts', './data_center.ts', './ponzi-controller.ts', './ponzi-model.ts', './FakeMessageCenter.ts', './test.ts', './TradeListItem.ts', './bytes_utils.ts', './coor_utils.ts', './list_utils.ts', './object_utils.ts', './rule_utils.ts', './string_utils.ts', './time_utils.ts', './HexMapTile.ts', './RoleLocalObj.ts', './RowCol.ts', './UnsolicitedTransactionObj.ts', './temp_data.ts', './fake.ts', './flowui_manager.ts', './fundpool.ts', './game_ui_controller.ts', './gamefinish.ts', './loading.ts', './lobby-playerlist-model.ts', './lobby-playerlist.ts', './map-controller.ts', './mapblock.ts', './pick-money-card.ts', './player-model.ts', './account.ts', './assets.ts', './pay_debt.ts', './paytime.ts', './paytime_item.ts', './pick_asset.ts', './rank.ts', './single-button-pop.ts', './trade-ask.ts', './trade_input_price.ts', './popupui_manager.ts', './trade.ts', './button_raisingcapital.ts', './changing_ellipses.ts', './fond_card.ts', './game_countdown.ts', './item_asset.ts', './mapitem.ts', './pick_asset_item.ts', './popeffect.ts', './popup_node.ts', './right-player-list-item.ts', './right-player-list.ts', './rules.ts', './title-money.ts', './toggle.ts', './trade-asset-item.ts', './trade_parter_item.ts'], function () {
+System.register("chunks:///_virtual/main", ['./debug-view-runtime-control.ts', './Singleton.ts', './lobby-controller.ts', './counter-label.ts', './ccc_msg.ts', './component_state.ts', './ponzi_config.ts', './time_state.ts', './GameData.ts', './JsCaller.ts', './MUDListener.ts', './PlayerData.ts', './data_center.ts', './ponzi-controller.ts', './ponzi-model.ts', './FakeMessageCenter.ts', './test.ts', './TradeListItem.ts', './bytes_utils.ts', './coor_utils.ts', './list_utils.ts', './object_utils.ts', './rule_utils.ts', './string_utils.ts', './time_utils.ts', './HexMapTile.ts', './RoleLocalObj.ts', './RowCol.ts', './UnsolicitedTransactionObj.ts', './temp_data.ts', './fake.ts', './flowui_manager.ts', './fundpool.ts', './game_ui_controller.ts', './gamefinish.ts', './loading.ts', './lobby-playerlist-model.ts', './lobby-playerlist.ts', './map-controller.ts', './mapblock.ts', './pick-money-card.ts', './player-model.ts', './account.ts', './assets.ts', './pay_debt.ts', './paytime.ts', './paytime_item.ts', './pick_asset.ts', './rank.ts', './single-button-pop.ts', './trade-ask.ts', './trade_input_price.ts', './popupui_manager.ts', './trade.ts', './button_raisingcapital.ts', './changing_ellipses.ts', './fond_card.ts', './game_countdown.ts', './item_asset.ts', './mapitem.ts', './pick_asset_item.ts', './popeffect.ts', './popup_node.ts', './right-player-list-item.ts', './right-player-list.ts', './rules.ts', './title-money.ts', './toggle.ts', './trade-asset-item.ts', './trade_parter_item.ts'], function () {
   return {
-    setters: [null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null],
+    setters: [null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null],
     execute: function () {}
   };
 });
@@ -6107,8 +6103,8 @@ System.register("chunks:///_virtual/ponzi_config.ts", ['cc'], function (exports)
   };
 });
 
-System.register("chunks:///_virtual/ponzi-controller.ts", ['./rollupPluginModLoBabelHelpers.js', 'cc', './ccc_msg.ts', './object_utils.ts', './list_utils.ts', './bytes_utils.ts', './string_utils.ts', './component_state.ts', './data_center.ts', './rule_utils.ts'], function (exports) {
-  var _inheritsLoose, _asyncToGenerator, _createClass, _regeneratorRuntime, _createForOfIteratorHelperLoose, cclegacy, _decorator, log, find, Component, warn, ccc_msg, object_utils, list_utils, bytes_utils, string_utils, component_state, data_center, rule_utils;
+System.register("chunks:///_virtual/ponzi-controller.ts", ['./rollupPluginModLoBabelHelpers.js', 'cc', './ccc_msg.ts', './object_utils.ts', './list_utils.ts', './bytes_utils.ts', './string_utils.ts', './component_state.ts', './data_center.ts', './rule_utils.ts', './time_state.ts'], function (exports) {
+  var _inheritsLoose, _asyncToGenerator, _createClass, _regeneratorRuntime, _createForOfIteratorHelperLoose, cclegacy, _decorator, log, find, Component, warn, sys, ccc_msg, object_utils, list_utils, bytes_utils, string_utils, component_state, data_center, rule_utils, time_state;
 
   return {
     setters: [function (module) {
@@ -6124,6 +6120,7 @@ System.register("chunks:///_virtual/ponzi-controller.ts", ['./rollupPluginModLoB
       find = module.find;
       Component = module.Component;
       warn = module.warn;
+      sys = module.sys;
     }, function (module) {
       ccc_msg = module.ccc_msg;
     }, function (module) {
@@ -6140,6 +6137,8 @@ System.register("chunks:///_virtual/ponzi-controller.ts", ['./rollupPluginModLoB
       data_center = module.data_center;
     }, function (module) {
       rule_utils = module.rule_utils;
+    }, function (module) {
+      time_state = module.time_state;
     }],
     execute: function () {
       var _dec, _class, _class2;
@@ -6676,34 +6675,64 @@ System.register("chunks:///_virtual/ponzi-controller.ts", ['./rollupPluginModLoB
 
         _proto.calResultOnClient = /*#__PURE__*/function () {
           var _calResultOnClient = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee5(isBankrupt) {
-            var scoreObjList, entities, _iterator, _step, playerEntity, al, score1, score2, score3, score4, score5, score6, newItem, me, hasMe, i, obj, tmpArray, mostAsset, rank, show, points;
+            var gameObj, timeStamp, gameStartTime, endTime, finishTime, timeState, scoreObjList, entities, _iterator, _step, playerEntity, al, score1, score2, score3, score4, score5, score6, newItem, me, hasMe, i, obj, tmpArray, mostAsset, rank, show, points;
 
             return _regeneratorRuntime().wrap(function _callee5$(_context5) {
               while (1) switch (_context5.prev = _context5.next) {
                 case 0:
                   log("game is over, calculating result...");
+                  gameObj = globalThis.ponzi.game;
+
+                  if (gameObj) {
+                    _context5.next = 5;
+                    break;
+                  }
+
+                  warn("No game obj when update lobby");
+                  return _context5.abrupt("return");
+
+                case 5:
+                  timeStamp = sys.now();
+                  timeStamp = Number(timeStamp) / 1000;
+                  gameStartTime = Number(gameObj.startTime);
+                  endTime = Number(gameObj.endTime);
+                  finishTime = Number(gameObj.finishTime);
+                  timeState = time_state["default"];
+
+                  if (timeStamp < gameStartTime) {
+                    timeState = time_state.prepare;
+                  } else if (timeStamp >= gameStartTime && timeStamp < endTime) {
+                    timeState = time_state.gaming;
+                  } else if (timeStamp >= endTime && timeStamp < finishTime) {
+                    timeState = time_state.calculating;
+                  } else if (timeStamp >= finishTime) {
+                    timeState = time_state.longTimeNoPlay;
+                  } else {
+                    console.error("Unknown time state");
+                  }
+
                   ponzi_controller.instance.sendCCCMsg(ccc_msg.network_block_ui, true);
-                  _context5.prev = 2;
+                  _context5.prev = 14;
                   scoreObjList = [];
-                  _context5.next = 6;
+                  _context5.next = 18;
                   return window.queryResultAssetsList == null ? void 0 : window.queryResultAssetsList();
 
-                case 6:
+                case 18:
                   entities = _context5.sent;
                   console.error("entities:", entities);
                   _iterator = _createForOfIteratorHelperLoose(entities);
 
-                case 9:
+                case 21:
                   if ((_step = _iterator()).done) {
-                    _context5.next = 32;
+                    _context5.next = 44;
                     break;
                   }
 
                   playerEntity = _step.value;
-                  _context5.next = 13;
+                  _context5.next = 25;
                   return window.queryValue == null ? void 0 : window.queryValue(globalThis.env.components.AssetsList, playerEntity);
 
-                case 13:
+                case 25:
                   al = _context5.sent;
                   score1 = rule_utils.calculateScore(al.gpu);
                   score2 = rule_utils.calculateScore(al.bitcoin);
@@ -6722,19 +6751,19 @@ System.register("chunks:///_virtual/ponzi-controller.ts", ['./rollupPluginModLoB
                   newItem.totalScore = score1 + score2 + score3 + score4 + score5 + score6;
                   scoreObjList.push(newItem);
 
-                case 30:
-                  _context5.next = 9;
+                case 42:
+                  _context5.next = 21;
                   break;
 
-                case 32:
+                case 44:
                   scoreObjList = this.sortScores(scoreObjList);
                   me = globalThis.ponzi.currentPlayer;
                   hasMe = false;
                   i = 0;
 
-                case 36:
+                case 48:
                   if (!(i < scoreObjList.length)) {
-                    _context5.next = 51;
+                    _context5.next = 63;
                     break;
                   }
 
@@ -6742,7 +6771,7 @@ System.register("chunks:///_virtual/ponzi-controller.ts", ['./rollupPluginModLoB
                   console.error("game is over, calculating result", obj.player, me);
 
                   if (!(obj.player == me)) {
-                    _context5.next = 48;
+                    _context5.next = 60;
                     break;
                   }
 
@@ -6758,39 +6787,39 @@ System.register("chunks:///_virtual/ponzi-controller.ts", ['./rollupPluginModLoB
                     mostAsset: mostAsset
                   });
                   hasMe = true;
-                  return _context5.abrupt("break", 51);
+                  return _context5.abrupt("break", 63);
 
-                case 48:
+                case 60:
                   i++;
-                  _context5.next = 36;
+                  _context5.next = 48;
                   break;
 
-                case 51:
-                  if (!hasMe) {
+                case 63:
+                  if (!hasMe && timeState == time_state.calculating) {
                     ponzi_controller.instance.sendCCCMsg(ccc_msg.single_button_dialog, {
                       content: "Can not find your rank in last game. Maybe it's been too long...",
                       btnText: "OK"
                     });
                   }
 
-                  _context5.next = 57;
+                  _context5.next = 69;
                   break;
 
-                case 54:
-                  _context5.prev = 54;
-                  _context5.t0 = _context5["catch"](2);
+                case 66:
+                  _context5.prev = 66;
+                  _context5.t0 = _context5["catch"](14);
                   console.error(_context5.t0);
 
-                case 57:
-                  _context5.prev = 57;
+                case 69:
+                  _context5.prev = 69;
                   ponzi_controller.instance.sendCCCMsg(ccc_msg.network_block_ui, false);
-                  return _context5.finish(57);
+                  return _context5.finish(69);
 
-                case 60:
+                case 72:
                 case "end":
                   return _context5.stop();
               }
-            }, _callee5, this, [[2, 54, 57, 60]]);
+            }, _callee5, this, [[14, 66, 69, 72]]);
           }));
 
           function calResultOnClient(_x7) {
@@ -8617,6 +8646,29 @@ System.register("chunks:///_virtual/test.ts", ['./rollupPluginModLoBabelHelpers.
 
         return test;
       }(Component)) || _class));
+
+      cclegacy._RF.pop();
+    }
+  };
+});
+
+System.register("chunks:///_virtual/time_state.ts", ['cc'], function (exports) {
+  var cclegacy;
+  return {
+    setters: [function (module) {
+      cclegacy = module.cclegacy;
+    }],
+    execute: function () {
+      cclegacy._RF.push({}, "2ade1tglLND+pIjDjZ6uwtK", "time_state", undefined);
+
+      var time_state = exports('time_state', /*#__PURE__*/function (time_state) {
+        time_state[time_state["default"] = 0] = "default";
+        time_state[time_state["prepare"] = 1] = "prepare";
+        time_state[time_state["gaming"] = 2] = "gaming";
+        time_state[time_state["calculating"] = 3] = "calculating";
+        time_state[time_state["longTimeNoPlay"] = 4] = "longTimeNoPlay";
+        return time_state;
+      }({}));
 
       cclegacy._RF.pop();
     }
