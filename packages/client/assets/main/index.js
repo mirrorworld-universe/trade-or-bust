@@ -4608,11 +4608,7 @@ System.register("chunks:///_virtual/mapblock.ts", ['./rollupPluginModLoBabelHelp
                   return window.move == null ? void 0 : window.move(self.mapTile.row, self.mapTile.col);
 
                 case 6:
-                  self.updateMapWalkRecord(this.mapTile.row, this.mapTile.col); // console.warn("Role walk record save:",self.mapTile);
-                  // self.updateMapWalkRecord(self.mapTile.row,self.mapTile.col);
-                  // ponzi_controller.instance.sendCCCMsg(ccc_msg.on_gamemap_walkrecord_update,null);
-                  // ponzi_controller.instance.sendCCCMsg(ccc_msg.on_mapitem_update,null);
-
+                  self.updateMapWalkRecord(this.mapTile.row, this.mapTile.col);
                   _context.next = 13;
                   break;
 

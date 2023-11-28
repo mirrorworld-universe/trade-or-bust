@@ -28,7 +28,9 @@ export function createSystemCalls(
 
   const move = async (x:number,y:number) => {
     // const tx = await worldSend("move", [x, y]);
+    console.error("move start");
     const tx = await worldContract.write.move([x,y]);
+    console.error("move tx",tx);
     return await waitForTransaction(tx);
   };
 
