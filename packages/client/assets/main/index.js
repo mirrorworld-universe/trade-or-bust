@@ -240,8 +240,8 @@ System.register("chunks:///_virtual/assets.ts", ['./rollupPluginModLoBabelHelper
   };
 });
 
-System.register("chunks:///_virtual/button_raisingcapital.ts", ['./rollupPluginModLoBabelHelpers.js', 'cc', './ponzi-controller.ts', './ccc_msg.ts', './time_utils.ts', './component_state.ts', './ponzi_config.ts', './string_utils.ts'], function (exports) {
-  var _applyDecoratedDescriptor, _inheritsLoose, _initializerDefineProperty, _assertThisInitialized, _asyncToGenerator, _regeneratorRuntime, cclegacy, _decorator, Label, Button, log, sys, Component, warn, ponzi_controller, ccc_msg, time_utils, component_state, ponzi_config, string_utils;
+System.register("chunks:///_virtual/button_raisingcapital.ts", ['./rollupPluginModLoBabelHelpers.js', 'cc', './ponzi-controller.ts', './ccc_msg.ts', './time_utils.ts', './component_state.ts', './ponzi_config.ts'], function (exports) {
+  var _applyDecoratedDescriptor, _inheritsLoose, _initializerDefineProperty, _assertThisInitialized, _asyncToGenerator, _regeneratorRuntime, cclegacy, _decorator, Label, Button, log, sys, Component, warn, ponzi_controller, ccc_msg, time_utils, component_state, ponzi_config;
 
   return {
     setters: [function (module) {
@@ -270,8 +270,6 @@ System.register("chunks:///_virtual/button_raisingcapital.ts", ['./rollupPluginM
       component_state = module.component_state;
     }, function (module) {
       ponzi_config = module.ponzi_config;
-    }, function (module) {
-      string_utils = module.string_utils;
     }],
     execute: function () {
       var _dec, _dec2, _dec3, _class, _class2, _descriptor, _descriptor2;
@@ -342,7 +340,6 @@ System.register("chunks:///_virtual/button_raisingcapital.ts", ['./rollupPluginM
 
         _proto.onBtnClicked = /*#__PURE__*/function () {
           var _onBtnClicked = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee2() {
-            var content;
             return _regeneratorRuntime().wrap(function _callee2$(_context2) {
               while (1) switch (_context2.prev = _context2.next) {
                 case 0:
@@ -353,29 +350,29 @@ System.register("chunks:///_virtual/button_raisingcapital.ts", ['./rollupPluginM
 
                 case 4:
                   ponzi_controller.instance.sendCCCMsg(ccc_msg.show_pick_asset, true);
-                  _context2.next = 12;
+                  _context2.next = 11;
                   break;
 
                 case 7:
                   _context2.prev = 7;
                   _context2.t0 = _context2["catch"](1);
-                  console.error(_context2.t0);
-                  content = string_utils.getSecondLine(_context2.t0.toString());
+                  console.error(_context2.t0); // let content = string_utils.getSecondLine(e.toString());
+
                   ponzi_controller.instance.sendCCCMsg(ccc_msg.single_button_dialog, {
-                    content: content,
+                    content: "Check debt failed, please try again.",
                     btnText: "OK"
                   });
 
-                case 12:
-                  _context2.prev = 12;
+                case 11:
+                  _context2.prev = 11;
                   ponzi_controller.instance.sendCCCMsg(ccc_msg.network_block_ui, false);
-                  return _context2.finish(12);
+                  return _context2.finish(11);
 
-                case 15:
+                case 14:
                 case "end":
                   return _context2.stop();
               }
-            }, _callee2, null, [[1, 7, 12, 15]]);
+            }, _callee2, null, [[1, 7, 11, 14]]);
           }));
 
           function onBtnClicked() {
@@ -2075,8 +2072,8 @@ System.register("chunks:///_virtual/game_countdown.ts", ['./rollupPluginModLoBab
   };
 });
 
-System.register("chunks:///_virtual/game_ui_controller.ts", ['./rollupPluginModLoBabelHelpers.js', 'cc', './ponzi-controller.ts', './ccc_msg.ts', './fake.ts', './paytime.ts', './string_utils.ts'], function (exports) {
-  var _applyDecoratedDescriptor, _inheritsLoose, _initializerDefineProperty, _assertThisInitialized, _asyncToGenerator, _regeneratorRuntime, cclegacy, _decorator, sys, warn, Component, ponzi_controller, ccc_msg, fake, paytime, string_utils;
+System.register("chunks:///_virtual/game_ui_controller.ts", ['./rollupPluginModLoBabelHelpers.js', 'cc', './ponzi-controller.ts', './ccc_msg.ts', './fake.ts', './paytime.ts'], function (exports) {
+  var _applyDecoratedDescriptor, _inheritsLoose, _initializerDefineProperty, _assertThisInitialized, _asyncToGenerator, _regeneratorRuntime, cclegacy, _decorator, sys, warn, Component, ponzi_controller, ccc_msg, fake, paytime;
 
   return {
     setters: [function (module) {
@@ -2100,8 +2097,6 @@ System.register("chunks:///_virtual/game_ui_controller.ts", ['./rollupPluginModL
       fake = module.fake;
     }, function (module) {
       paytime = module.paytime;
-    }, function (module) {
-      string_utils = module.string_utils;
     }],
     execute: function () {
       var _dec, _dec2, _class, _class2, _descriptor;
@@ -2144,7 +2139,6 @@ System.register("chunks:///_virtual/game_ui_controller.ts", ['./rollupPluginModL
 
         _proto.onPickCoinClicked = /*#__PURE__*/function () {
           var _onPickCoinClicked = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee() {
-            var content;
             return _regeneratorRuntime().wrap(function _callee$(_context) {
               while (1) switch (_context.prev = _context.next) {
                 case 0:
@@ -2162,29 +2156,29 @@ System.register("chunks:///_virtual/game_ui_controller.ts", ['./rollupPluginModL
                     content: "You gain some money!",
                     btnText: "OK"
                   });
-                  _context.next = 14;
+                  _context.next = 13;
                   break;
 
                 case 9:
                   _context.prev = 9;
                   _context.t0 = _context["catch"](1);
-                  console.error(_context.t0);
-                  content = string_utils.getSecondLine(_context.t0.toString());
+                  console.error(_context.t0); // let content:string = string_utils.getSecondLine(e.toString());
+
                   ponzi_controller.instance.sendCCCMsg(ccc_msg.single_button_dialog, {
-                    content: content,
+                    content: "Collection failed.",
                     btnText: "OK"
                   });
 
-                case 14:
-                  _context.prev = 14;
+                case 13:
+                  _context.prev = 13;
                   ponzi_controller.instance.sendCCCMsg(ccc_msg.network_block_ui, false);
-                  return _context.finish(14);
+                  return _context.finish(13);
 
-                case 17:
+                case 16:
                 case "end":
                   return _context.stop();
               }
-            }, _callee, null, [[1, 9, 14, 17]]);
+            }, _callee, null, [[1, 9, 13, 16]]);
           }));
 
           function onPickCoinClicked() {
@@ -2196,7 +2190,6 @@ System.register("chunks:///_virtual/game_ui_controller.ts", ['./rollupPluginModL
 
         _proto.onSearchPartnerClicked = /*#__PURE__*/function () {
           var _onSearchPartnerClicked = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee2() {
-            var content;
             return _regeneratorRuntime().wrap(function _callee2$(_context2) {
               while (1) switch (_context2.prev = _context2.next) {
                 case 0:
@@ -2211,29 +2204,29 @@ System.register("chunks:///_virtual/game_ui_controller.ts", ['./rollupPluginModL
                   return window.searchPartner == null ? void 0 : window.searchPartner();
 
                 case 7:
-                  _context2.next = 14;
+                  _context2.next = 13;
                   break;
 
                 case 9:
                   _context2.prev = 9;
                   _context2.t0 = _context2["catch"](2);
-                  console.error(_context2.t0);
-                  content = string_utils.getSecondLine(_context2.t0.toString());
+                  console.error(_context2.t0); // let content:string = string_utils.getSecondLine(e.toString());
+
                   ponzi_controller.instance.sendCCCMsg(ccc_msg.single_button_dialog, {
-                    content: content,
+                    content: "There is no player arround you within 2 distance.",
                     btnText: "OK"
                   });
 
-                case 14:
-                  _context2.prev = 14;
+                case 13:
+                  _context2.prev = 13;
                   ponzi_controller.instance.sendCCCMsg(ccc_msg.network_block_ui, false);
-                  return _context2.finish(14);
+                  return _context2.finish(13);
 
-                case 17:
+                case 16:
                 case "end":
                   return _context2.stop();
               }
-            }, _callee2, null, [[2, 9, 14, 17]]);
+            }, _callee2, null, [[2, 9, 13, 16]]);
           }));
 
           function onSearchPartnerClicked() {
@@ -2276,7 +2269,6 @@ System.register("chunks:///_virtual/game_ui_controller.ts", ['./rollupPluginModL
 
         _proto.onCovertTradeClicked = /*#__PURE__*/function () {
           var _onCovertTradeClicked = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee4() {
-            var content;
             return _regeneratorRuntime().wrap(function _callee4$(_context4) {
               while (1) switch (_context4.prev = _context4.next) {
                 case 0:
@@ -2287,29 +2279,29 @@ System.register("chunks:///_virtual/game_ui_controller.ts", ['./rollupPluginModL
 
                 case 4:
                   ponzi_controller.instance.sendCCCMsg(ccc_msg.show_trade, true);
-                  _context4.next = 12;
+                  _context4.next = 11;
                   break;
 
                 case 7:
                   _context4.prev = 7;
                   _context4.t0 = _context4["catch"](1);
-                  console.error(_context4.t0);
-                  content = string_utils.getSecondLine(_context4.t0.toString());
+                  console.error(_context4.t0); // let content = string_utils.getSecondLine(e.toString());
+
                   ponzi_controller.instance.sendCCCMsg(ccc_msg.single_button_dialog, {
-                    content: content,
+                    content: "Get debt failed, please try again",
                     btnText: "OK"
                   });
 
-                case 12:
-                  _context4.prev = 12;
+                case 11:
+                  _context4.prev = 11;
                   ponzi_controller.instance.sendCCCMsg(ccc_msg.network_block_ui, false);
-                  return _context4.finish(12);
+                  return _context4.finish(11);
 
-                case 15:
+                case 14:
                 case "end":
                   return _context4.stop();
               }
-            }, _callee4, null, [[1, 7, 12, 15]]);
+            }, _callee4, null, [[1, 7, 11, 14]]);
           }));
 
           function onCovertTradeClicked() {
@@ -4520,8 +4512,8 @@ System.register("chunks:///_virtual/map-controller.ts", ['./rollupPluginModLoBab
   };
 });
 
-System.register("chunks:///_virtual/mapblock.ts", ['./rollupPluginModLoBabelHelpers.js', 'cc', './ponzi-controller.ts', './ccc_msg.ts', './data_center.ts', './coor_utils.ts', './string_utils.ts'], function (exports) {
-  var _applyDecoratedDescriptor, _inheritsLoose, _initializerDefineProperty, _assertThisInitialized, _asyncToGenerator, _regeneratorRuntime, cclegacy, _decorator, Label, Node, Component, log, ponzi_controller, ccc_msg, data_center, coor_utils, string_utils;
+System.register("chunks:///_virtual/mapblock.ts", ['./rollupPluginModLoBabelHelpers.js', 'cc', './ponzi-controller.ts', './ccc_msg.ts', './data_center.ts', './coor_utils.ts'], function (exports) {
+  var _applyDecoratedDescriptor, _inheritsLoose, _initializerDefineProperty, _assertThisInitialized, _asyncToGenerator, _regeneratorRuntime, cclegacy, _decorator, Label, Node, Component, log, ponzi_controller, ccc_msg, data_center, coor_utils;
 
   return {
     setters: [function (module) {
@@ -4546,8 +4538,6 @@ System.register("chunks:///_virtual/mapblock.ts", ['./rollupPluginModLoBabelHelp
       data_center = module.data_center;
     }, function (module) {
       coor_utils = module.coor_utils;
-    }, function (module) {
-      string_utils = module.string_utils;
     }],
     execute: function () {
       var _dec, _dec2, _dec3, _dec4, _dec5, _class, _class2, _descriptor, _descriptor2, _descriptor3, _descriptor4;
@@ -4614,7 +4604,7 @@ System.register("chunks:///_virtual/mapblock.ts", ['./rollupPluginModLoBabelHelp
 
         _proto.onBlockClicked = /*#__PURE__*/function () {
           var _onBlockClicked = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee() {
-            var self, content;
+            var self;
             return _regeneratorRuntime().wrap(function _callee$(_context) {
               while (1) switch (_context.prev = _context.next) {
                 case 0:
@@ -4631,27 +4621,29 @@ System.register("chunks:///_virtual/mapblock.ts", ['./rollupPluginModLoBabelHelp
                   // ponzi_controller.instance.sendCCCMsg(ccc_msg.on_gamemap_walkrecord_update,null);
                   // ponzi_controller.instance.sendCCCMsg(ccc_msg.on_mapitem_update,null);
 
-                  _context.next = 14;
+                  _context.next = 13;
                   break;
 
                 case 9:
                   _context.prev = 9;
                   _context.t0 = _context["catch"](3);
-                  console.error(_context.t0);
-                  content = string_utils.getSecondLine(_context.t0.toString());
+                  console.error(_context.t0); // let content:string = string_utils.getSecondLine(e.toString());
+
                   ponzi_controller.instance.sendCCCMsg(ccc_msg.single_button_dialog, {
-                    content: content,
+                    content: "You can't move there.",
                     btnText: "OK"
                   });
 
-                case 14:
+                case 13:
+                  _context.prev = 13;
                   ponzi_controller.instance.sendCCCMsg(ccc_msg.network_block_ui, false);
+                  return _context.finish(13);
 
-                case 15:
+                case 16:
                 case "end":
                   return _context.stop();
               }
-            }, _callee, this, [[3, 9]]);
+            }, _callee, this, [[3, 9, 13, 16]]);
           }));
 
           function onBlockClicked() {
@@ -5713,8 +5705,8 @@ System.register("chunks:///_virtual/pick_asset.ts", ['./rollupPluginModLoBabelHe
   };
 });
 
-System.register("chunks:///_virtual/pick-money-card.ts", ['./rollupPluginModLoBabelHelpers.js', 'cc', './fond_card.ts', './ponzi-controller.ts', './ccc_msg.ts', './string_utils.ts'], function (exports) {
-  var _applyDecoratedDescriptor, _inheritsLoose, _initializerDefineProperty, _assertThisInitialized, _createForOfIteratorHelperLoose, _asyncToGenerator, _regeneratorRuntime, cclegacy, _decorator, Node, log, instantiate, Component, fond_card, ponzi_controller, ccc_msg, string_utils;
+System.register("chunks:///_virtual/pick-money-card.ts", ['./rollupPluginModLoBabelHelpers.js', 'cc', './fond_card.ts', './ponzi-controller.ts', './ccc_msg.ts'], function (exports) {
+  var _applyDecoratedDescriptor, _inheritsLoose, _initializerDefineProperty, _assertThisInitialized, _createForOfIteratorHelperLoose, _asyncToGenerator, _regeneratorRuntime, cclegacy, _decorator, Node, log, instantiate, Component, fond_card, ponzi_controller, ccc_msg;
 
   return {
     setters: [function (module) {
@@ -5738,8 +5730,6 @@ System.register("chunks:///_virtual/pick-money-card.ts", ['./rollupPluginModLoBa
       ponzi_controller = module.ponzi_controller;
     }, function (module) {
       ccc_msg = module.ccc_msg;
-    }, function (module) {
-      string_utils = module.string_utils;
     }],
     execute: function () {
       var _dec, _dec2, _dec3, _class, _class2, _descriptor, _descriptor2;
@@ -5862,8 +5852,7 @@ System.register("chunks:///_virtual/pick-money-card.ts", ['./rollupPluginModLoBa
 
         _proto.onButtonClicked = /*#__PURE__*/function () {
           var _onButtonClicked = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee() {
-            var hasError, content, _content;
-
+            var hasError;
             return _regeneratorRuntime().wrap(function _callee$(_context) {
               while (1) switch (_context.prev = _context.next) {
                 case 0:
@@ -5886,60 +5875,60 @@ System.register("chunks:///_virtual/pick-money-card.ts", ['./rollupPluginModLoBa
                   return window.pickFund == null ? void 0 : window.pickFund(this.cardId);
 
                 case 8:
-                  _context.next = 18;
+                  _context.next = 17;
                   break;
 
                 case 10:
                   _context.prev = 10;
                   _context.t0 = _context["catch"](5);
                   hasError = true;
-                  console.error(_context.t0);
-                  content = string_utils.getSecondLine(_context.t0.toString());
+                  console.error(_context.t0); // let content:string = string_utils.getSecondLine(e.toString());
+
                   ponzi_controller.instance.sendCCCMsg(ccc_msg.single_button_dialog, {
-                    content: content,
+                    content: "This card is picked by others, please choose another one.",
                     btnText: "OK"
                   });
                   ponzi_controller.instance.sendCCCMsg(ccc_msg.network_block_ui, false);
                   this.node.active = false;
 
-                case 18:
+                case 17:
                   if (!hasError) {
-                    _context.next = 20;
+                    _context.next = 19;
                     break;
                   }
 
                   return _context.abrupt("return");
 
-                case 20:
-                  _context.prev = 20;
-                  _context.next = 23;
+                case 19:
+                  _context.prev = 19;
+                  _context.next = 22;
                   return window.pickAsset == null ? void 0 : window.pickAsset(this.assetId);
 
-                case 23:
-                  _context.next = 30;
+                case 22:
+                  _context.next = 28;
                   break;
 
-                case 25:
-                  _context.prev = 25;
-                  _context.t1 = _context["catch"](20);
-                  console.error(_context.t1);
-                  _content = string_utils.getSecondLine(_context.t1.toString());
+                case 24:
+                  _context.prev = 24;
+                  _context.t1 = _context["catch"](19);
+                  console.error(_context.t1); // let content:string = string_utils.getSecondLine(e.toString());
+
                   ponzi_controller.instance.sendCCCMsg(ccc_msg.single_button_dialog, {
-                    content: _content,
+                    content: "Pick asset failed.Please contact the programer.",
                     btnText: "OK"
                   });
 
-                case 30:
-                  _context.prev = 30;
+                case 28:
+                  _context.prev = 28;
                   ponzi_controller.instance.sendCCCMsg(ccc_msg.network_block_ui, false);
                   this.node.active = false;
-                  return _context.finish(30);
+                  return _context.finish(28);
 
-                case 34:
+                case 32:
                 case "end":
                   return _context.stop();
               }
-            }, _callee, this, [[5, 10], [20, 25, 30, 34]]);
+            }, _callee, this, [[5, 10], [19, 24, 28, 32]]);
           }));
 
           function onButtonClicked() {
