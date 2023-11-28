@@ -2722,7 +2722,11 @@ System.register("chunks:///_virtual/loading.ts", ['./rollupPluginModLoBabelHelpe
 
           var self = this;
           ponzi_controller.instance.on(ccc_msg.update_loading_percentage, function (percent) {
-            self.setProgress(percent);
+            if (typeof percent == 'object') {
+              self.setProgress(percent.percent);
+            } else {
+              self.setProgress(percent);
+            }
           });
         } // 外界传入百分比，并更新进度条
         ;
@@ -6109,7 +6113,9 @@ System.register("chunks:///_virtual/ponzi_config.ts", ['cc'], function (exports)
       var ponzi_config = exports('ponzi_config', function ponzi_config() {});
       ponzi_config.fakeBlockTime = 5;
       ponzi_config.mapWH = 20;
-      ponzi_config.showCoor = false;
+      ponzi_config.showCoor = false; // public static
+
+      ponzi_config.isPublish = false;
 
       cclegacy._RF.pop();
     }
