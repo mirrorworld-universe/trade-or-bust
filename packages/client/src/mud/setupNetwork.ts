@@ -55,17 +55,20 @@ export async function setupNetwork() {
   //   const faucet = createFaucetService(faucetUrl);
 
   //   const requestDrip = async () => {
-  //     const balance = await publicClient.getBalance({ address });
-  //     console.info(`[Dev Faucet]: Player balance -> ${balance}`);
-  //     const lowBalance = balance < parseEther("1");
-  //     await faucet.dripDev({ address });
-  //     if (lowBalance) {   
-  //       console.info("[Dev Faucet]: Balance is low, dripping funds to player");
-  //       // Double drip
+  //       const balance = await publicClient.getBalance({ address });
+  //       console.info(`[Dev Faucet]: Player balance -> ${balance}`);
+  //       const lowBalance = balance < parseEther("1");
   //       await faucet.dripDev({ address });
-  //       await faucet.dripDev({ address });
+  //       if (lowBalance) {   
+  //         console.info("[Dev Faucet]: Balance is low, dripping funds to player");
+  //         // Double drip
+  //         await faucet.dripDev({ address });
+  //         await faucet.dripDev({ address });
+  //       }
   //     }
-  //   };
+  //       requestDrip();
+  //       setInterval(requestDrip, 20000);
+  // };
 
 
   //   requestDrip();

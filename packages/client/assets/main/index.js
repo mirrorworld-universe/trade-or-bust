@@ -675,6 +675,7 @@ System.register("chunks:///_virtual/ccc_msg.ts", ['cc'], function (exports) {
       ccc_msg.show_rules = "show_rules";
       ccc_msg.show_trade = "show_trade";
       ccc_msg.show_trade_ask = "show_trade_ask";
+      ccc_msg.hide_trade_ask = "hide_trade_ask";
       ccc_msg.show_trade_input = "show_trade_input";
       ccc_msg.show_rank = "show_rand";
       ccc_msg.show_payconfirm = "show_payconfirm";
@@ -3726,7 +3727,7 @@ System.register("chunks:///_virtual/lobby-playerlist-model.ts", ['./rollupPlugin
 });
 
 System.register("chunks:///_virtual/lobby-playerlist.ts", ['./rollupPluginModLoBabelHelpers.js', 'cc', './lobby-playerlist-model.ts', './ponzi-controller.ts', './ccc_msg.ts', './string_utils.ts', './component_state.ts'], function (exports) {
-  var _applyDecoratedDescriptor, _inheritsLoose, _initializerDefineProperty, _assertThisInitialized, _createForOfIteratorHelperLoose, cclegacy, _decorator, Node, Label, log, Component, ponzi_controller, ccc_msg, string_utils, component_state;
+  var _applyDecoratedDescriptor, _inheritsLoose, _initializerDefineProperty, _assertThisInitialized, _createForOfIteratorHelperLoose, cclegacy, _decorator, Node, Label, log, instantiate, Component, lobby_playerlist_model, ponzi_controller, ccc_msg, string_utils, component_state;
 
   return {
     setters: [function (module) {
@@ -3741,8 +3742,11 @@ System.register("chunks:///_virtual/lobby-playerlist.ts", ['./rollupPluginModLoB
       Node = module.Node;
       Label = module.Label;
       log = module.log;
+      instantiate = module.instantiate;
       Component = module.Component;
-    }, null, function (module) {
+    }, function (module) {
+      lobby_playerlist_model = module.lobby_playerlist_model;
+    }, function (module) {
       ponzi_controller = module.ponzi_controller;
     }, function (module) {
       ccc_msg = module.ccc_msg;
@@ -3805,6 +3809,7 @@ System.register("chunks:///_virtual/lobby-playerlist.ts", ['./rollupPluginModLoB
           }
 
           log("lobby-playerlist start init...");
+          this.gridParent.removeAllChildren();
           this.inited = true;
           this.lobbyPlayers = [];
 
@@ -3822,6 +3827,7 @@ System.register("chunks:///_virtual/lobby-playerlist.ts", ['./rollupPluginModLoB
           }
 
           this.peopleLabel.string = this.lobbyPlayers.length + " Players Login...";
+          console.error("lobby-playerlist :", this.lobbyPlayers);
           this.lobbyPlayers.forEach(function (ele) {
             _this2.addNewNode(ele);
           });
@@ -3833,6 +3839,10 @@ System.register("chunks:///_virtual/lobby-playerlist.ts", ['./rollupPluginModLoB
 
           var self = this;
           ponzi_controller.instance.on(ccc_msg.on_player_add, function (entity) {
+            if (_this3.lobbyPlayers.indexOf(entity.toString()) > -1) {
+              return;
+            }
+
             string_utils.addStringToArray(self.lobbyPlayers, entity);
             self.peopleLabel.string = self.lobbyPlayers.length + " Players Login...";
             self.addNewNode(entity);
@@ -3850,7 +3860,14 @@ System.register("chunks:///_virtual/lobby-playerlist.ts", ['./rollupPluginModLoB
         };
 
         _proto.addNewNode = function addNewNode(hash) {
-          return;
+          var str = hash.toString();
+          string_utils.addStringToArray(this.lobbyPlayers, str);
+          var newNode = instantiate(this.model);
+          newNode.active = true;
+          newNode.parent = this.gridParent;
+          var modelScript = newNode.getComponent(lobby_playerlist_model); // modelScript.init(string_utils.sliceLastN(str,4));
+
+          modelScript.init(string_utils.removeLeadingZeros(str));
         };
 
         return lobby_playerlist;
@@ -6371,7 +6388,12 @@ System.register("chunks:///_virtual/ponzi-controller.ts", ['./rollupPluginModLoB
           var _update$value4 = update.value,
               nextValue = _update$value4[0],
               prevValue = _update$value4[1];
-          if (!nextValue) return;
+
+          if (!nextValue) {
+            ponzi_controller.instance.sendCCCMsg(ccc_msg.hide_trade_ask, null);
+            return;
+          }
+
           var obj = nextValue;
           var presenterName = obj.from;
           var offerMoney = obj.money;
@@ -7338,6 +7360,9 @@ System.register("chunks:///_virtual/popupui_manager.ts", ['./rollupPluginModLoBa
                 offerMoney = obj.offerMoney,
                 assetNumber = obj.assetNumber;
             self.tradeAsk.init(presenterName, offerMoney, assetNumber);
+          });
+          ponzi_controller.instance.on(ccc_msg.hide_trade_ask, function (obj) {
+            self.tradeAsk.node.active = false;
           });
           ponzi_controller.instance.on(ccc_msg.show_trade_input, function () {
             self.popupWindow(self.tradeInput.node);
