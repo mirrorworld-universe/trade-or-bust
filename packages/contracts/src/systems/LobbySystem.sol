@@ -64,15 +64,15 @@ contract LobbySystem is System {
     function clearComs(bytes32 tmpPlayer) private {
         //Trade
         AssetsList.deleteRecord(tmpPlayer);
-        UnsolicitedTransaction.deleteRecord(tmpPlayer);
-        PassiveTransaction.deleteRecord(tmpPlayer);
-        TradeList.deleteRecord(tmpPlayer);
-        TransactionList.deleteRecord(tmpPlayer);
-        RaiseColddown.deleteRecord(tmpPlayer);
+        // UnsolicitedTransaction.deleteRecord(tmpPlayer);
+        // PassiveTransaction.deleteRecord(tmpPlayer);
+        // TradeList.deleteRecord(tmpPlayer);
+        // TransactionList.deleteRecord(tmpPlayer);
+        // RaiseColddown.deleteRecord(tmpPlayer);
 
         //
-        HasDebt.deleteRecord(tmpPlayer);
-        Debt.deleteRecord(tmpPlayer);
+        // HasDebt.deleteRecord(tmpPlayer);
+        // Debt.deleteRecord(tmpPlayer);
     }
 
     //A player think the game is about to start, ask himself's game info

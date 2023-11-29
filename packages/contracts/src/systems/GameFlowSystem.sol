@@ -118,13 +118,13 @@ contract GameFlowSystem is System {
 
                 // //Trade
                 // AssetsList.deleteRecord(tmpPlayer);
-                // UnsolicitedTransaction.deleteRecord(tmpPlayer);
-                // PassiveTransaction.deleteRecord(tmpPlayer);
-                // TradeList.deleteRecord(tmpPlayer);
-                // TransactionList.deleteRecord(tmpPlayer);
-                // RaiseColddown.deleteRecord(tmpPlayer);
+                UnsolicitedTransaction.deleteRecord(tmpPlayer);
+                PassiveTransaction.deleteRecord(tmpPlayer);
+                TradeList.deleteRecord(tmpPlayer);
+                TransactionList.deleteRecord(tmpPlayer);
+                RaiseColddown.deleteRecord(tmpPlayer);
 
-                // //
+                //
                 HasDebt.deleteRecord(tmpPlayer);
                 Debt.deleteRecord(tmpPlayer);
             }
