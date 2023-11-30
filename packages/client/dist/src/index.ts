@@ -1,7 +1,7 @@
 
 import { setup } from "./mud/setup";
 import mudConfig from "contracts/mud.config";
-import { runQuery ,getComponentValue,getComponentValueStrict, Has, Not  } from "@latticexyz/recs";
+import { runQuery ,getComponentValue,getComponentValueStrict, Has,HasValue, Not  } from "@latticexyz/recs";
 
 const {
   components,
@@ -182,7 +182,7 @@ components.TransactionList.update$.subscribe((update)=>{
 }
 
 //Query
-(window as any).queryValue = async (component, entity) => {
+(window as any).queryValue = (component, entity) => {
   const data = getComponentValueStrict(component, entity)
   console.log("getValueByComAndEntity:", data);
   return data;
@@ -198,12 +198,31 @@ components.TransactionList.update$.subscribe((update)=>{
 }
 
 (window as any).queryResultAssetsList = async ()=>{
-    const matchingEntities = runQuery([
-      Has(components.AssetsList),
-      Not(components.IsEliminated)
-    ])
+  const matchingEntities = runQuery([
+    Has(components.AssetsList),
+    Not(components.IsEliminated)
+  ])
 
-    return matchingEntities;
+  return matchingEntities;
+}
+
+(window as any).queryPlayerOnPos = async (x,y)=>{
+  const matchingEntities = runQuery([
+    HasValue(components.Player, {x, y})
+  ])
+
+  return matchingEntities;
+}
+
+
+(window as any).queryAllAlivePlayers = ()=>{
+  const matchingEntities = runQuery([
+    Has(components.Player),
+    Not(components.IsEliminated)
+  ])
+
+  console.log("queryAllAlivePlayers:",matchingEntities);
+  return matchingEntities;
 }
 
 
