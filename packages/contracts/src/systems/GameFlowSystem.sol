@@ -24,7 +24,7 @@ contract GameFlowSystem is System {
 
   function restartGame() public{
         bytes32 player = addressToEntityKey(address(_msgSender()));
-        require(IsPlayer.get(player),"Already is a player!");
+        // require(IsPlayer.get(player),"Already is a player!");
 
         GameState.set(1);
 

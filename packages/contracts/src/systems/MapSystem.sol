@@ -2,7 +2,7 @@
 pragma solidity >=0.8.0;
 
 import { System } from "@latticexyz/world/src/System.sol";
-import { IsEliminated,HasDebt, Debt, OwnedCards, Log,Player,Game ,GameData,GameState,GameMap,MapItem,MapItemTableId,MapItemData,PlayerData,TransactionList,TransactionListData,PlayerTableId,IsPlayer,GameMapData} from "../codegen/Tables.sol";
+import { IsEliminatedTableId,IsEliminated,HasDebt, Debt, OwnedCards, Log,Player,Game ,GameData,GameState,GameMap,MapItem,MapItemTableId,MapItemData,PlayerData,TransactionList,TransactionListData,PlayerTableId,IsPlayer,GameMapData} from "../codegen/Tables.sol";
 import { addressToEntityKey } from "../addressToEntityKey.sol";
 import { getUniqueEntity } from "@latticexyz/world/src/modules/uniqueentity/getUniqueEntity.sol";
 import { getKeysInTable } from "@latticexyz/world/src/modules/keysintable/getKeysInTable.sol";
@@ -104,8 +104,9 @@ contract MapSystem is System {
             Debt.set(player,debt);
         }
 
-        QueryFragment[] memory fragments = new QueryFragment[](1);
+        QueryFragment[] memory fragments = new QueryFragment[](2);
         fragments[0] = QueryFragment(QueryType.Has, PlayerTableId, new bytes(0));
+        fragments[1] = QueryFragment(QueryType.Not, IsEliminatedTableId, new bytes(0));
         bytes32[][] memory keyTuples = query(fragments);
 
         uint findCount = 0;
