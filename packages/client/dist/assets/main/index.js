@@ -4964,28 +4964,6 @@ System.register("chunks:///_virtual/map-controller.ts", ['./rollupPluginModLoBab
                   return _context.abrupt("return");
 
                 case 3:
-                  // let array = {};
-                  // for(let i=0;i<players.length;i++){
-                  //     console.error("遍历中",players[i]);
-                  //     let entity = players[i];
-                  //     let p = await window.queryValue?.(window.env.components.Player, entity);
-                  //     let obj = new RoleLocalObj();
-                  //     obj.entity = entity;
-                  //     obj.row = Number(p.x);
-                  //     obj.col = Number(p.y);
-                  //     obj.money = Number(p.money);
-                  //     array[entity] = obj;
-                  // }
-                  // players.forEach(async entity => {
-                  //     console.error("遍历中",entity);
-                  //     let p = await window.queryValue?.(window.env.components.Player, entity);
-                  //     let obj = new RoleLocalObj();
-                  //     obj.entity = entity;
-                  //     obj.row = Number(p.x);
-                  //     obj.col = Number(p.y);
-                  //     obj.money = Number(p.money);
-                  //     array[entity] = obj;
-                  // });
                   array = {};
                   _context.t0 = _regeneratorRuntime().keys(players);
 
@@ -5491,8 +5469,8 @@ System.register("chunks:///_virtual/map-controller.ts", ['./rollupPluginModLoBab
   };
 });
 
-System.register("chunks:///_virtual/mapblock.ts", ['./rollupPluginModLoBabelHelpers.js', 'cc', './ponzi-controller.ts', './ccc_msg.ts', './data_center.ts', './coor_utils.ts', './debt_utils.ts'], function (exports) {
-  var _applyDecoratedDescriptor, _inheritsLoose, _initializerDefineProperty, _assertThisInitialized, _asyncToGenerator, _regeneratorRuntime, cclegacy, _decorator, Label, Node, sys, Component, log, ponzi_controller, ccc_msg, data_center, coor_utils, debt_utils;
+System.register("chunks:///_virtual/mapblock.ts", ['./rollupPluginModLoBabelHelpers.js', 'cc', './ponzi-controller.ts', './ccc_msg.ts', './data_center.ts', './coor_utils.ts', './string_utils.ts', './debt_utils.ts', './RoleLocalObj.ts'], function (exports) {
+  var _applyDecoratedDescriptor, _inheritsLoose, _initializerDefineProperty, _assertThisInitialized, _asyncToGenerator, _regeneratorRuntime, _createForOfIteratorHelperLoose, cclegacy, _decorator, Label, Node, sys, Component, log, ponzi_controller, ccc_msg, data_center, coor_utils, string_utils, debt_utils, RoleLocalObj;
 
   return {
     setters: [function (module) {
@@ -5502,6 +5480,7 @@ System.register("chunks:///_virtual/mapblock.ts", ['./rollupPluginModLoBabelHelp
       _assertThisInitialized = module.assertThisInitialized;
       _asyncToGenerator = module.asyncToGenerator;
       _regeneratorRuntime = module.regeneratorRuntime;
+      _createForOfIteratorHelperLoose = module.createForOfIteratorHelperLoose;
     }, function (module) {
       cclegacy = module.cclegacy;
       _decorator = module._decorator;
@@ -5519,7 +5498,11 @@ System.register("chunks:///_virtual/mapblock.ts", ['./rollupPluginModLoBabelHelp
     }, function (module) {
       coor_utils = module.coor_utils;
     }, function (module) {
+      string_utils = module.string_utils;
+    }, function (module) {
       debt_utils = module.debt_utils;
+    }, function (module) {
+      RoleLocalObj = module.RoleLocalObj;
     }],
     execute: function () {
       var _dec, _dec2, _dec3, _dec4, _dec5, _class, _class2, _descriptor, _descriptor2, _descriptor3, _descriptor4;
@@ -5652,7 +5635,7 @@ System.register("chunks:///_virtual/mapblock.ts", ['./rollupPluginModLoBabelHelp
 
         _proto.checkCanMove = /*#__PURE__*/function () {
           var _checkCanMove = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee2(tarX, tarY) {
-            var hasDebt, entities, me, myPlayer, nowX, nowY, inDis;
+            var hasDebt, roleOnTargetCell, me, myPlayer, nowX, nowY, inDis;
             return _regeneratorRuntime().wrap(function _callee2$(_context2) {
               while (1) switch (_context2.prev = _context2.next) {
                 case 0:
@@ -5675,14 +5658,13 @@ System.register("chunks:///_virtual/mapblock.ts", ['./rollupPluginModLoBabelHelp
 
                 case 6:
                   _context2.next = 8;
-                  return window.queryPlayerOnPos(tarX, tarY);
+                  return this.checkPlayerOnPos(tarX, tarY);
 
                 case 8:
-                  entities = _context2.sent;
-                  console.error("checkCanMove:", entities);
+                  roleOnTargetCell = _context2.sent;
 
-                  if (!(entities.length > 0)) {
-                    _context2.next = 13;
+                  if (!roleOnTargetCell) {
+                    _context2.next = 12;
                     break;
                   }
 
@@ -5692,13 +5674,13 @@ System.register("chunks:///_virtual/mapblock.ts", ['./rollupPluginModLoBabelHelp
                   });
                   return _context2.abrupt("return", false);
 
-                case 13:
+                case 12:
                   //todo get player xy
                   me = globalThis.ponzi.currentPlayer;
-                  _context2.next = 16;
+                  _context2.next = 15;
                   return window.queryValue == null ? void 0 : window.queryValue(window.env.components.Player, me);
 
-                case 16:
+                case 15:
                   myPlayer = _context2.sent;
                   nowX = Number(myPlayer.x);
                   nowY = Number(myPlayer.y);
@@ -5706,7 +5688,7 @@ System.register("chunks:///_virtual/mapblock.ts", ['./rollupPluginModLoBabelHelp
                   console.error("checkCanMove inDis:", nowX, nowY, tarX, tarY, inDis);
 
                   if (inDis) {
-                    _context2.next = 24;
+                    _context2.next = 23;
                     break;
                   }
 
@@ -5716,10 +5698,10 @@ System.register("chunks:///_virtual/mapblock.ts", ['./rollupPluginModLoBabelHelp
                   });
                   return _context2.abrupt("return", false);
 
-                case 24:
+                case 23:
                   return _context2.abrupt("return", true);
 
-                case 25:
+                case 24:
                 case "end":
                   return _context2.stop();
               }
@@ -5731,6 +5713,166 @@ System.register("chunks:///_virtual/mapblock.ts", ['./rollupPluginModLoBabelHelp
           }
 
           return checkCanMove;
+        }();
+
+        _proto.checkPlayerOnPos = /*#__PURE__*/function () {
+          var _checkPlayerOnPos = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee3(x, y) {
+            var players, me, array, key, map, _iterator, _step, _step$value, entity, value, hash, obj, valueNum, _valueNum, _valueNum2, _key2, role;
+
+            return _regeneratorRuntime().wrap(function _callee3$(_context3) {
+              while (1) switch (_context3.prev = _context3.next) {
+                case 0:
+                  players = window.getPlayers == null ? void 0 : window.getPlayers();
+
+                  if (players) {
+                    _context3.next = 3;
+                    break;
+                  }
+
+                  return _context3.abrupt("return");
+
+                case 3:
+                  me = globalThis.ponzi.currentPlayer;
+                  console.error("me:", me);
+                  array = {};
+                  _context3.t0 = _regeneratorRuntime().keys(players);
+
+                case 7:
+                  if ((_context3.t1 = _context3.t0()).done) {
+                    _context3.next = 28;
+                    break;
+                  }
+
+                  key = _context3.t1.value;
+                  map = players[key];
+                  _iterator = _createForOfIteratorHelperLoose(map);
+
+                case 11:
+                  if ((_step = _iterator()).done) {
+                    _context3.next = 26;
+                    break;
+                  }
+
+                  _step$value = _step.value, entity = _step$value[0], value = _step$value[1]; //   console.log(key, entity, value);
+
+                  hash = string_utils.getHashFromSymbol(entity);
+                  _context3.next = 16;
+                  return this.getIsEliminated(hash);
+
+                case 16:
+                  if (!_context3.sent) {
+                    _context3.next = 18;
+                    break;
+                  }
+
+                  return _context3.abrupt("continue", 24);
+
+                case 18:
+                  if (!(hash.indexOf(me) > -1)) {
+                    _context3.next = 20;
+                    break;
+                  }
+
+                  return _context3.abrupt("continue", 24);
+
+                case 20:
+                  if (!array[hash]) {
+                    array[hash] = new RoleLocalObj();
+                  }
+
+                  obj = array[hash];
+                  obj.entity = entity;
+
+                  if (key == 'x') {
+                    valueNum = Number(value);
+                    obj.row = valueNum;
+                  } else if (key == 'y') {
+                    _valueNum = Number(value);
+                    obj.col = _valueNum;
+                  } else if (key == 'money') {
+                    _valueNum2 = Number(value);
+                    obj.money = _valueNum2;
+                  }
+
+                case 24:
+                  _context3.next = 11;
+                  break;
+
+                case 26:
+                  _context3.next = 7;
+                  break;
+
+                case 28:
+                  log("checkPlayerOnPos role array:", array);
+                  _context3.t2 = _regeneratorRuntime().keys(array);
+
+                case 30:
+                  if ((_context3.t3 = _context3.t2()).done) {
+                    _context3.next = 38;
+                    break;
+                  }
+
+                  _key2 = _context3.t3.value;
+                  role = array[_key2];
+                  console.error("compare role role:", role, x, y);
+
+                  if (!(role.row == x && role.col == y)) {
+                    _context3.next = 36;
+                    break;
+                  }
+
+                  return _context3.abrupt("return", true);
+
+                case 36:
+                  _context3.next = 30;
+                  break;
+
+                case 38:
+                  log("checkPlayerOnPos role return false:");
+                  return _context3.abrupt("return", false);
+
+                case 40:
+                case "end":
+                  return _context3.stop();
+              }
+            }, _callee3, this);
+          }));
+
+          function checkPlayerOnPos(_x3, _x4) {
+            return _checkPlayerOnPos.apply(this, arguments);
+          }
+
+          return checkPlayerOnPos;
+        }();
+
+        _proto.getIsEliminated = /*#__PURE__*/function () {
+          var _getIsEliminated = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee4(playerEntity) {
+            var IsEliminated;
+            return _regeneratorRuntime().wrap(function _callee4$(_context4) {
+              while (1) switch (_context4.prev = _context4.next) {
+                case 0:
+                  IsEliminated = false;
+
+                  try {
+                    IsEliminated = window.queryValue == null ? void 0 : window.queryValue(window.env.components.IsEliminated, playerEntity);
+                  } catch (e) {
+                    console.error(e);
+                  }
+
+                  return _context4.abrupt("return", IsEliminated);
+
+                case 3:
+                case "end":
+                  return _context4.stop();
+              }
+            }, _callee4);
+          }));
+
+          function getIsEliminated(_x5) {
+            return _getIsEliminated.apply(this, arguments);
+          }
+
+          return getIsEliminated;
         }();
 
         _proto.calculateDistance = function calculateDistance(x1, y1, x2, y2, limit) {
