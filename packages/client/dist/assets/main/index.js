@@ -241,7 +241,7 @@ System.register("chunks:///_virtual/assets.ts", ['./rollupPluginModLoBabelHelper
 });
 
 System.register("chunks:///_virtual/button_raisingcapital.ts", ['./rollupPluginModLoBabelHelpers.js', 'cc', './ponzi-controller.ts', './ccc_msg.ts', './time_utils.ts', './component_state.ts', './ponzi_config.ts', './debt_utils.ts'], function (exports) {
-  var _applyDecoratedDescriptor, _inheritsLoose, _initializerDefineProperty, _assertThisInitialized, _asyncToGenerator, _regeneratorRuntime, cclegacy, _decorator, Label, Button, log, sys, Component, warn, ponzi_controller, ccc_msg, time_utils, component_state, ponzi_config, debt_utils;
+  var _applyDecoratedDescriptor, _inheritsLoose, _initializerDefineProperty, _assertThisInitialized, _asyncToGenerator, _regeneratorRuntime, cclegacy, _decorator, Label, Button, sys, log, Component, tween, Vec3, warn, ponzi_controller, ccc_msg, time_utils, component_state, ponzi_config, debt_utils;
 
   return {
     setters: [function (module) {
@@ -256,9 +256,11 @@ System.register("chunks:///_virtual/button_raisingcapital.ts", ['./rollupPluginM
       _decorator = module._decorator;
       Label = module.Label;
       Button = module.Button;
-      log = module.log;
       sys = module.sys;
+      log = module.log;
       Component = module.Component;
+      tween = module.tween;
+      Vec3 = module.Vec3;
       warn = module.warn;
     }, function (module) {
       ponzi_controller = module.ponzi_controller;
@@ -405,7 +407,7 @@ System.register("chunks:///_virtual/button_raisingcapital.ts", ['./rollupPluginM
 
         _proto.init = /*#__PURE__*/function () {
           var _init = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee3() {
-            var gameState, playerEntity, raiseCountdown;
+            var gameState, playerEntity, raiseCountdown, big, small;
             return _regeneratorRuntime().wrap(function _callee3$(_context3) {
               while (1) switch (_context3.prev = _context3.next) {
                 case 0:
@@ -461,7 +463,19 @@ System.register("chunks:///_virtual/button_raisingcapital.ts", ['./rollupPluginM
                 case 22:
                   this._registerListeners();
 
-                case 23:
+                  if (this.isFirstEnter()) {
+                    big = 1.1;
+                    small = 0.9;
+                    tween(this.node).to(0.2, {
+                      scale: new Vec3(big, big, big)
+                    }) // 放大到1.5倍
+                    .to(0.2, {
+                      scale: new Vec3(small, small, small)
+                    }) // 缩小到原始大小
+                    .union().repeat(20).start();
+                  }
+
+                case 24:
                 case "end":
                   return _context3.stop();
               }
@@ -474,6 +488,25 @@ System.register("chunks:///_virtual/button_raisingcapital.ts", ['./rollupPluginM
 
           return init;
         }();
+
+        _proto.isFirstEnter = function isFirstEnter() {
+          var gameObj = globalThis.ponzi.game;
+          var gameId = gameObj.gameId;
+          var key = "now_gameid_forraisingbutton";
+          var nowGameId = sys.localStorage.getItem(key);
+
+          if (!nowGameId) {
+            sys.localStorage.setItem(key, gameId);
+            return true;
+          }
+
+          if (nowGameId != gameId) {
+            sys.localStorage.setItem(key, gameId);
+            return true;
+          }
+
+          return false;
+        };
 
         _proto.updateUI = /*#__PURE__*/function () {
           var _updateUI = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee4() {
@@ -791,6 +824,44 @@ System.register("chunks:///_virtual/changing_ellipses.ts", ['./rollupPluginModLo
           return null;
         }
       }), _class2)) || _class));
+
+      cclegacy._RF.pop();
+    }
+  };
+});
+
+System.register("chunks:///_virtual/client_status.ts", ['cc'], function (exports) {
+  var cclegacy, sys;
+  return {
+    setters: [function (module) {
+      cclegacy = module.cclegacy;
+      sys = module.sys;
+    }],
+    execute: function () {
+      cclegacy._RF.push({}, "efce5TBwYBICKwR4Ph8b4sc", "client_status", undefined);
+
+      var client_status = exports('client_status', /*#__PURE__*/function () {
+        function client_status() {}
+
+        client_status.isFirstEnter = function isFirstEnter(gameId) {
+          var key = "now_gameid";
+          var nowGameId = sys.localStorage.getItem(key);
+
+          if (!nowGameId) {
+            sys.localStorage.setItem(key, gameId);
+            return true;
+          }
+
+          if (nowGameId != gameId) {
+            sys.localStorage.setItem(key, gameId);
+            return true;
+          }
+
+          return false;
+        };
+
+        return client_status;
+      }());
 
       cclegacy._RF.pop();
     }
@@ -3208,6 +3279,55 @@ System.register("chunks:///_virtual/HexMapTile.ts", ['cc'], function (exports) {
   };
 });
 
+System.register("chunks:///_virtual/indicator.ts", ['./rollupPluginModLoBabelHelpers.js', 'cc'], function (exports) {
+  var _inheritsLoose, cclegacy, _decorator, tween, Vec3, Component;
+
+  return {
+    setters: [function (module) {
+      _inheritsLoose = module.inheritsLoose;
+    }, function (module) {
+      cclegacy = module.cclegacy;
+      _decorator = module._decorator;
+      tween = module.tween;
+      Vec3 = module.Vec3;
+      Component = module.Component;
+    }],
+    execute: function () {
+      var _dec, _class;
+
+      cclegacy._RF.push({}, "6aafawcVHpJZKAD4SVnLrhd", "indicator", undefined);
+
+      var ccclass = _decorator.ccclass,
+          property = _decorator.property;
+      var indicator = exports('indicator', (_dec = ccclass('indicator'), _dec(_class = /*#__PURE__*/function (_Component) {
+        _inheritsLoose(indicator, _Component);
+
+        function indicator() {
+          return _Component.apply(this, arguments) || this;
+        }
+
+        var _proto = indicator.prototype;
+
+        _proto.start = function start() {
+          tween(this.node).by(0.3, {
+            position: new Vec3(0, -50, 0)
+          }, {
+            easing: "quadIn"
+          }).by(0.4, {
+            position: new Vec3(0, 50, 0)
+          }).union().repeatForever().start();
+        };
+
+        _proto.update = function update(deltaTime) {};
+
+        return indicator;
+      }(Component)) || _class));
+
+      cclegacy._RF.pop();
+    }
+  };
+});
+
 System.register("chunks:///_virtual/item_asset.ts", ['./rollupPluginModLoBabelHelpers.js', 'cc'], function (exports) {
   var _applyDecoratedDescriptor, _inheritsLoose, _initializerDefineProperty, _assertThisInitialized, cclegacy, _decorator, Label, Component;
 
@@ -4582,15 +4702,15 @@ System.register("chunks:///_virtual/lobby-playerlist.ts", ['./rollupPluginModLoB
   };
 });
 
-System.register("chunks:///_virtual/main", ['./debug-view-runtime-control.ts', './Singleton.ts', './lobby-controller.ts', './counter-label.ts', './ccc_msg.ts', './component_state.ts', './ponzi_config.ts', './time_state.ts', './GameData.ts', './JsCaller.ts', './MUDListener.ts', './PlayerData.ts', './data_center.ts', './ponzi-controller.ts', './ponzi-model.ts', './FakeMessageCenter.ts', './test.ts', './TradeListItem.ts', './bytes_utils.ts', './coor_utils.ts', './debt_utils.ts', './list_utils.ts', './object_utils.ts', './rule_utils.ts', './string_utils.ts', './time_utils.ts', './HexMapTile.ts', './RoleLocalObj.ts', './RowCol.ts', './UnsolicitedTransactionObj.ts', './temp_data.ts', './fake.ts', './flowui_manager.ts', './fundpool.ts', './game_ui_controller.ts', './gamefinish.ts', './loading.ts', './lobby-playerlist-model.ts', './lobby-playerlist.ts', './map-controller.ts', './mapblock.ts', './pick-money-card.ts', './player-model.ts', './account.ts', './assets.ts', './pay_debt.ts', './paytime.ts', './paytime_item.ts', './pick_asset.ts', './rank.ts', './single-button-pop.ts', './toast.ts', './trade-ask.ts', './trade_input_price.ts', './popupui_manager.ts', './trade.ts', './button_raisingcapital.ts', './changing_ellipses.ts', './fond_card.ts', './game_countdown.ts', './item_asset.ts', './mapitem.ts', './pick_asset_item.ts', './popeffect.ts', './popup_node.ts', './right-player-list-item.ts', './right-player-list.ts', './rules.ts', './scale_button.ts', './title-money.ts', './toggle.ts', './trade-asset-item.ts', './trade_parter_item.ts'], function () {
+System.register("chunks:///_virtual/main", ['./debug-view-runtime-control.ts', './Singleton.ts', './lobby-controller.ts', './counter-label.ts', './ccc_msg.ts', './component_state.ts', './ponzi_config.ts', './time_state.ts', './GameData.ts', './JsCaller.ts', './MUDListener.ts', './PlayerData.ts', './data_center.ts', './ponzi-controller.ts', './ponzi-model.ts', './FakeMessageCenter.ts', './test.ts', './TradeListItem.ts', './bytes_utils.ts', './client_status.ts', './coor_utils.ts', './debt_utils.ts', './list_utils.ts', './object_utils.ts', './rule_utils.ts', './string_utils.ts', './time_utils.ts', './HexMapTile.ts', './RoleLocalObj.ts', './RowCol.ts', './UnsolicitedTransactionObj.ts', './temp_data.ts', './fake.ts', './flowui_manager.ts', './fundpool.ts', './game_ui_controller.ts', './gamefinish.ts', './loading.ts', './lobby-playerlist-model.ts', './lobby-playerlist.ts', './map-controller.ts', './mapblock.ts', './pick-money-card.ts', './player-model.ts', './account.ts', './assets.ts', './pay_debt.ts', './paytime.ts', './paytime_item.ts', './pick_asset.ts', './rank.ts', './single-button-pop.ts', './toast.ts', './trade-ask.ts', './trade_input_price.ts', './popupui_manager.ts', './trade.ts', './button_raisingcapital.ts', './changing_ellipses.ts', './fond_card.ts', './game_countdown.ts', './indicator.ts', './item_asset.ts', './mapitem.ts', './pick_asset_item.ts', './popeffect.ts', './popup_node.ts', './right-player-list-item.ts', './right-player-list.ts', './rules.ts', './scale_button.ts', './title-money.ts', './toggle.ts', './trade-asset-item.ts', './trade_parter_item.ts'], function () {
   return {
-    setters: [null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null],
+    setters: [null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null],
     execute: function () {}
   };
 });
 
 System.register("chunks:///_virtual/map-controller.ts", ['./rollupPluginModLoBabelHelpers.js', 'cc', './ponzi-controller.ts', './ccc_msg.ts', './mapblock.ts', './string_utils.ts', './component_state.ts', './player-model.ts', './RoleLocalObj.ts', './ponzi_config.ts', './data_center.ts', './RowCol.ts', './coor_utils.ts', './mapitem.ts', './object_utils.ts'], function (exports) {
-  var _applyDecoratedDescriptor, _inheritsLoose, _initializerDefineProperty, _assertThisInitialized, _createForOfIteratorHelperLoose, _extends, _asyncToGenerator, _regeneratorRuntime, cclegacy, _decorator, Node, log, instantiate, Vec3, Component, ponzi_controller, ccc_msg, mapblock, string_utils, component_state, player_model, RoleLocalObj, ponzi_config, data_center, RowCol, coor_utils, mapitem, object_utils;
+  var _applyDecoratedDescriptor, _inheritsLoose, _initializerDefineProperty, _assertThisInitialized, _createForOfIteratorHelperLoose, _extends, _asyncToGenerator, _regeneratorRuntime, cclegacy, _decorator, Node, log, instantiate, Vec3, sys, Component, ponzi_controller, ccc_msg, mapblock, string_utils, component_state, player_model, RoleLocalObj, ponzi_config, data_center, RowCol, coor_utils, mapitem, object_utils;
 
   return {
     setters: [function (module) {
@@ -4609,6 +4729,7 @@ System.register("chunks:///_virtual/map-controller.ts", ['./rollupPluginModLoBab
       log = module.log;
       instantiate = module.instantiate;
       Vec3 = module.Vec3;
+      sys = module.sys;
       Component = module.Component;
     }, function (module) {
       ponzi_controller = module.ponzi_controller;
@@ -4638,7 +4759,7 @@ System.register("chunks:///_virtual/map-controller.ts", ['./rollupPluginModLoBab
       object_utils = module.object_utils;
     }],
     execute: function () {
-      var _dec, _dec2, _dec3, _dec4, _dec5, _dec6, _dec7, _class, _class2, _descriptor, _descriptor2, _descriptor3, _descriptor4, _descriptor5, _descriptor6;
+      var _dec, _dec2, _dec3, _dec4, _dec5, _dec6, _dec7, _dec8, _dec9, _class, _class2, _descriptor, _descriptor2, _descriptor3, _descriptor4, _descriptor5, _descriptor6, _descriptor7, _descriptor8;
 
       cclegacy._RF.push({}, "f3250iGpAVPmqBmTcrOIPDJ", "map-controller", undefined);
 
@@ -4656,6 +4777,10 @@ System.register("chunks:///_virtual/map-controller.ts", ['./rollupPluginModLoBab
         type: Node
       }), _dec7 = property({
         type: Node
+      }), _dec8 = property({
+        type: Node
+      }), _dec9 = property({
+        type: Node
       }), _dec(_class = (_class2 = /*#__PURE__*/function (_Component) {
         _inheritsLoose(map_controller, _Component);
 
@@ -4670,15 +4795,19 @@ System.register("chunks:///_virtual/map-controller.ts", ['./rollupPluginModLoBab
 
           _initializerDefineProperty(_this, "mapParent", _descriptor, _assertThisInitialized(_this));
 
-          _initializerDefineProperty(_this, "itemParent", _descriptor2, _assertThisInitialized(_this));
+          _initializerDefineProperty(_this, "mapParticleParent", _descriptor2, _assertThisInitialized(_this));
 
-          _initializerDefineProperty(_this, "playerParent", _descriptor3, _assertThisInitialized(_this));
+          _initializerDefineProperty(_this, "itemParent", _descriptor3, _assertThisInitialized(_this));
 
-          _initializerDefineProperty(_this, "mapBlockModel", _descriptor4, _assertThisInitialized(_this));
+          _initializerDefineProperty(_this, "playerParent", _descriptor4, _assertThisInitialized(_this));
 
-          _initializerDefineProperty(_this, "mapItemModel", _descriptor5, _assertThisInitialized(_this));
+          _initializerDefineProperty(_this, "mapBlockModel", _descriptor5, _assertThisInitialized(_this));
 
-          _initializerDefineProperty(_this, "playerModel", _descriptor6, _assertThisInitialized(_this)); // private terrainArray:any[][];
+          _initializerDefineProperty(_this, "indicatorModel", _descriptor6, _assertThisInitialized(_this));
+
+          _initializerDefineProperty(_this, "mapItemModel", _descriptor7, _assertThisInitialized(_this));
+
+          _initializerDefineProperty(_this, "playerModel", _descriptor8, _assertThisInitialized(_this)); // private terrainArray:any[][];
 
 
           _this.partners = void 0;
@@ -4739,10 +4868,10 @@ System.register("chunks:///_virtual/map-controller.ts", ['./rollupPluginModLoBab
             var newMap = changeResult['mapArray'];
             var width = Number((_globalThis$ponzi$gam2 = globalThis.ponzi.gameMap) == null ? void 0 : _globalThis$ponzi$gam2.width);
             var height = Number((_globalThis$ponzi$gam3 = globalThis.ponzi.gameMap) == null ? void 0 : _globalThis$ponzi$gam3.height);
-            self.drawMap(width, height, newMap);
+            self.drawMap(width, height, newMap, true);
           });
           ponzi_controller.instance.on(ccc_msg.on_gamemap_walkrecord_update, function () {
-            self.updateMap();
+            self.updateMap(true);
           });
           ponzi_controller.instance.on(ccc_msg.on_mapitem_update, function () {
             self.drawItem();
@@ -5089,6 +5218,8 @@ System.register("chunks:///_virtual/map-controller.ts", ['./rollupPluginModLoBab
         _proto.drawMap = function drawMap(width, height, newMap) {
           var _this3 = this;
 
+          console.error("drawMap");
+
           if (!newMap) {
             log("No map data to draw!");
             return;
@@ -5145,30 +5276,84 @@ System.register("chunks:///_virtual/map-controller.ts", ['./rollupPluginModLoBab
             surround = coor_utils.getNeighboringHexes(nowRoleObj.row, nowRoleObj.col);
           }
 
+          var isFirstEnterGame = false;
+          {
+            console.error("fromDataUpdate fromDataUpdate");
+            isFirstEnterGame = this.isFirstEnter();
+            console.error("fromDataUpdate fromDataUpdate  ", isFirstEnterGame);
+          }
+
+          if (isFirstEnterGame) {
+            var message = "You can click HIGH-LIGHT blocks to move, find coins and partners!";
+            ponzi_controller.instance.sendCCCMsg(ccc_msg.single_button_dialog, {
+              content: message,
+              btnText: "Got"
+            });
+          }
+
           this.mapParent.removeAllChildren();
 
           for (var row = 0; row < coordinationArray.length; row++) {
-            for (var col = 0; col < coordinationArray[row].length; col++) {
+            var _loop = function _loop() {
               var tile = coordinationArray[row][col];
               var coor = coorMap[row][col]; // 在这里访问和操作每个地图块（tile）
               // console.log(`Tile at (${tile.x}, ${tile.y}): ${tile.emoji}`);
 
-              var newNode = instantiate(this.mapBlockModel);
-              newNode.setParent(this.mapParent);
+              var newNode = instantiate(_this3.mapBlockModel);
+              newNode.setParent(_this3.mapParent);
               newNode.active = true;
               newNode.position = new Vec3(tile.x, tile.y, 0);
               var script = newNode.getComponent(mapblock);
               script.init(coor, recordMap[row] && recordMap[row][col] == 1);
-              var isSurround = this.isSurround(surround, row, col);
+
+              var isSurround = _this3.isSurround(surround, row, col);
 
               if (isSurround) {
                 log("isSurround:", isSurround);
               }
 
               script.setSurround(isSurround);
+
+              if (isFirstEnterGame && isSurround) {
+                var _newNode = instantiate(_this3.indicatorModel);
+
+                _newNode.setParent(_this3.mapParticleParent);
+
+                _newNode.active = true;
+                _newNode.position = new Vec3(tile.x, tile.y + 46, 0);
+                setTimeout(function () {
+                  _newNode.active = false;
+
+                  _newNode.destroy();
+                }, 6000);
+              }
+
               if (ponzi_config.showCoor) script.showLabel(coor.row + "," + coor.col);
+            };
+
+            for (var col = 0; col < coordinationArray[row].length; col++) {
+              _loop();
             }
           }
+        };
+
+        _proto.isFirstEnter = function isFirstEnter() {
+          var gameObj = globalThis.ponzi.game;
+          var gameId = gameObj.gameId;
+          var key = "now_gameid_formapctl";
+          var nowGameId = sys.localStorage.getItem(key);
+
+          if (!nowGameId) {
+            sys.localStorage.setItem(key, gameId);
+            return true;
+          }
+
+          if (nowGameId != gameId) {
+            sys.localStorage.setItem(key, gameId);
+            return true;
+          }
+
+          return false;
         };
 
         _proto.isSurround = function isSurround(surround, targetRow, targetCol) {
@@ -5259,27 +5444,37 @@ System.register("chunks:///_virtual/map-controller.ts", ['./rollupPluginModLoBab
         enumerable: true,
         writable: true,
         initializer: null
-      }), _descriptor2 = _applyDecoratedDescriptor(_class2.prototype, "itemParent", [_dec3], {
+      }), _descriptor2 = _applyDecoratedDescriptor(_class2.prototype, "mapParticleParent", [_dec3], {
         configurable: true,
         enumerable: true,
         writable: true,
         initializer: null
-      }), _descriptor3 = _applyDecoratedDescriptor(_class2.prototype, "playerParent", [_dec4], {
+      }), _descriptor3 = _applyDecoratedDescriptor(_class2.prototype, "itemParent", [_dec4], {
         configurable: true,
         enumerable: true,
         writable: true,
         initializer: null
-      }), _descriptor4 = _applyDecoratedDescriptor(_class2.prototype, "mapBlockModel", [_dec5], {
+      }), _descriptor4 = _applyDecoratedDescriptor(_class2.prototype, "playerParent", [_dec5], {
         configurable: true,
         enumerable: true,
         writable: true,
         initializer: null
-      }), _descriptor5 = _applyDecoratedDescriptor(_class2.prototype, "mapItemModel", [_dec6], {
+      }), _descriptor5 = _applyDecoratedDescriptor(_class2.prototype, "mapBlockModel", [_dec6], {
         configurable: true,
         enumerable: true,
         writable: true,
         initializer: null
-      }), _descriptor6 = _applyDecoratedDescriptor(_class2.prototype, "playerModel", [_dec7], {
+      }), _descriptor6 = _applyDecoratedDescriptor(_class2.prototype, "indicatorModel", [_dec7], {
+        configurable: true,
+        enumerable: true,
+        writable: true,
+        initializer: null
+      }), _descriptor7 = _applyDecoratedDescriptor(_class2.prototype, "mapItemModel", [_dec8], {
+        configurable: true,
+        enumerable: true,
+        writable: true,
+        initializer: null
+      }), _descriptor8 = _applyDecoratedDescriptor(_class2.prototype, "playerModel", [_dec9], {
         configurable: true,
         enumerable: true,
         writable: true,
@@ -5297,7 +5492,7 @@ System.register("chunks:///_virtual/map-controller.ts", ['./rollupPluginModLoBab
 });
 
 System.register("chunks:///_virtual/mapblock.ts", ['./rollupPluginModLoBabelHelpers.js', 'cc', './ponzi-controller.ts', './ccc_msg.ts', './data_center.ts', './coor_utils.ts', './debt_utils.ts'], function (exports) {
-  var _applyDecoratedDescriptor, _inheritsLoose, _initializerDefineProperty, _assertThisInitialized, _asyncToGenerator, _regeneratorRuntime, cclegacy, _decorator, Label, Node, Component, log, ponzi_controller, ccc_msg, data_center, coor_utils, debt_utils;
+  var _applyDecoratedDescriptor, _inheritsLoose, _initializerDefineProperty, _assertThisInitialized, _asyncToGenerator, _regeneratorRuntime, cclegacy, _decorator, Label, Node, sys, Component, log, ponzi_controller, ccc_msg, data_center, coor_utils, debt_utils;
 
   return {
     setters: [function (module) {
@@ -5312,6 +5507,7 @@ System.register("chunks:///_virtual/mapblock.ts", ['./rollupPluginModLoBabelHelp
       _decorator = module._decorator;
       Label = module.Label;
       Node = module.Node;
+      sys = module.sys;
       Component = module.Component;
       log = module.log;
     }, function (module) {
@@ -5375,7 +5571,13 @@ System.register("chunks:///_virtual/mapblock.ts", ['./rollupPluginModLoBabelHelp
           this.mapTile = mapTile;
           this.label.node.active = false;
           this.walkedImage.active = isWalked;
-          this.newImage.active = !isWalked;
+          this.newImage.active = !isWalked; // if(isFirstEnterGame && isWalked){
+          //     this.indicator.active = true;
+          //     const self = this;
+          //     setTimeout(() => {
+          //         self.indicator.active = false;
+          //     }, 6000);
+          // }
         };
 
         _proto.setSurround = function setSurround(isSurroundPlayer) {
@@ -5562,6 +5764,25 @@ System.register("chunks:///_virtual/mapblock.ts", ['./rollupPluginModLoBabelHelp
         _proto.giveValue = function giveValue(recordMap, row, col) {
           if (!recordMap[row]) recordMap[row] = [];
           recordMap[row][col] = 1;
+        };
+
+        _proto.isFirstEnter = function isFirstEnter() {
+          var gameObj = globalThis.ponzi.game;
+          var gameId = gameObj.gameId;
+          var key = "now_gameid_forblock";
+          var nowGameId = sys.localStorage.getItem(key);
+
+          if (!nowGameId) {
+            sys.localStorage.setItem(key, gameId);
+            return true;
+          }
+
+          if (nowGameId != gameId) {
+            sys.localStorage.setItem(key, gameId);
+            return true;
+          }
+
+          return false;
         };
 
         return mapblock;
