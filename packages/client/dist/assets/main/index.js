@@ -3648,6 +3648,7 @@ System.register("chunks:///_virtual/lobby-controller.ts", ['./rollupPluginModLoB
 
           _initializerDefineProperty(_this, "gameNode", _descriptor9, _assertThisInitialized(_this));
 
+          _this.countDownPre = "";
           _this.IsPlayerButGameNotStart = "The Round Has Not Started Yet, Please wait";
           _this.NotPlayerButGameIsStart = "Game is started, just waiting for entering game!";
           _this.IsPlayerButFinishGame = "You are already eliminated, please wait for next game.";
@@ -4004,28 +4005,29 @@ System.register("chunks:///_virtual/lobby-controller.ts", ['./rollupPluginModLoB
                   return _context11.abrupt("return");
 
                 case 5:
+                  this.countDownPre = "";
                   isPlayer = false;
                   IsEliminated = false;
-                  _context11.prev = 7;
-                  _context11.next = 10;
+                  _context11.prev = 8;
+                  _context11.next = 11;
                   return this.getIsPlayer();
 
-                case 10:
+                case 11:
                   isPlayer = _context11.sent;
-                  _context11.next = 13;
+                  _context11.next = 14;
                   return this.getIsEliminated();
 
-                case 13:
+                case 14:
                   IsEliminated = _context11.sent;
-                  _context11.next = 19;
+                  _context11.next = 20;
                   break;
 
-                case 16:
-                  _context11.prev = 16;
-                  _context11.t0 = _context11["catch"](7);
+                case 17:
+                  _context11.prev = 17;
+                  _context11.t0 = _context11["catch"](8);
                   console.error(_context11.t0);
 
-                case 19:
+                case 20:
                   timeStamp = sys.now();
                   timeStamp = Number(timeStamp) / 1000;
                   gameStartTime = Number(gameObj.startTime);
@@ -4099,6 +4101,7 @@ System.register("chunks:///_virtual/lobby-controller.ts", ['./rollupPluginModLoB
                       if (_leftSeconds > 0) {
                         log("gameWaiting+isPlayer+notStart");
                         this.contentLabel.string = this.IsPlayerButGameNotStart;
+                        this.countDownPre = "Game will start in ";
                         this.startCountdownAnimator(_leftSeconds);
                       } else {
                         log("gameWaiting+isPlayer+isStarted", timeState);
@@ -4169,11 +4172,11 @@ System.register("chunks:///_virtual/lobby-controller.ts", ['./rollupPluginModLoB
                     }
                   }
 
-                case 28:
+                case 29:
                 case "end":
                   return _context11.stop();
               }
-            }, _callee11, this, [[7, 16]]);
+            }, _callee11, this, [[8, 17]]);
           }));
 
           function updateLobby() {
@@ -4361,7 +4364,7 @@ System.register("chunks:///_virtual/lobby-controller.ts", ['./rollupPluginModLoB
 
         _proto.startCountDownAnimation = function startCountDownAnimation(endTime) {
           this.leftTime = endTime;
-          this.countDownLabel.string = this.leftTime ? this.leftTime.toString() : ""; // 计算重复次数，等于结束时间减一
+          this.setCountDown(this.leftTime ? this.leftTime.toString() : ""); // 计算重复次数，等于结束时间减一
 
           var repeat = endTime - 1; // 调用schedule方法，传入回调函数，间隔时间为1秒，重复次数为repeat，延迟时间为0
 
@@ -4371,7 +4374,15 @@ System.register("chunks:///_virtual/lobby-controller.ts", ['./rollupPluginModLoB
 
         _proto.minuesTimeLabel = function minuesTimeLabel() {
           this.leftTime--;
-          this.countDownLabel.string = this.leftTime ? this.formatSeconds(this.leftTime) : "";
+          this.setCountDown(this.leftTime ? this.formatSeconds(this.leftTime) : "");
+        };
+
+        _proto.setCountDown = function setCountDown(left) {
+          if (left == "") {
+            this.countDownLabel.string = left;
+          } else {
+            this.countDownLabel.string = this.countDownPre + left;
+          }
         } // 定义一个函数，接受一个秒数作为参数，返回一个字符串表示转换后的结果
         ;
 
@@ -4471,8 +4482,8 @@ System.register("chunks:///_virtual/lobby-controller.ts", ['./rollupPluginModLoB
   };
 });
 
-System.register("chunks:///_virtual/lobby-playerlist-model.ts", ['./rollupPluginModLoBabelHelpers.js', 'cc'], function (exports) {
-  var _applyDecoratedDescriptor, _inheritsLoose, _initializerDefineProperty, _assertThisInitialized, cclegacy, _decorator, Label, Component;
+System.register("chunks:///_virtual/lobby-playerlist-model.ts", ['./rollupPluginModLoBabelHelpers.js', 'cc', './string_utils.ts'], function (exports) {
+  var _applyDecoratedDescriptor, _inheritsLoose, _initializerDefineProperty, _assertThisInitialized, cclegacy, _decorator, Label, Component, string_utils;
 
   return {
     setters: [function (module) {
@@ -4485,6 +4496,8 @@ System.register("chunks:///_virtual/lobby-playerlist-model.ts", ['./rollupPlugin
       _decorator = module._decorator;
       Label = module.Label;
       Component = module.Component;
+    }, function (module) {
+      string_utils = module.string_utils;
     }],
     execute: function () {
       var _dec, _dec2, _class, _class2, _descriptor;
@@ -4519,7 +4532,7 @@ System.register("chunks:///_virtual/lobby-playerlist-model.ts", ['./rollupPlugin
         _proto.update = function update(deltaTime) {};
 
         _proto.init = function init(name) {
-          this.labelName.string = name;
+          this.labelName.string = string_utils.truncateString8(name);
         };
 
         return lobby_playerlist_model;
@@ -9981,6 +9994,15 @@ System.register("chunks:///_virtual/string_utils.ts", ['cc'], function (exports)
             }
         };
 
+        string_utils.truncateString8 = function truncateString8(str) {
+          if (str.length <= 8) {
+            return str; // 字符串长度小于等于8，直接返回原字符串
+          }
+
+          var truncatedStr = str.substring(0, 4) + "..." + str.substring(str.length - 4);
+          return truncatedStr;
+        };
+
         string_utils.getNumberFromSymbol = function getNumberFromSymbol(sym) {
           var hexValue = this.getHashFromSymbol(sym);
           var decimalValue = BigInt(hexValue);
@@ -10870,6 +10892,7 @@ System.register("chunks:///_virtual/trade-ask.ts", ['./rollupPluginModLoBabelHel
 
           _initializerDefineProperty(_this, "iconParent", _descriptor3, _assertThisInitialized(_this));
 
+          _this.money = 0;
           return _this;
         }
 
@@ -10886,6 +10909,7 @@ System.register("chunks:///_virtual/trade-ask.ts", ['./rollupPluginModLoBabelHel
 
           this.labelLine1.string = "User " + string_utils.sliceLastN(presenterName, 6) + " wants to buy your " + this.getAssetName(assetNumber) + " for";
           this.labelLine2.string = "$" + offerMoney;
+          this.money = offerMoney;
         };
 
         _proto.onBtnAcceptClicked = /*#__PURE__*/function () {
@@ -10935,39 +10959,61 @@ System.register("chunks:///_virtual/trade-ask.ts", ['./rollupPluginModLoBabelHel
 
         _proto.onBtnRejectClicked = /*#__PURE__*/function () {
           var _onBtnRejectClicked = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee2() {
+            var me, myPlayer, myMoney;
             return _regeneratorRuntime().wrap(function _callee2$(_context2) {
               while (1) switch (_context2.prev = _context2.next) {
                 case 0:
+                  //check money enough
+                  me = globalThis.ponzi.currentPlayer;
+                  _context2.next = 3;
+                  return window.queryValue == null ? void 0 : window.queryValue(window.env.components.Player, me);
+
+                case 3:
+                  myPlayer = _context2.sent;
+                  myMoney = Number(myPlayer.money);
+
+                  if (!(myMoney < this.money)) {
+                    _context2.next = 8;
+                    break;
+                  }
+
+                  ponzi_controller.instance.sendCCCMsg(ccc_msg.single_button_dialog, {
+                    content: "You have no money to counter-buy",
+                    btnText: "OK"
+                  });
+                  return _context2.abrupt("return");
+
+                case 8:
                   ponzi_controller.instance.sendCCCMsg(ccc_msg.network_block_ui, true);
-                  _context2.prev = 1;
-                  _context2.next = 4;
+                  _context2.prev = 9;
+                  _context2.next = 12;
                   return window.rejectTrade == null ? void 0 : window.rejectTrade();
 
-                case 4:
+                case 12:
                   //只有在反买成功时才关闭窗口
                   this.node.active = false;
-                  _context2.next = 11;
+                  _context2.next = 19;
                   break;
 
-                case 7:
-                  _context2.prev = 7;
-                  _context2.t0 = _context2["catch"](1);
+                case 15:
+                  _context2.prev = 15;
+                  _context2.t0 = _context2["catch"](9);
                   console.error(_context2.t0);
                   ponzi_controller.instance.sendCCCMsg(ccc_msg.single_button_dialog, {
                     content: "Accept failed",
                     btnText: "OK"
                   });
 
-                case 11:
-                  _context2.prev = 11;
+                case 19:
+                  _context2.prev = 19;
                   ponzi_controller.instance.sendCCCMsg(ccc_msg.network_block_ui, false);
-                  return _context2.finish(11);
+                  return _context2.finish(19);
 
-                case 14:
+                case 22:
                 case "end":
                   return _context2.stop();
               }
-            }, _callee2, this, [[1, 7, 11, 14]]);
+            }, _callee2, this, [[9, 15, 19, 22]]);
           }));
 
           function onBtnRejectClicked() {
